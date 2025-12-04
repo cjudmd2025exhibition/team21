@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>願솟다 - 인트로</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+
+    <style>
+      :root { color-scheme: dark; }
+      html, body, #root { height: 100%; }
+      body {
+        margin: 0;
+        background: #0a1120;
+        overflow: hidden;
+        font-family: 'Noto Sans KR', sans-serif;
+        color: #f3f1e9;
+      }
+      ::selection { background: rgba(255,255,255,.1); }
+      
+      @font-face {
+        font-family: 'Yeongwol';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'happygoheung M';
+        src: url('./행복고흥M.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'gkswk';
+        src: url('./gkswk.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      .container {
+        display: flex;
+        height: 100vh;
+        width: 100%;
+        position: relative;
+      }
+
+      .left-image {
+        background: url('./b.png') center/cover no-repeat;
+        flex: 1;
+        height: 100%;
+      }
+
+      .right-text {
+        flex: 1;
+        background: #0d1320;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #f3f1e9;
+        position: relative;
+      }
+
+      /* 중앙 버튼 */
+      .sotdae-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(4px);
+      }
+
+      .sotdae-btn:hover {
+        background: rgba(255,255,255,0.1);
+        transform: translate(-50%, -50%) scale(1.1);
+        border-color: rgba(255,255,255,0.3);
+      }
+
+      .sotdae-btn.active {
+        animation: spin 2s linear infinite;
+        background: rgba(255,255,255,0.15);
+        border-color: rgba(255,255,255,0.4);
+      }
+
+      @keyframes spin {
+        from { transform: translate(-50%, -50%) rotate(0deg) scale(1.1); }
+        to { transform: translate(-50%, -50%) rotate(360deg) scale(1.1); }
+      }
+
+      .fade-out {
+        opacity: 0;
+        transition: opacity 1.5s ease;
+      }
+
+      .title {
+        font-family: 'Yeongwol', serif;
+        font-size: 1.8rem;
+        font-weight: normal;
+        margin-bottom: 0;
+        color: #f3f1e9;
+      }
+
+      .description {
+        font-size: 0.91rem;
+        line-height: 1.6;
+        color: rgba(243, 241, 233, 0.8);
+        max-width: 300px;
+      }
+
+      .text-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2;
+      }
+
+      .text-line-top {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        height: calc(50% - 100px);
+        width: 1px;
+        background: rgba(255, 255, 255, 0.3);
+        z-index: 1;
+        transform: translateX(-50%);
+      }
+
+      .text-line-bottom {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        height: calc(50% - 100px);
+        width: 1px;
+        background: rgba(255, 255, 255, 0.3);
+        z-index: 1;
+        transform: translateX(-50%);
+      }
+
+      .volume-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 4px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .volume-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
+        width: 0%;
+        transition: width 0.1s ease;
+        border-radius: 2px;
+      }
+
+      .instruction {
+        position: absolute;
+        bottom: 4rem;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.875rem;
+        color: rgba(243, 241, 233, 0.6);
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+        
+        .left-image {
+          flex: 0.6;
+        }
+        
+        .right-text {
+          flex: 0.4;
+          padding: 2rem;
+        }
+        
+        .title {
+          font-size: 2rem;
+        }
+        
+        .description {
+          font-size: 0.875rem;
+        }
+
+        .sotdae-btn {
+          width: 80px;
+          height: 80px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-image"></div>
+      <div class="right-text">
+        <div class="text-line-top"></div>
+        <div class="text-content">
+          <h1 class="title"><span style="font-family: 'gkswk', serif;">願</span><span style="font-family: 'happygoheung M', serif;">:솟다</span></h1>
+          <p class="description">
+            당신의 바람이 하늘에 닿는 순간
+          </p>
+        </div>
+        <div class="text-line-bottom"></div>
+        <div class="volume-indicator" id="volumeIndicator" style="display: none;">
+          <div class="volume-bar" id="volumeBar"></div>
+        </div>
+      </div>
+
+      <!-- 중앙 솟대 버튼 -->
+      <button id="windButton" class="sotdae-btn">
+        <img src="./zkem.png" alt="솟대 아이콘" style="width: 40px; height: 40px; object-fit: contain;" />
+      </button>
+    </div>
+
+    <script>
+      const windButton = document.getElementById('windButton');
+
+      async function detectWindAndRedirect() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          const audioContext = new AudioContext();
+          const mic = audioContext.createMediaStreamSource(stream);
+          const analyser = audioContext.createAnalyser();
+          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+          mic.connect(analyser);
+
+          function checkVolume() {
+            analyser.getByteFrequencyData(dataArray);
+            const avg = dataArray.reduce((a, b) => a + b) / dataArray.length;
+            if (avg > 40) {
+              document.body.classList.add('fade-out');
+              setTimeout(() => {
+                window.location.href = './home.html';
+              }, 1500);
+            } else {
+              requestAnimationFrame(checkVolume);
+            }
+          }
+          checkVolume();
+        } catch (err) {
+          alert('마이크 접근 권한이 필요합니다.');
+        }
+      }
+
+      // 버튼 클릭 이벤트
+      windButton.addEventListener('click', detectWindAndRedirect);
+    </script>
+  </body>
+</html>

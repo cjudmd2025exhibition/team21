@@ -1,0 +1,3044 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home - 願:솟다</title>
+
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              panel: "#0f1620",
+              panelMuted: "#121b26",
+            },
+            boxShadow: {
+              glow: "0 0 0 1px rgba(255,255,255,0.06), 0 10px 30px -10px rgba(0,0,0,0.6)",
+            },
+            fontFamily: {
+              sans: ["'Noto Sans KR'", "Pretendard", "ui-sans-serif", "system-ui", "sans-serif"],
+              yeongwol: ["Yeongwol", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      :root { 
+        color-scheme: dark; 
+        /* 마커 프리미엄 팔레트 */
+        --mk-slate: #5B677A;  --mk-slate-ring: 91,103,122;
+        --mk-teal: #4FA3A6;   --mk-teal-ring: 79,163,166;
+        --mk-indigo: #6272B5; --mk-indigo-ring: 98,114,181;
+        --mk-amber: #C9964B;  --mk-amber-ring: 201,150,75;
+        --mk-rose: #C4777D;   --mk-rose-ring: 196,119,125;
+        --mk-brick: #B45C5C;  --mk-brick-ring: 180,92,92;
+        --mk-olive: #8E9E67;  --mk-olive-ring: 142,158,103;
+      }
+      html, body, #root { height: 100%; }
+      body { background: #000; }
+      ::selection { background: rgba(255,255,255,.1); }
+      @font-face {
+        font-family: 'Yeongwol';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'LINESeedKR-Bd';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304@1.0/LINESeedKR-Bd.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'KBIZ한마음명조';
+        src: url('./KBIZ한마음명조 M.otf') format('opentype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'happygoheung M';
+        src: url('./행복고흥M.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'gkswk';
+        src: url('./gkswk.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      
+      /* 상단 섹션 그라데이션 오버레이 */
+      .hero-section {
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .hero-section::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40%;
+        background: linear-gradient(to bottom, 
+          transparent 0%, 
+          rgba(0, 0, 0, 0.3) 30%, 
+          rgba(0, 0, 0, 0.6) 60%, 
+          rgba(0, 0, 0, 0.8) 100%
+        );
+        pointer-events: none;
+        z-index: 5;
+      }
+      
+        /* 자연스러운 파동 효과 */
+        @keyframes ripple {
+          0% {
+            transform: scale(0.1);
+            opacity: 0;
+          }
+          8% {
+            transform: scale(0.4);
+            opacity: 0.8;
+          }
+          20% {
+            transform: scale(0.8);
+            opacity: 0.6;
+          }
+          40% {
+            transform: scale(1.4);
+            opacity: 0.4;
+          }
+          60% {
+            transform: scale(2.0);
+            opacity: 0.3;
+          }
+          80% {
+            transform: scale(2.6);
+            opacity: 0.15;
+          }
+          100% {
+            transform: scale(3.2);
+            opacity: 0;
+          }
+        }
+
+      /* 점점 연해지는 리플 애니메이션 */
+      @keyframes rippleFade {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      
+
+      /* 마커 주변 반짝이는 효과 */
+      @keyframes markerGlow {
+        0% {
+          opacity: 0.3;
+          transform: scale(0.98);
+        }
+        50% {
+          opacity: 0.15;
+          transform: scale(1.05);
+        }
+        100% {
+          opacity: 0.3;
+          transform: scale(0.98);
+        }
+      }
+
+      @keyframes markerPulse {
+        0% {
+          opacity: 0.2;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(1.02);
+        }
+        100% {
+          opacity: 0.2;
+          transform: scale(1);
+        }
+      }
+
+      .marker-glow {
+        animation: markerGlow 2s ease-in-out infinite;
+        will-change: transform, opacity;
+        transform: translateZ(0);
+      }
+
+      .marker-pulse {
+        animation: markerPulse 2s ease-in-out infinite;
+        will-change: transform, opacity;
+        transform: translateZ(0);
+      }
+      
+        .ripple {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          pointer-events: none;
+          animation: ripple 3s ease-out forwards;
+          z-index: 1;
+          /* GPU-friendly */
+          will-change: transform, opacity;
+          transform: translateZ(0);
+        }
+
+      /* 잔잔한 기본 파동 (항상 반복) */
+      .idle-ripple {
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        background: rgba(56, 189, 248, 0.28);
+        pointer-events: none;
+        animation: ripple 3s ease-out infinite;
+        z-index: 0;
+        filter: blur(0.5px);
+        mix-blend-mode: screen;
+      }
+
+      .idle-ripple--ring {
+        position: absolute;
+        inset: -10px;
+        border-radius: 50%;
+        background: transparent;
+        border: 2px solid rgba(125, 211, 252, 0.4);
+        pointer-events: none;
+        animation: ripple 3.8s ease-out infinite;
+        z-index: 0;
+        mix-blend-mode: screen;
+      }
+
+      
+      
+      /* 마커 클릭 시 빛나는 효과 - 첫 번째 파동 */
+      @keyframes glow-pulse-1 {
+        0% {
+          transform: scale(1);
+          opacity: 0;
+        }
+        2% {
+          transform: scale(1.05);
+          opacity: 0.02;
+        }
+        4% {
+          transform: scale(1.1);
+          opacity: 0.04;
+        }
+        6% {
+          transform: scale(1.15);
+          opacity: 0.06;
+        }
+        8% {
+          transform: scale(1.2);
+          opacity: 0.08;
+        }
+        10% {
+          transform: scale(1.25);
+          opacity: 0.1;
+        }
+        12% {
+          transform: scale(1.3);
+          opacity: 0.12;
+        }
+        14% {
+          transform: scale(1.35);
+          opacity: 0.14;
+        }
+        16% {
+          transform: scale(1.4);
+          opacity: 0.16;
+        }
+        18% {
+          transform: scale(1.45);
+          opacity: 0.18;
+        }
+        20% {
+          transform: scale(1.5);
+          opacity: 0.2;
+        }
+        25% {
+          transform: scale(1.6);
+          opacity: 0.25;
+        }
+        30% {
+          transform: scale(1.7);
+          opacity: 0.3;
+        }
+        35% {
+          transform: scale(1.8);
+          opacity: 0.25;
+        }
+        40% {
+          transform: scale(1.9);
+          opacity: 0.2;
+        }
+        45% {
+          transform: scale(2.0);
+          opacity: 0.15;
+        }
+        50% {
+          transform: scale(2.1);
+          opacity: 0.1;
+        }
+        55% {
+          transform: scale(2.2);
+          opacity: 0.08;
+        }
+        60% {
+          transform: scale(2.3);
+          opacity: 0.06;
+        }
+        65% {
+          transform: scale(2.4);
+          opacity: 0.04;
+        }
+        70% {
+          transform: scale(2.5);
+          opacity: 0.03;
+        }
+        75% {
+          transform: scale(2.6);
+          opacity: 0.02;
+        }
+        80% {
+          transform: scale(2.7);
+          opacity: 0.015;
+        }
+        85% {
+          transform: scale(2.8);
+          opacity: 0.01;
+        }
+        90% {
+          transform: scale(2.9);
+          opacity: 0.005;
+        }
+        95% {
+          transform: scale(3.0);
+          opacity: 0.002;
+        }
+        100% {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+
+      /* 마커 클릭 시 빛나는 효과 - 두 번째 파동 */
+      @keyframes glow-pulse-2 {
+        0% {
+          transform: scale(1);
+          opacity: 0;
+        }
+        1% {
+          transform: scale(1.02);
+          opacity: 0.01;
+        }
+        2% {
+          transform: scale(1.04);
+          opacity: 0.02;
+        }
+        3% {
+          transform: scale(1.06);
+          opacity: 0.03;
+        }
+        4% {
+          transform: scale(1.08);
+          opacity: 0.04;
+        }
+        5% {
+          transform: scale(1.1);
+          opacity: 0.05;
+        }
+        6% {
+          transform: scale(1.12);
+          opacity: 0.06;
+        }
+        7% {
+          transform: scale(1.14);
+          opacity: 0.07;
+        }
+        8% {
+          transform: scale(1.16);
+          opacity: 0.08;
+        }
+        9% {
+          transform: scale(1.18);
+          opacity: 0.09;
+        }
+        10% {
+          transform: scale(1.2);
+          opacity: 0.1;
+        }
+        12% {
+          transform: scale(1.24);
+          opacity: 0.12;
+        }
+        14% {
+          transform: scale(1.28);
+          opacity: 0.14;
+        }
+        16% {
+          transform: scale(1.32);
+          opacity: 0.16;
+        }
+        18% {
+          transform: scale(1.36);
+          opacity: 0.18;
+        }
+        20% {
+          transform: scale(1.4);
+          opacity: 0.2;
+        }
+        25% {
+          transform: scale(1.5);
+          opacity: 0.18;
+        }
+        30% {
+          transform: scale(1.6);
+          opacity: 0.15;
+        }
+        35% {
+          transform: scale(1.7);
+          opacity: 0.12;
+        }
+        40% {
+          transform: scale(1.8);
+          opacity: 0.1;
+        }
+        45% {
+          transform: scale(1.9);
+          opacity: 0.08;
+        }
+        50% {
+          transform: scale(2.0);
+          opacity: 0.06;
+        }
+        55% {
+          transform: scale(2.1);
+          opacity: 0.05;
+        }
+        60% {
+          transform: scale(2.2);
+          opacity: 0.04;
+        }
+        65% {
+          transform: scale(2.3);
+          opacity: 0.03;
+        }
+        70% {
+          transform: scale(2.4);
+          opacity: 0.02;
+        }
+        75% {
+          transform: scale(2.5);
+          opacity: 0.015;
+        }
+        80% {
+          transform: scale(2.6);
+          opacity: 0.01;
+        }
+        85% {
+          transform: scale(2.7);
+          opacity: 0.008;
+        }
+        90% {
+          transform: scale(2.8);
+          opacity: 0.005;
+        }
+        95% {
+          transform: scale(2.9);
+          opacity: 0.002;
+        }
+        100% {
+          transform: scale(3.5);
+          opacity: 0;
+        }
+      }
+
+      /* 마커 클릭 시 빛나는 효과 - 세 번째 파동 */
+      @keyframes glow-pulse-3 {
+        0% {
+          transform: scale(1);
+          opacity: 0;
+        }
+        1% {
+          transform: scale(1.01);
+          opacity: 0.005;
+        }
+        2% {
+          transform: scale(1.02);
+          opacity: 0.01;
+        }
+        3% {
+          transform: scale(1.03);
+          opacity: 0.015;
+        }
+        4% {
+          transform: scale(1.04);
+          opacity: 0.02;
+        }
+        5% {
+          transform: scale(1.05);
+          opacity: 0.025;
+        }
+        6% {
+          transform: scale(1.06);
+          opacity: 0.03;
+        }
+        7% {
+          transform: scale(1.07);
+          opacity: 0.035;
+        }
+        8% {
+          transform: scale(1.08);
+          opacity: 0.04;
+        }
+        9% {
+          transform: scale(1.09);
+          opacity: 0.045;
+        }
+        10% {
+          transform: scale(1.1);
+          opacity: 0.05;
+        }
+        12% {
+          transform: scale(1.12);
+          opacity: 0.06;
+        }
+        14% {
+          transform: scale(1.14);
+          opacity: 0.07;
+        }
+        16% {
+          transform: scale(1.16);
+          opacity: 0.08;
+        }
+        18% {
+          transform: scale(1.18);
+          opacity: 0.09;
+        }
+        20% {
+          transform: scale(1.2);
+          opacity: 0.1;
+        }
+        25% {
+          transform: scale(1.25);
+          opacity: 0.12;
+        }
+        30% {
+          transform: scale(1.3);
+          opacity: 0.15;
+        }
+        35% {
+          transform: scale(1.35);
+          opacity: 0.12;
+        }
+        40% {
+          transform: scale(1.4);
+          opacity: 0.1;
+        }
+        45% {
+          transform: scale(1.45);
+          opacity: 0.08;
+        }
+        50% {
+          transform: scale(1.5);
+          opacity: 0.06;
+        }
+        55% {
+          transform: scale(1.55);
+          opacity: 0.05;
+        }
+        60% {
+          transform: scale(1.6);
+          opacity: 0.04;
+        }
+        65% {
+          transform: scale(1.65);
+          opacity: 0.03;
+        }
+        70% {
+          transform: scale(1.7);
+          opacity: 0.02;
+        }
+        75% {
+          transform: scale(1.75);
+          opacity: 0.015;
+        }
+        80% {
+          transform: scale(1.8);
+          opacity: 0.01;
+        }
+        85% {
+          transform: scale(1.85);
+          opacity: 0.008;
+        }
+        90% {
+          transform: scale(1.9);
+          opacity: 0.005;
+        }
+        95% {
+          transform: scale(1.95);
+          opacity: 0.002;
+        }
+        100% {
+          transform: scale(3);
+          opacity: 0;
+        }
+      }
+      
+      .marker-glow {
+        animation: glow-pulse-1 1.2s ease-out;
+      }
+      
+      .marker-glow:nth-child(2) {
+        animation: glow-pulse-2 1.4s ease-out;
+      }
+      
+      .marker-glow:nth-child(3) {
+        animation: glow-pulse-3 1.6s ease-out;
+      }
+
+      /* Gradient radial utility */
+      .bg-gradient-radial {
+        background: radial-gradient(circle, var(--tw-gradient-stops));
+      }
+
+      /* Fade slide animation */
+      @keyframes fadeSlide {
+        0% { 
+          opacity: 0; 
+          transform: translateY(-5px); 
+        }
+        100% { 
+          opacity: 1; 
+          transform: translateY(0); 
+        }
+      }
+
+      /* Menu button hover effect */
+      .menu-button {
+        transition: all 0.3s ease-in-out;
+      }
+
+      .menu-button:hover {
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+      }
+
+      .menu-button:active {
+        transform: scale(1.1);
+      }
+
+      /* Dropdown menu styling */
+      .dropdown-menu {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Menu item hover effect */
+      .menu-item {
+        transition: all 0.2s ease-in-out;
+      }
+
+      .menu-item:hover {
+        transform: translateX(4px);
+      }
+      
+      /* Floating person icon animation */
+      .floating-person-icon {
+        position: absolute;
+        pointer-events: none;
+        z-index: 9999;
+        width: 32px;
+        height: 32px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        transform-origin: center center;
+      }
+      
+      /* Container for floating icons */
+      #floating-icons-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        pointer-events: none;
+        z-index: 9998;
+      }
+      
+      /* Overlay menu styles (calendar.html과 동일) */
+      .overlay { 
+        position: fixed; 
+        inset: 0; 
+        width: 100vw; 
+        height: 100vh; 
+        background: rgba(10,18,36,0.94); 
+        display: flex; 
+        justify-content: center; 
+        align-items: flex-start; 
+        transition: opacity .4s ease; 
+        z-index: 9999; 
+        opacity: 0; 
+        pointer-events: none; 
+      }
+      .overlay.hidden { 
+        opacity: 0; 
+        pointer-events: none; 
+      }
+      .overlay.show { 
+        opacity: 1; 
+        pointer-events: auto; 
+      }
+      .close-btn { 
+        position: absolute; 
+        top: 8px; 
+        right: 40px; 
+        font-size: 28px; 
+        color: #fff; 
+        background: none; 
+        border: none; 
+        cursor: pointer; 
+        transition: transform .2s ease; 
+      }
+      @media (min-width: 768px) { 
+        .close-btn { 
+          right: 48px; 
+          top: 8px; 
+        } 
+      }
+      .close-btn:hover { 
+        transform: rotate(90deg); 
+      }
+      .menu-nav { 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        align-items: flex-start; 
+        height: 100vh; 
+        padding-left: 1.5vw; 
+      }
+      .menu-nav ul { 
+        list-style: none; 
+        padding: 0; 
+        margin: 0; 
+        text-align: left; 
+      }
+      .menu-nav li { 
+        margin: 16px 0; 
+      }
+      .menu-nav a { 
+        text-decoration: none; 
+        font-family: 'happygoheung M', serif; 
+        font-size: 28px; 
+        font-weight: 600; 
+        letter-spacing: 4px; 
+        color: #f3f4f6; 
+        transition: opacity .2s ease, letter-spacing .3s ease; 
+        text-transform: uppercase; 
+      }
+      .menu-nav a:hover { 
+        opacity: .9; 
+        letter-spacing: 6px; 
+      }
+      
+      
+      
+      
+      /* Stars (twinkle only) */
+      .stars { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+      .star { position: absolute; width: 2px; height: 2px; background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0.6) 60%, transparent 70%); border-radius: 50%; opacity: 0.7; animation: twinkle 4s ease-in-out infinite; filter: drop-shadow(0 0 4px rgba(255,255,255,0.35)); }
+      @keyframes twinkle { 0%,100%{ opacity:.15; transform: scale(.9)} 50%{ opacity:.8; transform: scale(1.15)} }
+      
+      /* 서울 이미지 깜빡임 애니메이션 */
+      @keyframes seoulImageBlink {
+        0% { opacity: 1; }
+        12.5% { opacity: 0.3; }
+        25% { opacity: 1; }
+        37.5% { opacity: 0.3; }
+        50% { opacity: 1; }
+        62.5% { opacity: 0.3; }
+        75% { opacity: 1; }
+        87.5% { opacity: 0.3; }
+        95% { opacity: 0.1; }
+        100% { opacity: 0; }
+      }
+      .seoul-image-blink {
+        animation: seoulImageBlink 4.5s ease-in-out forwards;
+      }
+      
+      /* 지역 이미지 hover 애니메이션 */
+      @keyframes regionImageFadeIn {
+        0% {
+          opacity: 0;
+          filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+        }
+        100% {
+          opacity: 0.5;
+          filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+        }
+      }
+      
+      @keyframes regionImageFadeOut {
+        0% {
+          opacity: 0.5;
+          filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+        }
+        100% {
+          opacity: 0;
+          filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+        }
+      }
+      
+      .region-image-glow {
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.15));
+        opacity: 0;
+        transition: opacity 0.3s ease-out, filter 0.3s ease-out;
+        will-change: opacity;
+      }
+      
+      .region-image-glow.show {
+        opacity: 0.5;
+      }
+    </style>
+
+    <!-- Wind Detection & Sotdae Animation Scripts -->
+    <script src="./wind.js" onerror="console.error('wind.js 로드 실패'); window.windDetectorLoadError = true;"></script>
+    <script src="./sotdae.js"></script>
+    <script src="./audio.js"></script>
+
+    <!-- React 18 via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  </head>
+  <body class="text-white font-sans antialiased">
+    <!-- 배경 음악 -->
+    <audio id="bgm" autoplay loop muted preload="auto" style="display: none;">
+      <source src="homemusic.mp3" type="audio/mpeg">
+    </audio>
+    
+    <div id="root"></div>
+    <div id="floating-icons-container"></div>
+
+    <!-- Map-anchored Wish Counter (between buttons and markers) -->
+    <!-- Placed inside map section's stacking context via absolute overlay -->
+
+    <script>
+      // Wish counter removed per request (no number UI)
+    </script>
+
+    <script type="text/javascript">
+      const e = React.createElement;
+      const { useState, useRef, useMemo, useCallback, memo } = React;
+
+      /**
+       * Floating Person Icon Animation
+       * Creates Instagram-style floating person icons when marker is clicked
+       */
+      
+      // 전역 변수: 현재 활성화된 아이콘 생성 interval
+      let floatingIconsInterval = null;
+      let currentMarkerElement = null; // 마커 요소 참조 저장
+      let scrollUpdateInterval = null; // 스크롤 위치 업데이트용
+
+      function createSingleFloatingIcon(x, y) {
+        const container = document.getElementById('floating-icons-container');
+        if (!container) {
+          console.error('Floating icons container not found');
+          return;
+        }
+
+        // 프로필 이미지 URL (랜덤 프로필 이미지 서비스 사용)
+        const profileImageUrls = [
+          'https://i.pravatar.cc/150?img=1',
+          'https://i.pravatar.cc/150?img=2',
+          'https://i.pravatar.cc/150?img=3',
+          'https://i.pravatar.cc/150?img=4',
+          'https://i.pravatar.cc/150?img=5',
+          'https://i.pravatar.cc/150?img=6',
+          'https://i.pravatar.cc/150?img=7',
+          'https://i.pravatar.cc/150?img=8',
+          'https://i.pravatar.cc/150?img=9',
+          'https://i.pravatar.cc/150?img=10',
+          'https://i.pravatar.cc/150?img=11',
+          'https://i.pravatar.cc/150?img=12',
+          'https://i.pravatar.cc/150?img=13',
+          'https://i.pravatar.cc/150?img=14',
+          'https://i.pravatar.cc/150?img=15',
+          'https://i.pravatar.cc/150?img=16',
+          'https://i.pravatar.cc/150?img=17',
+          'https://i.pravatar.cc/150?img=18',
+        ];
+
+        // 1개 또는 2개 생성 (랜덤)
+        const count = Math.random() < 0.6 ? 1 : 2;
+
+        for (let i = 0; i < count; i++) {
+          // Random values for each icon
+          const scale = 0.9 + Math.random() * 0.3; // 0.9 to 1.2
+          const drift = (Math.random() - 0.5) * 30; // -15px to +15px
+          const distance = 40 + Math.random() * 40; // 40px to 80px
+          const duration = 2.5 + Math.random() * 1.0; // 2.5s to 3.5s
+          const startX = x + (Math.random() - 0.5) * 20; // slight random offset
+          const startY = y + (Math.random() - 0.5) * 20;
+          const startRotation = -5 + Math.random() * 10; // -5deg to +5deg
+          const endRotation = 5 + (Math.random() - 0.5) * 5; // 2.5deg to 7.5deg
+          
+          // 랜덤 프로필 이미지 선택
+          const profileImageUrl = profileImageUrls[Math.floor(Math.random() * profileImageUrls.length)];
+
+          // Create icon element
+          const icon = document.createElement('div');
+          icon.className = 'floating-person-icon';
+          
+          // Set initial position and styles
+          icon.style.left = startX + 'px';
+          icon.style.top = startY + 'px';
+          icon.style.width = (40 * scale) + 'px';
+          icon.style.height = (40 * scale) + 'px';
+          icon.style.borderRadius = '50%';
+          icon.style.overflow = 'hidden';
+          icon.style.border = '2px solid rgba(255, 255, 255, 0.3)';
+          
+          // Set initial transform and opacity
+          icon.style.transform = `translate(-50%, -50%) scale(0.8) rotate(${startRotation}deg)`;
+          icon.style.opacity = '1';
+          icon.style.transition = 'none';
+
+          // 원형 프로필 이미지 (실제 얼굴 이미지)
+          icon.innerHTML = `
+            <img src="${profileImageUrl}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
+          `;
+
+          container.appendChild(icon);
+
+          // Trigger animation using requestAnimationFrame for smooth start
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              icon.style.transition = `transform ${duration}s ease-out, opacity ${duration}s ease-out`;
+              icon.style.transform = `translate(calc(-50% + ${drift}px), calc(-50% - ${distance}px)) scale(1) rotate(${endRotation}deg)`;
+              icon.style.opacity = '0';
+            });
+          });
+
+          // Remove icon after animation completes
+          setTimeout(() => {
+            if (icon.parentNode) {
+              icon.parentNode.removeChild(icon);
+            }
+          }, duration * 1000 + 100);
+        }
+      }
+
+      function getMarkerPosition(markerElement) {
+        if (!markerElement) return null;
+        const rect = markerElement.getBoundingClientRect();
+        // 페이지 내 절대 위치 계산 (스크롤 오프셋 포함)
+        const centerX = rect.left + rect.width / 2 + window.scrollX;
+        // 마커의 살짝 윗부분에서 시작 (마커 높이의 30% 위로)
+        const centerY = rect.top - rect.height * 0.3 + window.scrollY;
+        return { x: centerX, y: centerY };
+      }
+
+      function startFloatingIcons(markerElement) {
+        // 기존 interval 정리
+        stopFloatingIcons();
+        
+        currentMarkerElement = markerElement;
+        
+        // 컨테이너 높이를 문서 전체 높이로 설정
+        const container = document.getElementById('floating-icons-container');
+        if (container) {
+          const updateContainerHeight = () => {
+            container.style.height = Math.max(
+              document.documentElement.scrollHeight,
+              document.body.scrollHeight,
+              document.documentElement.clientHeight
+            ) + 'px';
+          };
+          updateContainerHeight();
+          
+          // 리사이즈나 스크롤 시 높이 업데이트
+          window.addEventListener('resize', updateContainerHeight);
+          window.addEventListener('scroll', updateContainerHeight, { passive: true });
+          currentMarkerElement._resizeHandler = updateContainerHeight;
+        }
+        
+        // 즉시 첫 번째 아이콘 생성
+        const pos = getMarkerPosition(markerElement);
+        if (pos) {
+          createSingleFloatingIcon(pos.x, pos.y);
+        }
+        
+        // 불규칙적인 박자로 계속 생성하는 함수
+        const scheduleNext = () => {
+          // 다음 생성까지의 시간: 300ms ~ 1200ms (불규칙적)
+          const nextDelay = 300 + Math.random() * 900;
+          
+          floatingIconsInterval = setTimeout(() => {
+            if (currentMarkerElement) {
+              const pos = getMarkerPosition(currentMarkerElement);
+              if (pos) {
+                createSingleFloatingIcon(pos.x, pos.y);
+              }
+              scheduleNext(); // 다음 생성 예약
+            }
+          }, nextDelay);
+        };
+        
+        scheduleNext();
+      }
+
+      function stopFloatingIcons() {
+        if (floatingIconsInterval) {
+          clearTimeout(floatingIconsInterval);
+          floatingIconsInterval = null;
+        }
+        if (currentMarkerElement && currentMarkerElement._resizeHandler) {
+          window.removeEventListener('resize', currentMarkerElement._resizeHandler);
+          window.removeEventListener('scroll', currentMarkerElement._resizeHandler);
+          delete currentMarkerElement._resizeHandler;
+        }
+        currentMarkerElement = null;
+        
+        // 모든 떠오르는 아이콘 제거
+        const container = document.getElementById('floating-icons-container');
+        if (container) {
+          container.innerHTML = '';
+        }
+      }
+
+      function spawnFloatingPersonIcons(markerElement) {
+        startFloatingIcons(markerElement);
+      }
+
+      // Icons
+      const BellIcon = (props) =>
+        e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+          e("path", { d: "M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2Z", fill: "currentColor" }),
+          e("path", { d: "M18 16v-5a6 6 0 1 0-12 0v5l-2 2h16l-2-2Z", stroke: "currentColor", strokeWidth: 1.5 })
+        );
+
+      const StarIcon = (props) =>
+        e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+          e("path", { d: "M12 3l2.9 5.88L21 10.2l-4.5 4.38L17.8 21 12 17.9 6.2 21l1.3-6.42L3 10.2l6.1-1.32L12 3Z", stroke: "currentColor", strokeWidth: 1.5, fill: "currentColor", fillOpacity: 0.2 })
+        );
+
+
+      const UserIcon = (props) =>
+        e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+          e("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z", stroke: "currentColor", strokeWidth: 1.5 }),
+          e("path", { d: "M4 21a8 8 0 1 1 16 0", stroke: "currentColor", strokeWidth: 1.5 })
+        );
+
+      const PinIcon = (props) =>
+        e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+          e("path", { d: "M12 21s-7-5.2-7-11a7 7 0 1 1 14 0c0 5.8-7 11-7 11Z", stroke: "currentColor", strokeWidth: 1.5, fill: "currentColor", fillOpacity: 0.15 }),
+          e("circle", { cx: 12, cy: 10, r: 2.5, fill: "currentColor" })
+        );
+
+      const AppleIcon = (props) =>
+        e("svg", { viewBox: "0 0 24 24", ...props },
+          e("path", { fill: "currentColor", d: "M17.53 13.59c-.03-2.2 1.8-3.24 1.88-3.3-1.03-1.5-2.64-1.7-3.2-1.72-1.36-.14-2.64.8-3.33.8-.69 0-1.75-.78-2.88-.76-1.48.02-2.86.86-3.62 2.17-1.54 2.67-.39 6.62 1.11 8.79.74 1.07 1.62 2.26 2.78 2.22 1.12-.04 1.54-.72 2.9-.72 1.36 0 1.73.72 2.91.7 1.2-.02 1.96-1.09 2.69-2.16.85-1.24 1.2-2.45 1.22-2.51-.03-.01-2.33-.9-2.46-3.51zM14.92 6.76c.58-.7.97-1.67.86-2.64-.83.03-1.84.55-2.44 1.25-.53.61-.99 1.58-.87 2.51.92.07 1.86-.47 2.45-1.12z" })
+        );
+
+      const GoogleIcon = (props) =>
+        e("svg", { viewBox: "0 0 24 24", ...props },
+          e("path", { fill: "#EA4335", d: "M12 10.2v3.9h5.46c-.24 1.24-1.47 3.63-5.46 3.63-3.29 0-5.98-2.72-5.98-6.06s2.69-6.06 5.98-6.06c1.87 0 3.13.79 3.85 1.47l2.62-2.53C16.79 3.2 14.58 2.25 12 2.25 6.93 2.25 2.79 6.39 2.79 11.46S6.93 20.67 12 20.67c6.94 0 8.21-4.86 8.21-7.27 0-.49-.05-.86-.11-1.2H12z" }),
+          e("path", { fill: "#34A853", d: "M3.94 7.49l3.2 2.35C7.86 8.2 9.78 6.76 12 6.76c1.87 0 3.13.79 3.85 1.47l2.62-2.53C16.79 3.2 14.58 2.25 12 2.25 8.47 2.25 5.47 4.18 3.94 7.49z", opacity: ".15" }),
+          e("path", { fill: "#FBBC05", d: "M12 20.67c3.01 0 5.53-1.98 6.45-4.79l-3.12-2.46c-.83 2.51-2.92 3.65-5.33 3.65-2.57 0-4.73-1.73-5.46-4.05l-3.16 2.43C3.76 18.37 7.56 20.67 12 20.67z", opacity: ".2" }),
+          e("path", { fill: "#4285F4", d: "M20.21 13.4c0-.49-.05-.86-.11-1.2H12v3.9h5.46c-.25 1.24-1.47 3.63-5.46 3.63v3.0c6.94 0 8.21-4.86 8.21-7.27z", opacity: ".9" })
+        );
+
+      const MailIcon = (props) =>
+        e("svg", { viewBox: "0 0 24 24", ...props },
+          e("path", { fill: "currentColor", d: "M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4-8 5L4 8V6l8 5 8-5z" })
+        );
+
+      // Components
+      const Navbar = React.memo(function Navbar() {
+        const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+        const [isButtonPressed, setIsButtonPressed] = React.useState(false);
+
+        const toggleMenu = () => {
+          setIsMenuOpen(!isMenuOpen);
+        };
+
+        const handleButtonClick = () => {
+          setIsButtonPressed(true);
+          setTimeout(() => setIsButtonPressed(false), 150);
+          toggleMenu();
+        };
+
+        // 메뉴 외 영역 클릭 시 닫기
+        React.useEffect(() => {
+          const handleClickOutside = (event) => {
+            if (isMenuOpen && !event.target.closest('.menu-container')) {
+              setIsMenuOpen(false);
+            }
+          };
+
+          if (isMenuOpen) {
+            document.addEventListener('click', handleClickOutside);
+          }
+
+          return () => {
+            document.removeEventListener('click', handleClickOutside);
+          };
+        }, [isMenuOpen]);
+
+        const menuItems = [
+          { name: "솟대 지도", href: "./home.html#sotdae-map", isHash: true },
+          { name: "솟대공작소", href: "./sotdae-workshop.html" },
+          { name: "바람일지", href: "./calendar.html" },
+          { name: "나의 솟대", href: "./profile.html" }
+        ];
+
+        return e(React.Fragment, null,
+          e("header", { className: "fixed top-0 inset-x-0 z-50 backdrop-blur-sm bg-gradient-to-b from-black/10 to-transparent" },
+            e("div", { className: "w-full px-6 md:px-8 py-4 flex items-center justify-between" },
+              // 좌측: W.S.P 로고
+              e("div", { className: "flex items-center gap-3" },
+                e("h1", { 
+                  className: "text-2xl font-normal text-white cursor-pointer",
+                  onClick: () => window.location.href = "./home.html"
+                }, [
+                  e("span", { key: "gkswk", style: { fontFamily: 'gkswk, serif' } }, "願"),
+                  e("span", { key: "happygoheung", style: { fontFamily: 'happygoheung M, serif' } }, ":솟다")
+                ])
+              ),
+              // 우측: 메뉴 버튼
+              e("div", { className: "relative menu-container" },
+                e("button", { 
+                  id: "menu-btn",
+                  className: `inline-flex items-center justify-center text-white transition-transform duration-200 ${
+                    isButtonPressed ? 'scale-110' : 'scale-100'
+                  }`,
+                  onClick: handleButtonClick,
+                  ariaLabel: '메뉴 열기'
+                },
+                  e("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" },
+                    e("line", { x1: 3, y1: 6, x2: 21, y2: 6 }),
+                    e("line", { x1: 3, y1: 12, x2: 21, y2: 12 }),
+                    e("line", { x1: 3, y1: 18, x2: 21, y2: 18 })
+                  )
+                )
+              )
+            )
+          ),
+          // header 밖에 위치한 오버레이
+          e("div", {
+            id: "overlay-menu",
+            className: `overlay ${isMenuOpen ? 'show' : ''}`
+          },
+            e("button", {
+              id: "close-menu",
+              className: "close-btn",
+              onClick: () => setIsMenuOpen(false),
+              ariaLabel: '메뉴 닫기'
+            }, "×"),
+            e("nav", { className: "menu-nav" },
+              e("ul", null,
+                menuItems.map((item) =>
+                  e("li", { key: item.name },
+                    e("a", {
+                      href: item.href,
+                      onClick: (e) => {
+                        setIsMenuOpen(false);
+                        // 해시 링크인 경우 스크롤 처리
+                        if (item.isHash && item.href.includes('#sotdae-map')) {
+                          e.preventDefault();
+                          setTimeout(() => {
+                            const mapSection = document.querySelector('img[alt="솟대 지도"]')?.closest('section');
+                            if (mapSection) {
+                              mapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                          }, 100);
+                        }
+                      },
+                      style: undefined
+                    }, item.name)
+                  )
+                )
+              )
+            )
+          )
+        );
+      });
+
+      const Hero = React.memo(function Hero() {
+        const [stars, setStars] = React.useState([]);
+
+        React.useEffect(() => {
+          const total = 120;
+          const generated = [];
+          let id = 0;
+          
+          // 그라데이션 부분 제외하고 별 생성 (하단 60% 제외)
+          while (generated.length < total) {
+            const top = Math.random() * 35; // place stars only in the upper 35%
+            const left = Math.random() * 100;
+            
+            // 하단 그라데이션 부분 제외 (상단 40% 이상인 경우 제외 - 그라데이션 시작 부분)
+            // 실제로는 상단 35%에만 별을 생성하므로 이미 제외되어 있지만, 더 명확하게 상단 30%로 제한
+            if (top <= 30) {
+              generated.push({
+                id: id++,
+                top: top,
+                left: left,
+                size: 1 + Math.random() * 1.8,
+                delay: (Math.random() * 6).toFixed(2),
+                duration: (2.4 + Math.random() * 3.0).toFixed(2)
+              });
+            }
+          }
+          setStars(generated);
+        }, []);
+
+        return e("section", { className: "hero-section min-h-[85vh] flex items-center justify-center bg-black w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden -z-10" },
+          e("img", { 
+            id: "heroImage",
+            src: "./b.png", 
+            alt: "Background Image",
+            className: "absolute inset-0 w-full h-full object-cover" 
+          }),
+          // Stars overlay only
+          e("div", { className: "stars" },
+            stars.map(s => e("span", { key: s.id, className: "star", style: { top: s.top + "%", left: s.left + "%", width: s.size + "px", height: s.size + "px", animationDelay: s.delay + "s", animationDuration: s.duration + "s" } }))
+          ),
+          e("div", { className: "relative z-10 text-center px-6 pt-28" }
+          )
+        );
+      });
+
+      const REGIONS = ["서울", "경기", "강원", "충청", "전라", "경상", "제주"];
+      const markers = [
+        { id: 1, top: "45.5%", left: "48%", region: "서울", color: "blue" },
+        { id: 2, top: "51.5%", left: "53%", region: "경기", color: "green" },
+        { id: 3, top: "44%", left: "58%", region: "강원", color: "purple" },
+        { id: 4, top: "53.5%", left: "45%", region: "충청", color: "orange" },
+        { id: 5, top: "62.5%", left: "45%", region: "전라", color: "pink" },
+        { id: 6, top: "56.5%", left: "59%", region: "경상", color: "red" },
+        { id: 7, top: "72.5%", left: "41%", region: "제주", color: "yellow" },
+      ];
+
+      const MapSection = () => {
+        const [activeRegion, setActiveRegion] = useState("서울");
+        const [selectedMarker, setSelectedMarker] = useState(null);
+        const [selectedRegionForWish, setSelectedRegionForWish] = useState(null);
+        const [ripples, setRipples] = useState({});
+        const [glowingMarkers, setGlowingMarkers] = useState({});
+        const [clickedMarkers, setClickedMarkers] = useState({});
+        const [showSeoulImage, setShowSeoulImage] = useState(false);
+        const [showGangwonImage, setShowGangwonImage] = useState(false);
+        const [hoveredRegion, setHoveredRegion] = useState(null);
+        const mapRectCacheRef = useRef(null);
+        const rAFRef = useRef(null);
+        const markerClickTimeoutRef = useRef(null);
+
+        const [radialMenu, setRadialMenu] = useState({ isOpen: false, markerId: null, hoveredItem: null, isMouseDown: false });
+        const [edgeStarsLeft, setEdgeStarsLeft] = useState([]);
+        const [edgeStarsRight, setEdgeStarsRight] = useState([]);
+
+        // Generate edge-only stars (left/right bands)
+        React.useEffect(() => {
+          const makeStars = (count, isRight = false) => {
+            const stars = [];
+            let id = 0;
+            let attempts = 0;
+            const maxAttempts = count * 10; // 무한 루프 방지
+            
+            while (stars.length < count && attempts < maxAttempts) {
+              attempts++;
+              const top = Math.random() * 62.5; // 전라 마커 부근(62.5%) 이하에는 별 생성하지 않음
+              const left = Math.random() * 100; // within edge container
+              
+              // 상단 그라데이션 부분 제외 (상단 5% 이하 - 그라데이션 영역)
+              if (top <= 5) {
+                continue;
+              }
+              
+              // 왼쪽 별의 경우 왼쪽 구름 부분 제외 (상단 20% 이하이고 왼쪽 0-40%인 경우 제외)
+              // 오른쪽 별의 경우 오른쪽 구름 부분 제외 (상단 20% 이하이고 오른쪽 60-100%인 경우 제외)
+              const isLeftCloud = !isRight && top <= 20 && left >= 0 && left <= 40;
+              const isRightCloud = isRight && top <= 20 && left >= 60;
+              
+              if (isLeftCloud || isRightCloud) {
+                continue;
+              }
+              
+              stars.push({
+                id: id++,
+                top: top,
+                left: left,
+                size: 1 + Math.random() * 1.6,
+                delay: (Math.random() * 6).toFixed(2),
+                duration: (3.5 + Math.random() * 4.5).toFixed(2)
+              });
+            }
+            
+            return stars;
+          };
+          
+          setEdgeStarsLeft(makeStars(60, false));
+          setEdgeStarsRight(makeStars(60, true));
+        }, []);
+
+        // 색상 매핑 함수 (프리미엄 팔레트)
+        const getMarkerColor = (color) => {
+          const colorMap = {
+            blue: "bg-[var(--mk-slate)] ring-[rgba(var(--mk-slate-ring),.35)] shadow-black/20",
+            green: "bg-[var(--mk-teal)] ring-[rgba(var(--mk-teal-ring),.35)] shadow-black/20",
+            purple: "bg-[var(--mk-indigo)] ring-[rgba(var(--mk-indigo-ring),.35)] shadow-black/20",
+            orange: "bg-[var(--mk-amber)] ring-[rgba(var(--mk-amber-ring),.35)] shadow-black/20",
+            pink: "bg-[var(--mk-rose)] ring-[rgba(var(--mk-rose-ring),.35)] shadow-black/20",
+            red: "bg-[var(--mk-brick)] ring-[rgba(var(--mk-brick-ring),.35)] shadow-black/20",
+            yellow: "bg-[var(--mk-olive)] ring-[rgba(var(--mk-olive-ring),.35)] shadow-black/20"
+          };
+          return colorMap[color] || colorMap.blue;
+        };
+
+        // 지역별 이미지 매핑
+        const regionImageMap = {
+          "서울": "./tjdnf.png",
+          "강원": "./rkddnjs.png",
+          "경기": "./rudrl.png",
+          "충청": "./cndcjd.png",
+          "전라": "./wjsfk.png",
+          "경상": "./rudtkd.png",
+          "제주": "./wpwn.png"
+        };
+
+        // 지역별 이미지 위치 설정
+        const regionImagePosition = {
+          "서울": { transform: "translate(-52%, -49%) scale(1.5)" },
+          "강원": { transform: "translate(-52.75%, -52%) scale(1.5) rotate(1.25deg)" },
+          "경기": { transform: "translate(-42.5%, -47%) scale(1.5)" },
+          "충청": { transform: "translate(-48.35%, -43.6%) scale(1.4, 1.45)" },
+          "전라": { transform: "translate(-49.9%, -44.5%) scale(1.5, 1.45) rotate(-0.5deg)" },
+          "경상": { transform: "translate(-46.7%, -50.8%) scale(2.0, 2.6)" },
+          "제주": { transform: "translate(-50%, -49%) scale(1.5)" }
+        };
+
+        const getRippleColor = (color) => {
+          const rippleMap = {
+            blue: "bg-[rgba(var(--mk-slate-ring),.28)] shadow-[0_0_0_1px_rgba(255,255,255,.05)]",
+            green: "bg-[rgba(var(--mk-teal-ring),.28)] shadow-[0_0_0_1px_rgba(255,255,255,.05)]",
+            purple: "bg-[rgba(var(--mk-indigo-ring),.28)] shadow-[0_0_0_1px_rgba(255,255,255,.05)]",
+            orange: "bg-[rgba(var(--mk-amber-ring),.28)] shadow-[0_0_0_1px_rgba(255,255,255,.05)]",
+            pink: "bg-[rgba(var(--mk-rose-ring),.28)] shadow-[0_0_0_1px_rgba(255,255,255,.05)]",
+            red: "bg-[rgba(var(--mk-brick-ring),.28)] shadow-[0_0_0_1px_rgba(255,255,255,.05)]",
+            yellow: "bg-[rgba(var(--mk-olive-ring),.28)] shadow-[0_0_0_1px_rgba(255,255,255,.05)]"
+          };
+          return rippleMap[color] || rippleMap.blue;
+        };
+
+        const createRipple = (markerId) => {
+          // 기존 모든 ripple 효과 제거
+          setRipples({});
+
+          // 파동 수 축소 및 간격 완화
+          const intervals = [];
+          const waves = 4;
+          for (let i = 0; i < waves; i++) {
+            const interval = setTimeout(() => {
+              // 각 파동을 배열에 추가하고 초기 크기 설정
+              const rippleId = Date.now() + i;
+              const initialScale = 0.1 + (i * 0.05); // 0.1, 0.15, 0.2, 0.25... 순으로 증가
+              setRipples(prev => {
+                const currentRipples = prev[markerId] || [];
+                return {
+                  ...prev,
+                  [markerId]: [...currentRipples, { id: rippleId, initialScale: initialScale }]
+                };
+              });
+              
+              // 4초 후 해당 파동 제거
+              setTimeout(() => {
+                setRipples(prev => {
+                  const currentRipples = prev[markerId] || [];
+                  return {
+                    ...prev,
+                    [markerId]: currentRipples.filter(ripple => ripple.id !== rippleId)
+                  };
+                });
+              }, 4000);
+            }, i * 800);
+            intervals.push(interval);
+          }
+
+          // 12초 후에 모든 ripple 효과 제거
+          setTimeout(() => {
+            setRipples({});
+            intervals.forEach(interval => clearTimeout(interval));
+          }, 12000);
+        };
+
+        const createGlow = (markerId) => {
+          setGlowingMarkers(prev => ({ ...prev, [markerId]: Date.now() }));
+          setTimeout(() => {
+            setGlowingMarkers(prev => {
+              const newGlowing = { ...prev };
+              delete newGlowing[markerId];
+              return newGlowing;
+            });
+          }, 1000);
+        };
+
+    const createClickEffect = (markerId) => {
+      setClickedMarkers(prev => ({ ...prev, [markerId]: Date.now() }));
+      setTimeout(() => {
+        setClickedMarkers(prev => {
+          const newClicked = { ...prev };
+          delete newClicked[markerId];
+          return newClicked;
+        });
+      }, 1600);
+    };
+
+        // 라디얼 메뉴 관련 함수들
+        const openRadialMenu = (markerId, event) => {
+          event.preventDefault();
+          setRadialMenu({ isOpen: true, markerId, hoveredItem: null, isMouseDown: true });
+        };
+
+        const closeRadialMenu = () => {
+          setRadialMenu({ isOpen: false, markerId: null, hoveredItem: null, isMouseDown: false });
+        };
+
+        const handleRadialMenuMouseMove = (event) => {
+          if (!radialMenu.isOpen) return;
+          // rAF로 스로틀링
+          if (rAFRef.current) return;
+          rAFRef.current = requestAnimationFrame(() => {
+            rAFRef.current = null;
+            const marker = markers.find(m => m.id === radialMenu.markerId);
+            if (!marker) return;
+            const mapElement = document.querySelector('img[alt="솟대 지도"]');
+            if (!mapElement) return;
+            if (!mapRectCacheRef.current) {
+              mapRectCacheRef.current = mapElement.getBoundingClientRect();
+            }
+            const mapRect = mapRectCacheRef.current;
+            const markerX = mapRect.left + (parseFloat(marker.left) / 100) * mapRect.width;
+            const markerY = mapRect.top + (parseFloat(marker.top) / 100) * mapRect.height;
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
+            const deltaX = mouseX - markerX;
+            const deltaY = mouseY - markerY;
+            const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+            let hoveredItem = null;
+            if (angle >= -45 && angle < 45) {
+              hoveredItem = 'right';
+            } else if (angle >= 135 || angle < -135) {
+              hoveredItem = 'left';
+            }
+            setRadialMenu(prev => ({ ...prev, hoveredItem }));
+          });
+        };
+
+        const handleRadialMenuMouseUp = (event) => {
+          if (!radialMenu.isOpen || !radialMenu.isMouseDown) return;
+          
+          // 마우스가 떼어졌을 때만 메뉴 닫기 (메뉴 항목이 선택된 경우가 아닐 때)
+          if (!radialMenu.hoveredItem) {
+            closeRadialMenu();
+          }
+        };
+
+        const handleRadialMenuClick = (item) => {
+          // 라디얼 메뉴 버튼 클릭 시 아이콘 생성 중지
+          if (typeof stopFloatingIcons === 'function') {
+            stopFloatingIcons();
+          }
+          
+          if (item === 'left') {
+            // 솟대세우기 모달 열기
+            const modal = document.getElementById('sodaeModal');
+            if (modal) {
+              // 아이콘 생성 중지 및 모든 아이콘 제거
+              if (typeof stopFloatingIcons === 'function') {
+                stopFloatingIcons();
+              }
+              // 아이콘 컨테이너 숨기기
+              const iconContainer = document.getElementById('floating-icons-container');
+              if (iconContainer) {
+                iconContainer.style.display = 'none';
+              }
+              
+              modal.classList.remove('hidden');
+              document.body.style.overflow = 'hidden';
+            }
+          } else if (item === 'right') {
+            // 소원마당으로 이동 (기존 기능 유지)
+            window.location.href = './soma.html';
+          }
+          closeRadialMenu();
+        };
+
+        const handleRadialMenuHover = (item) => {
+          if (!radialMenu.isOpen) return;
+          setRadialMenu(prev => ({ ...prev, hoveredItem: item }));
+        };
+
+        const handleRadialMenuLeave = () => {
+          if (!radialMenu.isOpen) return;
+          setRadialMenu(prev => ({ ...prev, hoveredItem: null }));
+        };
+
+        // 전역 이벤트 리스너 추가
+        React.useEffect(() => {
+          const handleGlobalMouseMove = (event) => {
+            if (radialMenu.isOpen) {
+              handleRadialMenuMouseMove(event);
+            }
+          };
+
+          const handleGlobalMouseUp = (event) => {
+            if (radialMenu.isOpen) {
+              // 메뉴 영역 외부를 클릭한 경우에만 닫기
+              const radialMenuElement = document.querySelector('[data-radial-menu]');
+              const menuItems = document.querySelectorAll('[data-menu-item]');
+              const isClickOnMenu = Array.from(menuItems).some(item => item.contains(event.target));
+              
+              if (radialMenuElement && !radialMenuElement.contains(event.target) && !isClickOnMenu) {
+                closeRadialMenu();
+              }
+            }
+
+            // 아이콘은 항상 표시되도록 유지 (외부 클릭으로 제거하지 않음)
+          };
+
+          const handleGlobalKeyDown = (event) => {
+            if (event.key === 'Escape' && radialMenu.isOpen) {
+              closeRadialMenu();
+            }
+          };
+
+          if (radialMenu.isOpen) {
+            // passive mousemove는 의미 없지만 옵션 유지
+            document.addEventListener('mousemove', handleGlobalMouseMove);
+            document.addEventListener('mouseup', handleGlobalMouseUp);
+            document.addEventListener('keydown', handleGlobalKeyDown);
+          }
+
+          return () => {
+            document.removeEventListener('mousemove', handleGlobalMouseMove);
+            document.removeEventListener('mouseup', handleGlobalMouseUp);
+            document.removeEventListener('keydown', handleGlobalKeyDown);
+          };
+        }, [radialMenu.isOpen]);
+
+        return e("section", { id: "sotdae-map", className: "relative bg-black w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-visible" },
+          e("img", { src: "./thteowleh.png", alt: "솟대 지도", className: "block w-screen h-auto select-none" }),
+          e("div", { className: "pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/80 to-transparent" }),
+          e("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 to-transparent" }),
+          // Edge stars (left & right bands)
+          e("div", { className: "pointer-events-none absolute inset-y-0 left-0 w-[10vw] z-20" },
+            e("div", { className: "stars w-full h-full" },
+              edgeStarsLeft.map(s => e("span", { key: `L${s.id}`, className: "star", style: { top: s.top + "%", left: s.left + "%", width: s.size + "px", height: s.size + "px", animationDelay: s.delay + "s", animationDuration: s.duration + "s" } }))
+            )
+          ),
+          e("div", { className: "pointer-events-none absolute inset-y-0 right-0 w-[10vw] z-20" },
+            e("div", { className: "stars w-full h-full" },
+              edgeStarsRight.map(s => e("span", { key: `R${s.id}`, className: "star", style: { top: s.top + "%", left: s.left + "%", width: s.size + "px", height: s.size + "px", animationDelay: s.delay + "s", animationDuration: s.duration + "s" } }))
+            )
+          ),
+          
+          // 마커 레이어
+          e("div", { className: "absolute inset-0 z-30" },
+            markers.map((m) =>
+              e("div", { 
+                key: m.id, 
+                id: `marker-${m.region}`,
+                className: "absolute", 
+                style: { top: m.top, left: m.left, transform: "translate(-50%, -50%)" } 
+              },
+                e("div", { className: "relative" },
+                  // 지역 선택 시에만 ripple 효과 (물방울 떨어지는 자연스러운 효과)
+                  ripples[m.id] && ripples[m.id].map((ripple) =>
+                    e("span", {
+                      key: ripple.id,
+                      className: `absolute inset-[-8px] rounded-full ${getRippleColor(m.color)} ripple shadow-lg`,
+                      style: { 
+                        zIndex: 0,
+                        transform: `scale(${ripple.initialScale})`
+                      }
+                    })
+                  ),
+                  e("button", { 
+                    className: `h-5 w-5 sm:h-6 sm:w-6 rounded-full ${getMarkerColor(m.color)} ring-2 shadow-lg flex items-center justify-center pointer-events-auto relative z-10 focus:outline-none focus-visible:ring-white/40 active:scale-100 transition-none select-none hover:brightness-110`,
+                    onMouseDown: (event) => {
+                      // 이벤트 전파 중지 (빈공간 클릭 감지 방지)
+                      event.stopPropagation();
+                      
+                      // Floating person icons animation (trigger on mouse down for immediate feedback)
+                      // 마커 요소 자체를 전달하여 스크롤 시 위치 추적 가능하도록
+                      spawnFloatingPersonIcons(event.currentTarget);
+                      
+                      // 마우스 다운 시 라디얼 메뉴 열기
+                      openRadialMenu(m.id, event);
+                    },
+                    onMouseUp: handleRadialMenuMouseUp,
+                    onClick: (event) => {
+                      // 이벤트 전파 중지 (빈공간 클릭 감지 방지)
+                      event.stopPropagation();
+                      
+                      // Floating person icons animation
+                      // 마커 요소 자체를 전달하여 스크롤 시 위치 추적 가능하도록
+                      spawnFloatingPersonIcons(event.currentTarget);
+                      
+                      // 일반 클릭 시 소원 입력 모달 열기 (라디얼 메뉴가 열리지 않은 경우)
+                      // 라디얼 메뉴가 열리면 클릭 이벤트는 무시됨
+                      setTimeout(() => {
+                        if (!radialMenu.isOpen) {
+                          setSelectedRegionForWish(m.region);
+                          setActiveRegion(m.region);
+                          const wishModal = document.getElementById('wishInputModal');
+                          if (wishModal && wishModal.classList.contains('hidden')) {
+                            wishModal.classList.remove('hidden');
+                            document.body.style.overflow = 'hidden';
+                            const regionDisplay = document.getElementById('selectedRegionDisplay');
+                            if (regionDisplay) {
+                              regionDisplay.textContent = m.region;
+                            }
+                          }
+                        }
+                      }, 150);
+                    },
+                    onMouseEnter: () => {
+                      if (regionImageMap[m.region]) {
+                        setHoveredRegion(m.region);
+                      }
+                    },
+                    onMouseLeave: () => {
+                      setHoveredRegion(null);
+                    }
+                  }, e(PinIcon, { className: "h-3.5 w-3.5 text-white" })),
+                  // 지역 마커 hover 시 이미지 표시
+                  regionImageMap[m.region] && e("img", {
+                    src: regionImageMap[m.region],
+                    alt: `${m.region} 이미지`,
+                    className: `absolute pointer-events-none z-20 region-image-glow ${
+                      hoveredRegion === m.region ? 'show' : ''
+                    }`,
+                    style: {
+                      top: "50%",
+                      left: "50%",
+                      transform: regionImagePosition[m.region].transform,
+                      width: "500px",
+                      height: "500px",
+                      minWidth: "500px",
+                      minHeight: "500px",
+                      maxWidth: "none",
+                      maxHeight: "none",
+                      objectFit: "none",
+                      pointerEvents: "none"
+                    }
+                  })
+                ),
+                  // 라디얼 메뉴
+                  radialMenu.isOpen && radialMenu.markerId === m.id && e("div", { 
+                    className: "fixed inset-0 pointer-events-auto z-50",
+                    "data-radial-menu": true
+                  },
+                    // 배경 오버레이
+                    e("div", { 
+                      className: "absolute inset-0 bg-black/30 backdrop-blur-sm"
+                    }),
+                    // 라디얼 메뉴 컨테이너
+                    e("div", { 
+                      className: "absolute flex items-center justify-center",
+                      style: { 
+                        top: m.top, 
+                        left: m.left, 
+                        transform: 'translate(-50%, -50%)' 
+                      }
+                    },
+                      // 왼쪽 메뉴 (솟대세우기)
+                      e("div", { 
+                        className: `absolute w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all duration-300 cursor-pointer ${
+                          radialMenu.hoveredItem === 'left' 
+                            ? 'bg-slate-700/90 border-2 border-slate-400/80 scale-110 shadow-2xl shadow-slate-400/30' 
+                            : 'bg-slate-800/70 border border-slate-600/60 shadow-lg'
+                        } backdrop-blur-md`,
+                        style: { 
+                          transform: 'translateX(-80px)',
+                          boxShadow: radialMenu.hoveredItem === 'left' 
+                            ? '0 0 30px rgba(148, 163, 184, 0.4), 0 0 60px rgba(148, 163, 184, 0.2)' 
+                            : '0 4px 20px rgba(0, 0, 0, 0.3)'
+                        },
+                        "data-menu-item": true,
+                        onClick: () => handleRadialMenuClick('left'),
+                        onMouseEnter: () => handleRadialMenuHover('left'),
+                        onMouseLeave: handleRadialMenuLeave
+                      },
+                        // 아이콘
+                        e("div", { className: "mb-1" },
+                          e("img", { src: "./zkem.png", alt: "솟대 아이콘", className: "w-6 h-6 object-contain" })
+                        ),
+                        // 텍스트
+                        e("div", { className: "text-center" },
+                          e("div", { className: "text-white/90 text-xs font-medium" }, "솟대세우기")
+                        )
+                      ),
+                      // 오른쪽 메뉴 (소원마당으로 이동)
+                      e("div", { 
+                        className: `absolute w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all duration-300 cursor-pointer ${
+                          radialMenu.hoveredItem === 'right' 
+                            ? 'bg-slate-700/90 border-2 border-slate-400/80 scale-110 shadow-2xl shadow-slate-400/30' 
+                            : 'bg-slate-800/70 border border-slate-600/60 shadow-lg'
+                        } backdrop-blur-md`,
+                        style: { 
+                          transform: 'translateX(80px)',
+                          boxShadow: radialMenu.hoveredItem === 'right' 
+                            ? '0 0 30px rgba(148, 163, 184, 0.4), 0 0 60px rgba(148, 163, 184, 0.2)' 
+                            : '0 4px 20px rgba(0, 0, 0, 0.3)'
+                        },
+                        "data-menu-item": true,
+                        onClick: () => handleRadialMenuClick('right'),
+                        onMouseEnter: () => handleRadialMenuHover('right'),
+                        onMouseLeave: handleRadialMenuLeave
+                      },
+                        // 아이콘
+                        e("div", { className: "mb-1" },
+                          e("svg", { 
+                            className: "w-6 h-6 text-white/90", 
+                            fill: "none", 
+                            stroke: "currentColor", 
+                            viewBox: "0 0 24 24" 
+                          },
+                            e("path", { 
+                              d: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z", 
+                              strokeWidth: "2" 
+                            })
+                          )
+                        ),
+                        // 텍스트
+                        e("div", { className: "text-center" },
+                          e("div", { className: "text-white/90 text-xs font-medium" }, "소원마당")
+                        )
+                      ),
+                      // 중앙 마커 (강조) - 주변 효과 추가 (크기 확대 없음)
+                      e("div", { className: "relative" },
+                        // 주변 반짝이는 효과 - 마커의 원래 색상 사용
+                        e("span", { 
+                          className: `absolute inset-[-3px] rounded-full ${getMarkerColor(m.color).split(' ')[0]} marker-glow`,
+                          style: { 
+                            zIndex: 0
+                          }
+                        }),
+                        e("span", { 
+                          className: `absolute inset-[-1.5px] rounded-full ${getMarkerColor(m.color).split(' ')[1]} marker-pulse`,
+                          style: { 
+                            zIndex: 0
+                          }
+                        }),
+                        e("div", { 
+                          className: `w-9 h-9 rounded-full ${getMarkerColor(m.color)} shadow-xl flex items-center justify-center relative z-10 hover:brightness-110 transition-all duration-200`
+                        },
+                          e(PinIcon, { className: "h-4 w-4 text-white" })
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          ),
+          // 오버레이 레이어
+          e("div", { className: "absolute top-0 inset-x-0 z-40 flex flex-col items-center" },
+            e("div", { className: "flex flex-col items-center justify-start pt-32 px-6" },
+            e("h2", { className: "text-3xl sm:text-4xl lg:text-5xl font-bold text-white drop-shadow mb-6", style: { fontFamily: 'Yeongwol, serif' } }, "솟대 지도"),
+            e("p", { className: "text-sm sm:text-base text-white/70 leading-relaxed text-center" }, 
+              "빠른 걸음과 소란스러운 하루 사이에도 누군가의 소원은 솟대 위에 머물러 있습니다.",
+              e("br"),
+              "밝은 하늘 아래, 당신의 소망을 올려보세요."
+            ),
+            e("div", { className: "mt-6 border-t border-white/20 w-full max-w-2xl" }),
+              e("div", { className: "flex justify-center gap-2 mt-6 pointer-events-auto" },
+              REGIONS.map((r) => {
+                const marker = markers.find(m => m.region === r);
+                return e("button", {
+                  key: r,
+                    onClick: () => {
+                      setActiveRegion(r);
+                      setSelectedMarker(null);
+                      
+                      // 서울 버튼 클릭 시 이미지 표시
+                      if (r === "서울") {
+                        setShowSeoulImage(true);
+                        setShowGangwonImage(false);
+                        // 4.5초 후 자동으로 사라지게 함
+                        setTimeout(() => {
+                          setShowSeoulImage(false);
+                        }, 4500);
+                      } else if (r === "강원") {
+                        setShowGangwonImage(true);
+                        setShowSeoulImage(false);
+                        // 4.5초 후 자동으로 사라지게 함
+                        setTimeout(() => {
+                          setShowGangwonImage(false);
+                        }, 4500);
+                      } else {
+                        setShowSeoulImage(false);
+                        setShowGangwonImage(false);
+                      }
+                      
+                      // 해당 마커에 ripple 효과 추가
+                      if (marker) {
+                        createRipple(marker.id);
+                      }
+                      
+                      // 해당 마커로 부드럽게 이동
+                      setTimeout(() => {
+                        const markerElement = document.getElementById(`marker-${r}`);
+                        if (markerElement) {
+                          markerElement.scrollIntoView({ 
+                            behavior: "smooth", 
+                            block: "center", 
+                            inline: "center" 
+                          });
+                        }
+                      }, 100);
+                    },
+                  className: `px-3.5 py-2 rounded-full text-sm border transition ${
+                    activeRegion === r
+                      ? "bg-white/15 border-white/30 text-white"
+                      : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10 hover:border-white/20"
+                  }`,
+                }, r);
+              })
+              )
+            )
+          )
+        );
+      };
+
+      const Footer = () =>
+        e("footer", { className: "relative overflow-hidden bg-gradient-to-t from-black via-black/80 to-transparent py-16" },
+          e("div", { className: "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-to-t from-indigo-900/40 via-blue-900/20 to-transparent blur-3xl pointer-events-none" }),
+          e("div", { className: "relative max-w-6xl mx-auto px-6 text-center" },
+            e("div", { className: "mb-8" },
+              e("h2", { className: "text-xl sm:text-2xl font-bold text-white mb-2" }, "Make a wish and keep walking"),
+              e("p", { className: "text-sm text-white/70" }, "작은 소망이 모여 하나의 울림이 됩니다.")
+            ),
+            e("div", { className: "mb-8" },
+              e("h3", { className: "text-lg font-medium text-white mb-6" }, "What's included"),
+              e("div", { className: "flex items-center justify-center gap-6 mt-6" },
+                ["apple", "google", "mail"].map((type) =>
+                  e("button", {
+                    key: type,
+                    className: "group flex items-center justify-center h-14 w-14 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200 shadow-glow focus:outline-none focus:ring-2 focus:ring-white/20",
+                    type: "button",
+                    "aria-label": type === "apple" ? "Apple로 계속" : type === "google" ? "Google로 계속" : "Email로 계속",
+                  },
+                    type === "apple" ? e(AppleIcon, { className: "h-6 w-6 text-white/90 group-hover:scale-105 transition-transform" })
+                    : type === "google" ? e(GoogleIcon, { className: "h-6 w-6" })
+                    : e(MailIcon, { className: "h-6 w-6 text-white/90 group-hover:scale-105 transition-transform" })
+                  )
+                )
+              )
+            ),
+            e("div", { className: "grid grid-cols-2 gap-4 text-sm text-white/60 mt-10 max-w-md mx-auto" },
+              e("div", { className: "space-y-2" },
+                e("a", { href: "#", className: "block hover:text-white transition" }, "About us"),
+                e("a", { href: "#", className: "block hover:text-white transition" }, "Shop"),
+                e("a", { href: "#", className: "block hover:text-white transition" }, "Blog")
+              ),
+              e("div", { className: "space-y-2" },
+                e("a", { href: "#", className: "block hover:text-white transition" }, "Terms of Service"),
+                e("a", { href: "#", className: "block hover:text-white transition" }, "Privacy Policy"),
+                e("a", { href: "#", className: "block hover:text-white transition" }, "Refund Policy")
+              )
+            )
+          )
+        );
+
+
+      // BGM 플레이어 컴포넌트 (스크롤/클릭 이벤트)
+      const BgmPlayer = () => {
+        React.useEffect(() => {
+          const audio = document.getElementById('bgm');
+          if (!audio) return;
+
+          // 오디오 초기 설정
+          audio.volume = 0.5;
+          
+          // 음악 활성화 함수 (한 번만 실행)
+          const activateMusic = () => {
+            console.log('사용자 상호작용 감지 - 배경 음악 활성화');
+            audio.muted = false;
+            audio.play().catch((error) => {
+              console.log('음악 재생 실패:', error);
+            });
+            console.log('배경 음악이 재생됩니다');
+          };
+
+          // 스크롤 이벤트 리스너 (한 번만 실행, passive)
+          window.addEventListener('scroll', activateMusic, { once: true, passive: true });
+          
+          // 클릭 이벤트 리스너 (한 번만 실행)
+          window.addEventListener('click', activateMusic, { once: true });
+
+          // 오디오 로드 완료 시 재생 시도 (음소거 상태로)
+          const handleAudioReady = () => {
+            audio.play().catch((error) => {
+              console.log('자동재생 실패:', error);
+            });
+          };
+
+          // 오디오 이벤트 리스너
+          audio.addEventListener('loadeddata', handleAudioReady);
+          audio.addEventListener('canplay', handleAudioReady);
+
+          // 정리 함수
+          return () => {
+            window.removeEventListener('scroll', activateMusic);
+            window.removeEventListener('click', activateMusic);
+          };
+        }, []);
+
+        return null; // UI 없음
+      };
+
+      function App() {
+
+        return e(React.Fragment, null,
+          e(Navbar),
+          e("main", { className: "" },
+            e(Hero),
+            e(MapSection)
+          ),
+          e(Footer),
+          e(BgmPlayer)
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(e(App));
+
+      // 해시 변경 시 마커 영역으로 스크롤
+      const handleHashChange = () => {
+        if (window.location.hash === '#sotdae-map') {
+          setTimeout(() => {
+            const mapSection = document.getElementById('sotdae-map');
+            if (mapSection) {
+              mapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }, 100);
+        }
+      };
+
+      // 페이지 로드 시 해시 확인
+      if (window.location.hash === '#sotdae-map') {
+        window.addEventListener('load', handleHashChange);
+      }
+
+      // 해시 변경 이벤트 리스너
+      window.addEventListener('hashchange', handleHashChange);
+
+      // 빈공간 및 버튼 클릭 시 떠오르는 아이콘 애니메이션 중지
+      document.addEventListener('click', (event) => {
+        // 마커 버튼이나 마커 관련 요소를 클릭한 경우가 아닐 때만 중지
+        const target = event.target;
+        const clickedMarker = target.closest('[id^="marker-"]') || 
+                              target.closest('button[class*="h-5"]') ||
+                              target.closest('button[class*="h-6"]') ||
+                              target.closest('button[class*="rounded-full"]')?.parentElement?.id?.startsWith('marker-');
+        
+        // 라디얼 메뉴 버튼 (솟대세우기, 소원마당) 체크
+        const clickedRadialMenu = target.closest('[data-menu-item]') || 
+                                  target.closest('[data-radial-menu]');
+        
+        // 마커가 아닌 곳을 클릭했거나, 라디얼 메뉴 버튼을 클릭한 경우, 현재 애니메이션이 실행 중이면 중지
+        if (currentMarkerElement && (!clickedMarker || clickedRadialMenu)) {
+          stopFloatingIcons();
+        }
+      }, true); // capture phase에서 실행하여 다른 이벤트보다 먼저 처리
+    </script>
+
+    <!-- 솟대 세우기 모달 -->
+    <div id="sodaeModal" class="fixed inset-0 z-50 hidden">
+        <!-- 오버레이 -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modalOverlay"></div>
+        
+        <!-- 모달 컨텐츠 -->
+        <div class="relative flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/40 backdrop-blur-[10px] rounded-2xl shadow-2xl border border-white/10 p-8 w-full max-w-2xl">
+                <!-- 모달 헤더 -->
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-xl font-medium text-white/90">솟대 세우기</h2>
+                        <p class="text-white/50 text-sm mt-1">소원의 종류를 선택하세요</p>
+                    </div>
+                    <button id="closeModal" class="w-6 h-6 text-white/40 hover:text-white/70 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 카테고리 카드들 -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
+                    <!-- 사랑 -->
+                    <div class="category-card bg-gray-900/30 hover:bg-gray-800/40 rounded-lg p-6 cursor-pointer transition-all duration-300 border border-gray-700/30 hover:border-gray-600/40" data-category="love">
+                        <div class="flex items-center justify-center h-full">
+                            <span class="text-white/60 font-normal text-sm">사랑</span>
+                        </div>
+                    </div>
+
+                    <!-- 건강 -->
+                    <div class="category-card bg-gray-900/30 hover:bg-gray-800/40 rounded-lg p-6 cursor-pointer transition-all duration-300 border border-gray-700/30 hover:border-gray-600/40" data-category="health">
+                        <div class="flex items-center justify-center h-full">
+                            <span class="text-white/60 font-normal text-sm">건강</span>
+                        </div>
+                    </div>
+
+                    <!-- 꿈 -->
+                    <div class="category-card bg-gray-900/30 hover:bg-gray-800/40 rounded-lg p-6 cursor-pointer transition-all duration-300 border border-gray-700/30 hover:border-gray-600/40" data-category="dream">
+                        <div class="flex items-center justify-center h-full">
+                            <span class="text-white/60 font-normal text-sm">꿈</span>
+                        </div>
+                    </div>
+
+                    <!-- 행복 -->
+                    <div class="category-card bg-gray-900/30 hover:bg-gray-800/40 rounded-lg p-6 cursor-pointer transition-all duration-300 border border-gray-700/30 hover:border-gray-600/40" data-category="happiness">
+                        <div class="flex items-center justify-center h-full">
+                            <span class="text-white/60 font-normal text-sm">행복</span>
+                        </div>
+                    </div>
+
+                    <!-- 평화 -->
+                    <div class="category-card bg-gray-900/30 hover:bg-gray-800/40 rounded-lg p-6 cursor-pointer transition-all duration-300 border border-gray-700/30 hover:border-gray-600/40" data-category="peace">
+                        <div class="flex items-center justify-center h-full">
+                            <span class="text-white/60 font-normal text-sm">평화</span>
+                        </div>
+                    </div>
+
+                    <!-- 성공 -->
+                    <div class="category-card bg-gray-900/30 hover:bg-gray-800/40 rounded-lg p-6 cursor-pointer transition-all duration-300 border border-gray-700/30 hover:border-gray-600/40" data-category="success">
+                        <div class="flex items-center justify-center h-full">
+                            <span class="text-white/60 font-normal text-sm">성공</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 액션 버튼들 -->
+                <div class="flex justify-end space-x-3">
+                    <button id="cancelBtn" class="px-6 py-2.5 text-white/50 hover:text-white/70 transition-colors text-sm">
+                        취소
+                    </button>
+                    <button id="confirmBtn" class="px-8 py-2.5 bg-slate-700/50 hover:bg-slate-600/60 text-white/80 font-normal rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-sm border border-slate-600/30" disabled>
+                        선택 완료
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 솟대 생성 모달 -->
+    <div id="createSodaeModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- 오버레이 -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="createModalOverlay"></div>
+        
+        <!-- 모달 컨텐츠 -->
+        <div class="relative flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/40 backdrop-blur-[10px] rounded-2xl shadow-2xl border border-white/10 p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <!-- 모달 헤더 -->
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-xl font-medium text-white/90">솟대 세우기</h2>
+                        <p class="text-white/50 text-sm mt-1">소원을 담은 솟대를 세워보세요</p>
+                    </div>
+                    <button id="closeCreateModal" class="w-6 h-6 text-white/40 hover:text-white/70 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 폼 -->
+                <form id="sodaeForm" class="flex flex-col h-full">
+                    <div class="flex-1 space-y-6">
+                        <!-- 솟대 이름 -->
+                        <div>
+                            <label class="block text-white/80 text-sm font-medium mb-2">솟대 이름</label>
+                            <input 
+                                type="text" 
+                                id="sodaeName" 
+                                name="sodaeName"
+                                placeholder="솟대의 이름을 입력하세요"
+                                class="w-full px-4 py-3 bg-gray-900/30 border border-gray-700/30 rounded-lg text-white/90 placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-slate-500/50 focus:border-slate-500/50 transition-all"
+                                required
+                            />
+                        </div>
+
+                        <!-- 소원 내용 -->
+                        <div>
+                            <label class="block text-white/80 text-sm font-medium mb-2">소원 내용</label>
+                            <textarea 
+                                id="wishContent" 
+                                name="wishContent"
+                                rows="4"
+                                placeholder="소원을 자유롭게 적어보세요..."
+                                class="w-full px-4 py-3 bg-gray-900/30 border border-gray-700/30 rounded-lg text-white/90 placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-slate-500/50 focus:border-slate-500/50 transition-all resize-none"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <!-- 이미지 첨부 -->
+                        <div>
+                            <label class="block text-white/80 text-sm font-medium mb-2">이미지 첨부</label>
+                            <div class="relative">
+                                <div id="imagePlaceholder" class="w-full h-32 bg-gray-900/30 border-2 border-dashed border-gray-700/30 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-600/40 transition-colors">
+                                    <div class="text-center">
+                                        <div class="w-8 h-8 mx-auto mb-2 bg-gray-700/50 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke="currentColor" stroke-width="2"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-white/60 text-sm">이미지를 추가하세요</p>
+                                    </div>
+                                </div>
+                                <input type="file" id="imageInput" name="imageInput" accept="image/*" class="hidden" />
+                            </div>
+                        </div>
+
+                        <!-- 토글 옵션들 -->
+                        <div class="space-y-4 pt-4">
+                            <!-- 비공개 토글 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="text-white/80 text-sm font-medium">비공개</div>
+                                    <div class="text-white/50 text-xs mt-1">Only you and collaborators can see it.</div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="privateToggle" name="privateToggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-700/50 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-slate-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-600"></div>
+                                </label>
+                            </div>
+
+                            <!-- 피드에서 숨기기 토글 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="text-white/80 text-sm font-medium">피드에서 숨기기</div>
+                                    <div class="text-white/50 text-xs mt-1">Won't show up on your profile and feed.</div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="hideFromFeedToggle" name="hideFromFeedToggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-700/50 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-slate-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-600"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 제출 버튼 - 하단 고정 -->
+                    <div class="mt-8 pt-6 border-t border-white/10">
+                        <div class="flex justify-end gap-3">
+                            <button 
+                                type="button" 
+                                id="cancelCreateBtn" 
+                                class="px-5 py-2 text-sm text-white/70 hover:text-white transition-colors whitespace-nowrap"
+                            >
+                                취소
+                            </button>
+                            <button 
+                                type="submit" 
+                                id="createSodaeBtn" 
+                                class="px-5 py-2 text-sm text-white/80 bg-slate-800/70 border border-slate-600/50 rounded-md hover:bg-slate-700/60 hover:border-slate-500/70 hover:text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                            >
+                                솟대 세우기
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 소원 입력 모달 -->
+    <div id="wishInputModal" class="fixed inset-0 z-[60] hidden">
+        <!-- 오버레이 -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="wishModalOverlay"></div>
+        
+        <!-- 모달 컨텐츠 -->
+        <div class="relative flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/40 backdrop-blur-[10px] rounded-2xl shadow-2xl border border-white/10 p-8 w-full max-w-md">
+                <!-- 모달 헤더 -->
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl font-medium text-white/90">소원 올리기</h2>
+                        <p class="text-white/50 text-sm mt-1">선택된 지역: <span id="selectedRegionDisplay" class="text-white/70">서울</span></p>
+                    </div>
+                    <button id="closeWishModal" class="w-6 h-6 text-white/40 hover:text-white/70 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 소원 입력 -->
+                <div class="mb-6">
+                    <textarea 
+                        id="wishInput" 
+                        placeholder="소원을 자유롭게 적어보세요..."
+                        class="w-full px-4 py-3 bg-gray-900/30 border border-gray-700/30 rounded-lg text-white/90 placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-slate-500/50 focus:border-slate-500/50 transition-all resize-none"
+                        rows="4"
+                    ></textarea>
+                </div>
+
+                <!-- 성공 메시지 -->
+                <div id="wishSuccessMsg" class="hidden mb-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg text-green-400 text-sm text-center">
+                    소원이 성공적으로 올려졌습니다!
+                </div>
+
+                <!-- 액션 버튼들 -->
+                <div class="flex justify-end gap-3">
+                    <button 
+                        id="cancelWishBtn" 
+                        class="px-6 py-2.5 text-white/50 hover:text-white/70 transition-colors text-sm"
+                    >
+                        취소
+                    </button>
+                    <button 
+                        id="submitWishBtn" 
+                        class="px-8 py-2.5 bg-slate-700/50 hover:bg-slate-600/60 text-white/80 font-normal rounded-md transition-colors text-sm border border-slate-600/30"
+                    >
+                        업로드
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 축하 이벤트 모달 -->
+    <div id="celebrationModal" class="fixed inset-0 z-[60] hidden">
+        <!-- 오버레이 -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" id="celebrationOverlay"></div>
+        
+        <!-- 모달 컨텐츠 -->
+        <div class="relative flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/60 backdrop-blur-[15px] rounded-3xl shadow-2xl border border-white/20 p-12 w-full max-w-md text-center relative overflow-hidden">
+                <!-- 은은한 빛 퍼짐 애니메이션 -->
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-indigo-500/10 rounded-3xl animate-pulse"></div>
+                
+                <!-- 메인 콘텐츠 -->
+                <div class="relative z-10">
+                    <!-- 아이콘 -->
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center border border-white/20">
+                        <img src="./zkem.png" alt="새 아이콘" class="w-10 h-10 object-contain">
+                    </div>
+                    
+                    <!-- 메인 텍스트 -->
+                    <h2 class="text-2xl font-medium text-white mb-3" style="font-family: 'Yeongwol', serif;">
+                        솟대가 세워졌습니다1
+                    </h2>
+                    
+                    <!-- 서브 텍스트 -->
+                    <p class="text-white/70 text-sm mb-8 leading-relaxed">
+                        당신의 소망이 하늘로 올려졌습니다.
+                    </p>
+                    
+                    <!-- 버튼 -->
+                    <button 
+                        id="viewMySodaeBtn" 
+                        class="px-6 py-3 bg-slate-800/70 border border-slate-600/50 text-white/90 rounded-lg hover:bg-slate-700/60 hover:border-slate-500/70 hover:text-white transition-all duration-200 text-sm font-medium"
+                    >
+                        내 솟대 확인하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 솟대세우기 모달 JavaScript -->
+    <script>
+        // windDetector 로드 확인 및 초기화
+        function waitForWindDetector(maxAttempts = 50) {
+            return new Promise((resolve, reject) => {
+                // 이미 로드 오류가 발생했는지 확인
+                if (window.windDetectorLoadError) {
+                    reject(new Error('wind.js 파일을 로드할 수 없습니다. 파일 경로를 확인해주세요.'));
+                    return;
+                }
+                
+                let attempts = 0;
+                const checkInterval = setInterval(() => {
+                    attempts++;
+                    if (window.windDetector) {
+                        clearInterval(checkInterval);
+                        console.log('windDetector 로드 확인됨');
+                        resolve();
+                    } else if (window.windDetectorLoadError || attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                        console.error('windDetector 로드 시간 초과 또는 로드 실패');
+                        reject(new Error('windDetector를 로드할 수 없습니다. wind.js 파일을 확인해주세요.'));
+                    }
+                }, 100);
+            });
+        }
+
+        // DOMContentLoaded 이벤트에서 windDetector 확인
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await waitForWindDetector();
+                console.log('모든 스크립트 로드 완료');
+            } catch (error) {
+                console.error('windDetector 로드 실패:', error);
+            }
+        });
+
+        // 모달 관련 DOM 요소들
+        const sodaeModal = document.getElementById('sodaeModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const categoryCards = document.querySelectorAll('.category-card');
+        
+        // 선택된 카테고리 상태
+        let selectedCategory = null;
+
+        // 모달 열기/닫기 함수들
+        function openModal() {
+            // 아이콘 생성 중지 및 모든 아이콘 제거
+            if (typeof stopFloatingIcons === 'function') {
+                stopFloatingIcons();
+            }
+            // 아이콘 컨테이너 숨기기
+            const iconContainer = document.getElementById('floating-icons-container');
+            if (iconContainer) {
+                iconContainer.style.display = 'none';
+            }
+            
+            sodaeModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // 스크롤 방지
+        }
+
+        function closeModalFunc() {
+            sodaeModal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // 스크롤 복원
+            
+            // 아이콘 컨테이너 다시 보이기
+            const iconContainer = document.getElementById('floating-icons-container');
+            if (iconContainer) {
+              iconContainer.style.display = '';
+            }
+            
+            // 선택 상태 초기화
+            selectedCategory = null;
+            updateCategoryCards();
+            confirmBtn.disabled = true;
+        }
+
+        // 카테고리 카드 업데이트 함수
+        function updateCategoryCards() {
+            categoryCards.forEach(card => {
+                const category = card.dataset.category;
+                const isSelected = selectedCategory === category;
+                
+                if (isSelected) {
+                    // 선택된 상태: 은은한 네이비/블루 톤
+                    card.classList.remove('bg-gray-900/30', 'border-gray-700/30', 'hover:bg-gray-800/40', 'hover:border-gray-600/40');
+                    card.classList.add('bg-slate-800/60', 'border-slate-600/50');
+                    card.querySelector('span').classList.remove('text-white/60');
+                    card.querySelector('span').classList.add('text-white/90');
+                } else {
+                    // 비선택 상태: 톤 다운된 회색
+                    card.classList.remove('bg-slate-800/60', 'border-slate-600/50');
+                    card.classList.add('bg-gray-900/30', 'border-gray-700/30', 'hover:bg-gray-800/40', 'hover:border-gray-600/40');
+                    card.querySelector('span').classList.remove('text-white/90');
+                    card.querySelector('span').classList.add('text-white/60');
+                }
+            });
+        }
+
+        // 카테고리 선택 함수
+        function selectCategory(category) {
+            selectedCategory = category;
+            updateCategoryCards();
+            confirmBtn.disabled = false;
+        }
+
+        // 이벤트 리스너 등록
+        // 모달 닫기
+        closeModal.addEventListener('click', closeModalFunc);
+        cancelBtn.addEventListener('click', closeModalFunc);
+        modalOverlay.addEventListener('click', closeModalFunc);
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !sodaeModal.classList.contains('hidden')) {
+                closeModalFunc();
+            }
+        });
+
+        // 카테고리 카드 클릭 이벤트
+        categoryCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const category = card.dataset.category;
+                selectCategory(category);
+            });
+        });
+
+        // 선택 완료 버튼 클릭
+        confirmBtn.addEventListener('click', () => {
+            if (selectedCategory) {
+                // 선택된 소원 데이터를 콘솔에 출력
+                console.log('선택된 소원 카테고리:', selectedCategory);
+                console.log('선택된 소원 데이터:', {
+                    category: selectedCategory,
+                    timestamp: new Date().toISOString(),
+                    location: '서울' // 추후 실제 위치 데이터로 교체
+                });
+                
+                // 기존 모달 닫기
+                closeModalFunc();
+                
+                // 새로운 솟대 생성 모달 열기
+                openCreateModal(selectedCategory);
+            }
+        });
+
+        // 솟대 생성 모달 관련 변수들
+        const createSodaeModal = document.getElementById('createSodaeModal');
+        const createModalOverlay = document.getElementById('createModalOverlay');
+        const closeCreateModal = document.getElementById('closeCreateModal');
+        const cancelCreateBtn = document.getElementById('cancelCreateBtn');
+        const createSodaeBtn = document.getElementById('createSodaeBtn');
+        const imagePlaceholder = document.getElementById('imagePlaceholder');
+        const imageInput = document.getElementById('imageInput');
+        const sodaeNameInput = document.getElementById('sodaeName');
+        const wishContentInput = document.getElementById('wishContent');
+        const privateToggle = document.getElementById('privateToggle');
+        const hideFromFeedToggle = document.getElementById('hideFromFeedToggle');
+
+        // 선택된 카테고리 저장
+        let selectedCategoryForCreate = null;
+
+        // 축하 모달 관련 변수들
+        const celebrationModal = document.getElementById('celebrationModal');
+        const celebrationOverlay = document.getElementById('celebrationOverlay');
+        const viewMySodaeBtn = document.getElementById('viewMySodaeBtn');
+
+        // 솟대 생성 모달 열기 함수
+        function openCreateModal(category) {
+            selectedCategoryForCreate = category;
+            createSodaeModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // 버튼 상태 초기화
+            createSodaeBtn.disabled = false;
+            createSodaeBtn.textContent = '솟대 세우기';
+            createSodaeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        // 솟대 생성 모달 닫기 함수
+        function closeCreateModalFunc() {
+            createSodaeModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            // 폼 초기화
+            resetCreateForm();
+        }
+
+        // 폼 초기화 함수
+        function resetCreateForm() {
+            sodaeNameInput.value = '';
+            wishContentInput.value = '';
+            imageInput.value = '';
+            privateToggle.checked = false;
+            hideFromFeedToggle.checked = false;
+            
+            // localStorage에서 이미지 제거
+            localStorage.removeItem('uploadedImage');
+            
+            // 이전 URL 정리
+            if (window.currentImageUrl) {
+                URL.revokeObjectURL(window.currentImageUrl);
+                window.currentImageUrl = null;
+            }
+            
+            updateImagePlaceholder();
+            
+            // 버튼 상태 초기화
+            createSodaeBtn.disabled = false;
+            createSodaeBtn.textContent = '솟대 세우기';
+            createSodaeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        // 이미지 플레이스홀더 업데이트 함수
+        function updateImagePlaceholder() {
+            if (imageInput.files && imageInput.files[0]) {
+                const file = imageInput.files[0];
+                
+                // 파일 타입 검증
+                if (!file.type.startsWith('image/')) {
+                    alert('이미지 파일만 업로드 가능합니다.');
+                    imageInput.value = '';
+                    return;
+                }
+                
+                // 파일 크기 검증 (5MB 제한)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('파일 크기는 5MB 이하여야 합니다.');
+                    imageInput.value = '';
+                    return;
+                }
+                
+                // 이전 URL 정리
+                if (window.currentImageUrl) {
+                    URL.revokeObjectURL(window.currentImageUrl);
+                }
+                
+                // URL.createObjectURL을 사용하여 Blob URL 생성
+                const imageUrl = URL.createObjectURL(file);
+                window.currentImageUrl = imageUrl;
+                
+                // 미리보기 이미지 표시
+                imagePlaceholder.innerHTML = `
+                    <div class="w-full h-full rounded-lg overflow-hidden">
+                        <img src="${imageUrl}" alt="선택된 이미지" class="w-full h-full object-cover">
+                    </div>
+                `;
+                
+                // Blob URL을 localStorage에 저장
+                localStorage.setItem('uploadedImage', imageUrl);
+            } else {
+                imagePlaceholder.innerHTML = `
+                    <div class="text-center">
+                        <div class="w-8 h-8 mx-auto mb-2 bg-gray-700/50 rounded-full flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <p class="text-white/60 text-sm">이미지를 추가하세요</p>
+                    </div>
+                `;
+                
+                // 이미지가 없을 때는 localStorage에서 제거
+                localStorage.removeItem('uploadedImage');
+                if (window.currentImageUrl) {
+                    URL.revokeObjectURL(window.currentImageUrl);
+                    window.currentImageUrl = null;
+                }
+            }
+        }
+
+        // 이벤트 리스너 등록
+        // 모달 닫기
+        closeCreateModal.addEventListener('click', closeCreateModalFunc);
+        cancelCreateBtn.addEventListener('click', closeCreateModalFunc);
+        createModalOverlay.addEventListener('click', closeCreateModalFunc);
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !createSodaeModal.classList.contains('hidden')) {
+                closeCreateModalFunc();
+            }
+        });
+
+        // 이미지 업로드 이벤트
+        imagePlaceholder.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        imageInput.addEventListener('change', updateImagePlaceholder);
+
+        // 축하 모달 표시 함수
+        function showCelebrationModal() {
+            console.log('showCelebrationModal 호출됨');
+            // DOM에서 다시 찾기 (스코프 문제 방지)
+            const modal = document.getElementById('celebrationModal');
+            console.log('celebrationModal:', modal);
+            if (!modal) {
+                console.error('celebrationModal 요소를 찾을 수 없습니다!');
+                return;
+            }
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            console.log('축하 모달 표시 완료 - hidden 클래스 제거됨');
+            console.log('모달 클래스 목록:', modal.classList.toString());
+        }
+
+        // 축하 모달 닫기 함수
+        function closeCelebrationModal() {
+            celebrationModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // 솟대 데이터 저장 함수
+        function saveSodaeData(sodaeData) {
+            try {
+                // 기존 솟대 데이터 가져오기
+                const existingSodaes = JSON.parse(localStorage.getItem('mySodaes') || '[]');
+                
+                // 새 솟대 데이터 추가 (이미지 URL은 이미 sodaeData에 포함됨)
+                const newSodae = {
+                    id: Date.now(), // 고유 ID
+                    ...sodaeData,
+                    createdAt: new Date().toISOString()
+                };
+                
+                existingSodaes.unshift(newSodae); // 최신 순으로 정렬
+                
+                // localStorage에 저장
+                localStorage.setItem('mySodaes', JSON.stringify(existingSodaes));
+                
+                console.log('솟대 데이터 저장됨:', newSodae);
+            } catch (error) {
+                console.error('솟대 데이터 저장 실패:', error);
+            }
+        }
+
+        // 폼 제출 이벤트 (마이크 센서 기능 추가)
+        const sodaeForm = document.getElementById('sodaeForm');
+        sodaeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('솟대 세우기 폼 제출됨 - 마이크 센서 시작');
+            
+            const sodaeName = sodaeNameInput.value.trim();
+            const wishContent = wishContentInput.value.trim();
+            const isPrivate = privateToggle.checked;
+            const hideFromFeed = hideFromFeedToggle.checked;
+            const imageFile = imageInput.files[0];
+
+            console.log('입력된 데이터:', {
+                sodaeName,
+                wishContent,
+                isPrivate,
+                hideFromFeed,
+                imageFile: imageFile ? imageFile.name : '없음'
+            });
+
+            // 유효성 검사
+            if (!sodaeName) {
+                alert('솟대 이름을 입력해주세요.');
+                sodaeNameInput.focus();
+                return;
+            }
+
+            if (!wishContent) {
+                alert('소원 내용을 입력해주세요.');
+                wishContentInput.focus();
+                return;
+            }
+
+            // 버튼 비활성화 (중복 클릭 방지)
+            createSodaeBtn.disabled = true;
+            createSodaeBtn.textContent = '바람을 기다리는 중...';
+            createSodaeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            // 이미지 URL 생성 (파일이 있는 경우)
+            let imageUrl = null;
+            if (imageFile) {
+                imageUrl = URL.createObjectURL(imageFile);
+                console.log('생성된 이미지 URL:', imageUrl);
+            }
+
+            // 솟대 생성 데이터
+            const sodaeData = {
+                category: selectedCategoryForCreate,
+                name: sodaeName,
+                content: wishContent,
+                isPrivate: isPrivate,
+                hideFromFeed: hideFromFeed,
+                image: imageUrl, // Blob URL 저장
+                timestamp: new Date().toISOString(),
+                location: '서울' // 추후 실제 위치 데이터로 교체
+            };
+
+            console.log('솟대 생성 데이터:', sodaeData);
+            
+            try {
+                // 마이크 센서를 통한 바람 불기 프로세스 시작
+                await startWindSotdaeProcess(sodaeData);
+                
+                // 버튼 상태 복원
+                createSodaeBtn.disabled = false;
+                createSodaeBtn.textContent = '솟대 세우기';
+                createSodaeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                
+            } catch (error) {
+                console.error('솟대 세우기 실패:', error);
+                alert(error.message || '솟대 세우기에 실패했습니다.');
+                
+                // 버튼 상태 복원
+                createSodaeBtn.disabled = false;
+                createSodaeBtn.textContent = '솟대 세우기';
+                createSodaeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        });
+
+        // 바람 불기 솟대 세우기 프로세스
+        async function startWindSotdaeProcess(sotdaeData) {
+            console.log('바람 감지 프로세스 시작');
+            
+            // windDetector가 로드되었는지 확인 및 대기
+            if (!window.windDetector) {
+                console.log('windDetector 대기 중...');
+                try {
+                    await waitForWindDetector(100); // 최대 10초 대기
+                } catch (error) {
+                    console.error('windDetector가 로드되지 않았습니다. wind.js 파일을 확인해주세요.');
+                    alert('바람 감지 기능을 초기화할 수 없습니다. 페이지를 새로고침해주세요.');
+                    throw new Error('windDetector가 로드되지 않았습니다.');
+                }
+            }
+            
+            // 1. 마이크 센서 오버레이 표시
+            showMicrophoneOverlay();
+            
+            try {
+                // 2. 바람 감지 시작
+                await window.windDetector.startWindDetection(
+                    (volume) => {
+                        // 실시간 볼륨 표시 및 콘솔 로그
+                        console.log(`현재 RMS 볼륨: ${volume.toFixed(4)} | 임계값: ${window.windDetector.threshold.toFixed(4)} | 상태: ${volume > window.windDetector.threshold ? '감지됨!' : '대기중'}`);
+                        handleVolumeChange(volume);
+                    },
+                    () => {
+                        console.log('바람 감지 콜백 호출됨!');
+                        handleWindDetected(sotdaeData);
+                    }
+                );
+                
+            } catch (error) {
+                console.error('바람 감지 시작 실패:', error);
+                hideMicrophoneOverlay();
+                throw error;
+            }
+        }
+
+        // 마이크 센서 오버레이 표시
+        function showMicrophoneOverlay() {
+            const overlay = document.createElement('div');
+            overlay.id = 'microphoneOverlay';
+            overlay.className = 'fixed inset-0 z-50 flex items-center justify-center';
+            overlay.innerHTML = `
+                <div class="absolute inset-0 bg-black/80 backdrop-blur-lg"></div>
+                <div class="relative z-10 text-center">
+                    <div class="text-[#f3f1e9] text-3xl font-medium mb-8" style="font-family: 'Yeongwol', serif;">
+                        바람을 불어 솟대를 세워주세요
+                    </div>
+                    <div class="flex justify-center">
+                        <div class="w-24 h-24 border-2 border-[#f3f1e9]/30 rounded-full flex items-center justify-center">
+                            <img src="./wind.png" alt="바람" class="w-8 h-8 object-contain" />
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            // 페이드 인 애니메이션
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.5s ease-in-out';
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+            }, 10);
+        }
+
+        // 마이크 센서 오버레이 숨기기
+        function hideMicrophoneOverlay() {
+            const overlay = document.getElementById('microphoneOverlay');
+            if (overlay && overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+            }
+        }
+
+        // 볼륨 변화 처리
+        function handleVolumeChange(volume) {
+            // 볼륨 UI는 제거됨 - 디버깅용 콘솔 로그만 유지
+            // 마이크 인디케이터 업데이트 (있는 경우)
+            const indicator = document.getElementById('microphoneIndicator');
+            if (indicator) {
+                if (volume > 0.1) {
+                    indicator.classList.add('detecting');
+                } else {
+                    indicator.classList.remove('detecting');
+                }
+            }
+        }
+
+        // 바람 감지 처리
+        async function handleWindDetected(sotdaeData) {
+            console.log('바람 감지됨! 솟대 세우기 시작', sotdaeData);
+            
+            // 바람 감지 즉시 중지 (중복 감지 방지)
+            if (window.windDetector) {
+                window.windDetector.stopWindDetection();
+            }
+            
+            // 즉시 오버레이 숨기기
+            hideMicrophoneOverlay();
+            
+            // 모달 닫기 (기존 솟대 생성 모달)
+            closeCreateModalFunc();
+            
+            // 솟대 데이터 저장
+            saveSodaeData(sotdaeData);
+            
+            // 배경음악 재생
+            if (window.audioManager) {
+                window.audioManager.playBackgroundMusic();
+            }
+            
+            // 즉시 축하 모달 표시 (딜레이 없이)
+            console.log('축하 모달 표시 시도...');
+            const modalCheck = document.getElementById('celebrationModal');
+            console.log('모달 요소 확인:', modalCheck);
+            if (modalCheck) {
+                showCelebrationModal();
+                console.log('축하 모달 표시 완료');
+            } else {
+                console.error('축하 모달 요소를 찾을 수 없습니다!');
+                // 폴백: 직접 표시 시도
+                requestAnimationFrame(() => {
+                    const modal = document.getElementById('celebrationModal');
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                        console.log('폴백으로 모달 표시 성공');
+                    }
+                });
+            }
+            
+            // 애니메이션은 백그라운드에서 처리 (모달 표시를 방해하지 않음)
+            playSotdaeAnimation();
+        }
+
+
+
+        // 솟대 세우기 애니메이션 (백그라운드에서 처리)
+        function playSotdaeAnimation() {
+            // 빛 확장 효과
+            createLightExpansion();
+            
+            // 즉시 솟대 생성
+            createSotdae();
+            
+            // 빛 효과 제거 (백그라운드에서 처리)
+            setTimeout(() => {
+                const lightElement = document.getElementById('lightExpansion');
+                if (lightElement && lightElement.parentNode) {
+                    lightElement.parentNode.removeChild(lightElement);
+                }
+            }, 300);
+        }
+
+        // 빛 확장 효과 (즉시)
+        function createLightExpansion() {
+            const lightElement = document.createElement('div');
+            lightElement.id = 'lightExpansion';
+            lightElement.className = 'fixed inset-0 z-40 pointer-events-none';
+            lightElement.innerHTML = `
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-0 h-0 bg-gradient-radial from-white/80 via-white/40 to-transparent rounded-full transition-all duration-1000 ease-out"></div>
+            `;
+            
+            document.body.appendChild(lightElement);
+            
+            // 애니메이션 시작 (즉시, 딜레이 없음)
+            requestAnimationFrame(() => {
+                const light = lightElement.querySelector('div');
+                light.style.width = '200vw';
+                light.style.height = '200vh';
+            });
+        }
+
+        // 솟대 생성
+        function createSotdae() {
+            // 기존 솟대가 있다면 제거
+            const existingSotdae = document.getElementById('userSotdae');
+            if (existingSotdae) {
+                existingSotdae.remove();
+            }
+            
+            // 새 솟대 생성
+            const sotdaeElement = document.createElement('div');
+            sotdaeElement.id = 'userSotdae';
+            sotdaeElement.className = 'fixed bottom-8 right-8 z-30';
+            sotdaeElement.innerHTML = `
+                <div class="bg-black/40 backdrop-blur-md rounded-xl p-4 border border-white/20 shadow-2xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-full flex items-center justify-center">
+                            <img src="./zkem.png" alt="솟대" class="w-8 h-8 object-contain">
+                        </div>
+                        <div>
+                            <div class="text-white font-medium text-sm">새로운 솟대</div>
+                            <div class="text-white/60 text-xs">방금 전에 세워졌습니다</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 즉시 표시
+            document.body.appendChild(sotdaeElement);
+        }
+
+
+        // 축하 모달 이벤트 리스너
+        celebrationOverlay.addEventListener('click', closeCelebrationModal);
+        viewMySodaeBtn.addEventListener('click', () => {
+            closeCelebrationModal();
+            window.location.href = './profile.html';
+        });
+
+        // ESC 키로 축하 모달 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !celebrationModal.classList.contains('hidden')) {
+                closeCelebrationModal();
+            }
+        });
+
+        // 소원 저장 함수
+        function saveWish(region, wish) {
+            try {
+                // 지역명 정규화 (공백 제거, trim)
+                const normalizedRegion = String(region).trim();
+                const key = `wish_${normalizedRegion}`;
+                
+                console.log(`[saveWish] 지역: ${normalizedRegion}, 키: ${key}`);
+                console.log(`[saveWish] 소원 내용: ${wish}`);
+                
+                // 기존 소원 불러오기
+                const storedData = localStorage.getItem(key);
+                let existingWishes = [];
+                
+                if (storedData) {
+                    try {
+                        existingWishes = JSON.parse(storedData);
+                        if (!Array.isArray(existingWishes)) {
+                            console.warn(`[saveWish] 기존 데이터가 배열이 아님, 새 배열로 초기화`);
+                            existingWishes = [];
+                        }
+                    } catch (parseError) {
+                        console.warn(`[saveWish] 기존 데이터 파싱 실패, 새 배열로 초기화:`, parseError);
+                        existingWishes = [];
+                    }
+                }
+                
+                console.log(`[saveWish] 기존 소원 개수: ${existingWishes.length}`);
+                
+                // 새 소원 추가
+                existingWishes.push(String(wish).trim());
+                
+                // localStorage에 저장
+                localStorage.setItem(key, JSON.stringify(existingWishes));
+                
+                console.log(`[saveWish] 저장 완료 - 지역: ${normalizedRegion}, 키: ${key}, 총 소원 개수: ${existingWishes.length}`);
+                console.log(`[saveWish] 저장된 전체 소원:`, existingWishes);
+                
+                return true;
+            } catch (error) {
+                console.error('[saveWish] 소원 저장 실패:', error);
+                console.error('[saveWish] 에러 상세:', error.message);
+                return false;
+            }
+        }
+
+        // 소원 입력 모달 관련 변수들
+        const wishInputModal = document.getElementById('wishInputModal');
+        const wishModalOverlay = document.getElementById('wishModalOverlay');
+        const closeWishModal = document.getElementById('closeWishModal');
+        const cancelWishBtn = document.getElementById('cancelWishBtn');
+        const submitWishBtn = document.getElementById('submitWishBtn');
+        const wishInput = document.getElementById('wishInput');
+
+        // 소원 입력 모달 닫기 함수
+        function closeWishModalFunc() {
+            if (wishInputModal) {
+                wishInputModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                // 입력 필드 초기화
+                if (wishInput) {
+                    wishInput.value = '';
+                }
+            }
+        }
+
+        // 소원 입력 모달 이벤트 리스너
+        if (closeWishModal) {
+            closeWishModal.addEventListener('click', closeWishModalFunc);
+        }
+        if (cancelWishBtn) {
+            cancelWishBtn.addEventListener('click', closeWishModalFunc);
+        }
+        if (wishModalOverlay) {
+            wishModalOverlay.addEventListener('click', closeWishModalFunc);
+        }
+
+        // ESC 키로 소원 입력 모달 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && wishInputModal && !wishInputModal.classList.contains('hidden')) {
+                closeWishModalFunc();
+            }
+        });
+
+        // 소원 제출 이벤트
+        if (submitWishBtn) {
+            submitWishBtn.addEventListener('click', () => {
+                const wishText = wishInput ? wishInput.value.trim() : '';
+                const regionDisplay = document.getElementById('selectedRegionDisplay');
+                let region = regionDisplay ? regionDisplay.textContent.trim() : '';
+
+                console.log(`[소원 제출] 입력된 소원: "${wishText}"`);
+                console.log(`[소원 제출] 선택된 지역 (textContent): "${region}"`);
+
+                if (!wishText) {
+                    alert('소원을 입력해주세요.');
+                    return;
+                }
+
+                if (!region) {
+                    alert('지역을 선택해주세요.');
+                    return;
+                }
+
+                // 지역명 정규화
+                region = String(region).trim();
+                console.log(`[소원 제출] 정규화된 지역: "${region}"`);
+
+                // 소원 저장
+                const success = saveWish(region, wishText);
+                
+                if (success) {
+                    // 성공 알림 표시
+                    const successMsg = document.getElementById('wishSuccessMsg');
+                    if (successMsg) {
+                        successMsg.classList.remove('hidden');
+                    }
+                    
+                    // 입력 필드 초기화
+                    if (wishInput) {
+                        wishInput.value = '';
+                    }
+                    
+                    // 1.5초 후 모달 닫기 (성공 메시지 확인 시간)
+                    setTimeout(() => {
+                        closeWishModalFunc();
+                        if (successMsg) {
+                            successMsg.classList.add('hidden');
+                        }
+                    }, 1500);
+                } else {
+                    alert('소원 저장에 실패했습니다. 다시 시도해주세요.');
+                }
+            });
+        }
+    </script>
+  </body>
+</html>
