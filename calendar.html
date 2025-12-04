@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캘린더 - 소원의 산마루</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Yeongwol&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'Yeongwol';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'KBIZ한마음명조';
+            src: url('./KBIZ한마음명조 M.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'happygoheung M';
+            src: url('./행복고흥M.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'gkswk';
+            src: url('./gkswk.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .calendar-cell {
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-cell:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .today-highlight {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        
+        .wish-icon {
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .wish-save-animation {
+            animation: wishFly 1.5s ease-out forwards;
+        }
+        
+        @keyframes wishFly {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-50px) scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) scale(0.8);
+                opacity: 0;
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Overlay menu styles (home.html과 동일) */
+        .overlay { 
+            position: fixed; 
+            inset: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            background: rgba(10,18,36,0.94); 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            transition: opacity .4s ease; 
+            z-index: 9999; 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .overlay.hidden { 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .overlay.show { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        .close-btn { 
+            position: absolute; 
+            top: 8px; 
+            right: 40px; 
+            font-size: 28px; 
+            color: #fff; 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            transition: transform .2s ease; 
+        }
+        @media (min-width: 768px) { 
+            .close-btn { 
+                right: 48px; 
+                top: 8px; 
+            } 
+        }
+        .close-btn:hover { 
+            transform: rotate(90deg); 
+        }
+        .menu-nav { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: flex-start; 
+            height: 100vh; 
+            padding-left: 1.5vw; 
+        }
+        .menu-nav ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            text-align: left; 
+        }
+        .menu-nav li { 
+            margin: 16px 0; 
+        }
+        .menu-nav a { 
+            text-decoration: none; 
+            font-family: 'happygoheung M', serif; 
+            font-size: 28px; 
+            font-weight: 600; 
+            letter-spacing: 4px; 
+            color: #f3f4f6; 
+            transition: opacity .2s ease, letter-spacing .3s ease; 
+            text-transform: uppercase; 
+        }
+        .menu-nav a:hover { 
+            opacity: .9; 
+            letter-spacing: 6px; 
+        }
+    </style>
+</head>
+<body class="m-0 p-0 overflow-x-hidden bg-black" style="background-image: url('./mywish.png'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <!-- 배경 이미지 -->
+    <div class="fixed inset-0 bg-cover bg-center bg-fixed z-0" style="background-image: url('./mywish.png'); z-index: 0;"></div>
+    <div class="fixed inset-0 bg-black/40 z-0"></div>
+    
+    <div id="root"></div>
+
+    <!-- React 18 via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <script type="text/javascript">
+        const e = React.createElement;
+        const { useState, useEffect } = React;
+
+        // 아이콘 컴포넌트들
+        const BellIcon = (props) =>
+            e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+                e("path", { d: "M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2Z", fill: "currentColor" }),
+                e("path", { d: "M18 16v-5a6 6 0 1 0-12 0v5l-2 2h16l-2-2Z", stroke: "currentColor", strokeWidth: 1.5 })
+            );
+
+        const HeartIcon = (props) =>
+            e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+                e("path", { d: "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z", stroke: "currentColor", strokeWidth: 1.5, fill: "currentColor", fillOpacity: 0.1 })
+            );
+
+        const UserIcon = (props) =>
+            e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+                e("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z", stroke: "currentColor", strokeWidth: 1.5 }),
+                e("path", { d: "M4 21a8 8 0 1 1 16 0", stroke: "currentColor", strokeWidth: 1.5 })
+            );
+
+        const ChevronLeftIcon = (props) =>
+            e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+                e("path", { d: "m15 18-6-6 6-6", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" })
+            );
+
+        const ChevronRightIcon = (props) =>
+            e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+                e("path", { d: "m9 18 6-6-6-6", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" })
+            );
+
+        const StarIcon = (props) =>
+            e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+                e("path", { d: "M12 3l2.9 5.88L21 10.2l-4.5 4.38L17.8 21 12 17.9 6.2 21l1.3-6.42L3 10.2l6.1-1.32L12 3Z", stroke: "currentColor", strokeWidth: 1.5, fill: "currentColor", fillOpacity: 0.2 })
+            );
+
+        const FlameIcon = (props) =>
+            e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+                e("path", { d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z", stroke: "currentColor", strokeWidth: 1.5, fill: "currentColor", fillOpacity: 0.1 })
+            );
+
+        const BirdIcon = (props) =>
+            e("svg", { viewBox: "0 0 24 24", fill: "none", ...props },
+                e("path", { d: "M16 7h.01M16 3a5 5 0 0 1 5 5c0 1.25-.5 2.5-1.5 3.5L19 14l-1.5-2.5C16.5 10.5 16 9.25 16 8a5 5 0 0 1 5-5z", stroke: "currentColor", strokeWidth: 1.5, fill: "currentColor", fillOpacity: 0.1 })
+            );
+
+        // 네비게이션 바 컴포넌트
+        const Navbar = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [isButtonPressed, setIsButtonPressed] = useState(false);
+
+            const toggleMenu = () => {
+                setIsMenuOpen(!isMenuOpen);
+            };
+
+            const handleButtonClick = () => {
+                setIsButtonPressed(true);
+                setTimeout(() => setIsButtonPressed(false), 150);
+                toggleMenu();
+            };
+
+            // 메뉴 외 영역 클릭 시 닫기
+            React.useEffect(() => {
+                const handleClickOutside = (event) => {
+                    if (isMenuOpen && !event.target.closest('.menu-container')) {
+                        setIsMenuOpen(false);
+                    }
+                };
+
+                if (isMenuOpen) {
+                    document.addEventListener('click', handleClickOutside);
+                }
+
+                return () => {
+                    document.removeEventListener('click', handleClickOutside);
+                };
+            }, [isMenuOpen]);
+
+            const menuItems = [
+                { name: "솟대 지도", href: "./home.html#sotdae-map", isHash: true },
+                { name: "솟대공작소", href: "./sotdae-workshop.html" },
+                { name: "바람일지", href: "./calendar.html" },
+                { name: "나의 솟대", href: "./profile.html" }
+            ];
+
+            return e(React.Fragment, null,
+                e("header", { className: "fixed top-0 inset-x-0 z-50 backdrop-blur-sm bg-gradient-to-b from-black/10 to-transparent" },
+                    e("div", { className: "w-full px-6 md:px-8 py-4 flex items-center justify-between" },
+                        // 좌측: W.S.P 로고
+                        e("div", { className: "flex items-center gap-3" },
+                            e("h1", { 
+                                className: "text-2xl font-normal text-white cursor-pointer",
+                                onClick: () => window.location.href = "./home.html"
+                            }, [
+                                e("span", { key: "gkswk", style: { fontFamily: 'gkswk, serif' } }, "願"),
+                                e("span", { key: "happygoheung", style: { fontFamily: 'happygoheung M, serif' } }, ":솟다")
+                            ])
+                        ),
+                        // 우측: 메뉴 버튼
+                        e("div", { className: "relative menu-container" },
+                            e("button", { 
+                                id: "menu-btn",
+                                className: `inline-flex items-center justify-center text-white transition-transform duration-200 ${
+                                    isButtonPressed ? 'scale-110' : 'scale-100'
+                                }`,
+                                onClick: handleButtonClick,
+                                ariaLabel: '메뉴 열기'
+                            },
+                                e("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" },
+                                    e("line", { x1: 3, y1: 6, x2: 21, y2: 6 }),
+                                    e("line", { x1: 3, y1: 12, x2: 21, y2: 12 }),
+                                    e("line", { x1: 3, y1: 18, x2: 21, y2: 18 })
+                                )
+                            )
+                        )
+                    )
+                ),
+                // header 밖에 위치한 오버레이
+                e("div", {
+                    id: "overlay-menu",
+                    className: `overlay ${isMenuOpen ? 'show' : ''}`
+                },
+                    e("button", {
+                        id: "close-menu",
+                        className: "close-btn",
+                        onClick: () => setIsMenuOpen(false),
+                        ariaLabel: '메뉴 닫기'
+                    }, "×"),
+                    e("nav", { className: "menu-nav" },
+                        e("ul", null,
+                            menuItems.map((item) =>
+                                e("li", { key: item.name },
+                                    e("a", {
+                                        href: item.href,
+                                        onClick: (e) => {
+                                            setIsMenuOpen(false);
+                                            // 해시 링크인 경우는 기본 동작 사용 (home.html에서 처리)
+                                        },
+                                        style: undefined
+                                    }, item.name)
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        };
+
+        // 회고 작성 모달 컴포넌트
+        const ReflectionModal = ({ isOpen, onClose, selectedDate, onSave, existingData }) => {
+            const [reflectionText, setReflectionText] = useState("");
+            const [isAnimating, setIsAnimating] = useState(false);
+
+            // 모달이 열릴 때 기존 데이터가 있으면 회고 내용 로드
+            React.useEffect(() => {
+                if (isOpen && existingData) {
+                    setReflectionText(existingData.reflection || "");
+                } else if (isOpen) {
+                    setReflectionText("");
+                }
+            }, [isOpen, existingData]);
+
+            const handleSave = () => {
+                if (!reflectionText.trim()) return;
+                
+                setIsAnimating(true);
+                
+                // 애니메이션 후 저장
+                setTimeout(() => {
+                    // 7일 후 리마인드 날짜 계산 (로컬 시간대 기준)
+                    const selectedDateObj = new Date(selectedDate);
+                    const reminderDateObj = new Date(selectedDateObj);
+                    reminderDateObj.setDate(selectedDateObj.getDate() + 7);
+                    
+                    // 로컬 시간대 기준으로 YYYY-MM-DD 형식 변환
+                    const reminderYear = reminderDateObj.getFullYear();
+                    const reminderMonth = String(reminderDateObj.getMonth() + 1).padStart(2, '0');
+                    const reminderDay = String(reminderDateObj.getDate()).padStart(2, '0');
+                    const reminderDate = `${reminderYear}-${reminderMonth}-${reminderDay}`;
+                    
+                    onSave({
+                        date: selectedDate,
+                        reflection: reflectionText.trim(),
+                        wish: existingData?.wish || "",
+                        reminderDate: existingData?.reminderDate || reminderDate,
+                        completed: true
+                    });
+                    setReflectionText("");
+                    setIsAnimating(false);
+                    onClose();
+                }, 1500);
+            };
+
+            if (!isOpen) return null;
+
+            const formatDate = (dateStr) => {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('ko-KR', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    weekday: 'long'
+                });
+            };
+
+            return e("div", { className: "fixed inset-0 z-50 flex items-center justify-center p-4" },
+                e("div", { className: "absolute inset-0 bg-black/60 backdrop-blur-sm", onClick: onClose }),
+                e("div", { className: `relative glassmorphism rounded-2xl p-8 w-full max-w-lg fade-in ${isAnimating ? 'wish-save-animation' : ''}` },
+                    e("div", { className: "flex items-center justify-between mb-6" },
+                        e("h3", { className: "text-xl font-semibold text-white" }, "회고록 작성"),
+                        e("button", { 
+                            className: "text-white/60 hover:text-white transition-colors",
+                            onClick: onClose
+                        }, "✕")
+                    ),
+                    e("div", { className: "space-y-6" },
+                        // 선택한 날짜와 소원 제목 표시
+                        e("div", { className: "bg-white/5 rounded-lg p-4 border border-white/10" },
+                            e("div", { className: "text-white/80 text-sm mb-2" }, "선택한 날짜"),
+                            e("div", { className: "text-white font-medium text-lg mb-3" }, formatDate(selectedDate)),
+                            existingData?.wish && e("div", {},
+                                e("div", { className: "text-white/80 text-sm mb-1" }, "해당 날짜의 소원"),
+                                e("div", { className: "text-white/90 text-sm italic" }, `"${existingData.wish}"`)
+                            )
+                        ),
+                        e("div", {},
+                            e("label", { className: "block text-white/80 text-sm font-medium mb-2" }, "회고 내용을 작성해주세요"),
+                            e("textarea", {
+                                value: reflectionText,
+                                onChange: (e) => setReflectionText(e.target.value),
+                                placeholder: "그 날의 소원에 대해 어떻게 생각하시나요? 어떤 경험을 하셨나요? 자유롭게 적어보세요...",
+                                className: "w-full h-32 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none",
+                                maxLength: 500
+                            }),
+                            e("div", { className: "text-right text-white/50 text-xs mt-1" }, 
+                                `${reflectionText.length}/500`
+                            )
+                        ),
+                        e("div", { className: "flex justify-end space-x-3 pt-4" },
+                            e("button", {
+                                onClick: onClose,
+                                className: "px-4 py-2 text-white/60 hover:text-white transition-colors"
+                            }, "취소"),
+                            e("button", {
+                                onClick: handleSave,
+                                disabled: !reflectionText.trim() || isAnimating,
+                                className: `px-6 py-2 rounded-lg font-medium transition-all ${
+                                    !reflectionText.trim() || isAnimating
+                                        ? 'bg-white/20 text-white/50 cursor-not-allowed'
+                                        : 'bg-blue-600 hover:bg-blue-500 text-white'
+                                }`
+                            }, isAnimating ? "저장 중..." : "저장하기")
+                        )
+                    )
+                )
+            );
+        };
+
+        // 캘린더 컴포넌트
+        const Calendar = () => {
+            const [currentDate, setCurrentDate] = useState(new Date());
+            const [selectedDate, setSelectedDate] = useState(null);
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [wishData, setWishData] = useState({});
+            const [monthStats, setMonthStats] = useState({ total: 0, thisMonth: 0 });
+            const [reminders, setReminders] = useState([]);
+
+            // localStorage에서 데이터 로드
+            useEffect(() => {
+                const savedData = localStorage.getItem('wishReflectionData');
+                if (savedData) {
+                    setWishData(JSON.parse(savedData));
+                }
+            }, []);
+
+            // 데이터가 변경될 때마다 localStorage에 저장
+            useEffect(() => {
+                localStorage.setItem('wishReflectionData', JSON.stringify(wishData));
+            }, [wishData]);
+
+            // 리마인드 체크
+            useEffect(() => {
+                const today = formatDateString(new Date());
+                const todayReminders = Object.values(wishData).filter(data => 
+                    data.reminderDate === today && data.completed
+                );
+                setReminders(todayReminders);
+            }, [wishData]);
+
+            // 월별 통계 계산
+            useEffect(() => {
+                const currentMonth = currentDate.getMonth();
+                const currentYear = currentDate.getFullYear();
+                
+                const thisMonthData = Object.values(wishData).filter(data => {
+                    const dataDate = new Date(data.date);
+                    return dataDate.getMonth() === currentMonth && dataDate.getFullYear() === currentYear;
+                });
+                
+                setMonthStats({
+                    total: Object.keys(wishData).length,
+                    thisMonth: thisMonthData.length
+                });
+            }, [wishData, currentDate]);
+
+            // 날짜를 YYYY-MM-DD 형식으로 변환하는 함수 (로컬 시간대 기준)
+            const formatDateString = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            // 캘린더 데이터 생성
+            const generateCalendarData = () => {
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+                
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                const calendar = [];
+                const today = new Date();
+                
+                for (let i = 0; i < 42; i++) {
+                    const date = new Date(startDate);
+                    date.setDate(startDate.getDate() + i);
+                    
+                    const isCurrentMonth = date.getMonth() === month;
+                    const isToday = date.toDateString() === today.toDateString();
+                    const dateStr = formatDateString(date); // 로컬 시간대 기준으로 변환
+                    const data = wishData[dateStr];
+                    const hasReflection = data && data.reflection;
+                    
+                    calendar.push({
+                        date,
+                        dateStr,
+                        isCurrentMonth,
+                        isToday,
+                        hasReflection,
+                        data
+                    });
+                }
+                
+                return calendar;
+            };
+
+            const handleDateClick = (dateStr) => {
+                setSelectedDate(dateStr);
+                setIsModalOpen(true);
+            };
+
+            const handleSaveReflection = (reflectionData) => {
+                setWishData(prev => ({
+                    ...prev,
+                    [reflectionData.date]: reflectionData
+                }));
+            };
+
+            const navigateMonth = (direction) => {
+                setCurrentDate(prev => {
+                    const newDate = new Date(prev);
+                    newDate.setMonth(prev.getMonth() + direction);
+                    return newDate;
+                });
+            };
+
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
+            const calendarData = generateCalendarData();
+
+            return e("div", { className: "relative z-10 pt-20 min-h-screen" },
+                e("div", { className: "max-w-6xl mx-auto px-6 py-8" },
+                    // 월별 통계
+                    e("div", { className: "glassmorphism rounded-2xl p-6 mb-8 fade-in" },
+                        e("div", { className: "flex items-center justify-between" },
+                            e("div", {},
+                                e("h2", { className: "text-2xl font-semibold text-white mb-2", style: { fontFamily: 'Yeongwol' } }, "이번 달 회고 현황"),
+                                e("p", { className: "text-white/70" }, `이번 달엔 ${monthStats.thisMonth}개의 회고가 작성되었습니다`),
+                                e("p", { className: "text-white/50 text-sm mt-1" }, `전체 회고: ${monthStats.total}개`)
+                            ),
+                            e("div", { className: "text-right" },
+                                e("div", { className: "text-3xl font-bold text-blue-400" }, monthStats.thisMonth),
+                                e("div", { className: "text-white/60 text-sm" }, "이번 달 회고")
+                            )
+                        )
+                    ),
+
+                    // 캘린더
+                    e("div", { className: "glassmorphism rounded-2xl p-8 fade-in" },
+                        // 캘린더 헤더
+                        e("div", { className: "flex items-center justify-between mb-8" },
+                            e("button", {
+                                onClick: () => navigateMonth(-1),
+                                className: "p-2 rounded-full hover:bg-white/10 transition-colors"
+                            }, e(ChevronLeftIcon, { className: "h-6 w-6 text-white/80" })),
+                            e("h3", { 
+                                className: "text-2xl font-semibold text-white",
+                                style: { fontFamily: 'Yeongwol' }
+                            }, `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`),
+                            e("button", {
+                                onClick: () => navigateMonth(1),
+                                className: "p-2 rounded-full hover:bg-white/10 transition-colors"
+                            }, e(ChevronRightIcon, { className: "h-6 w-6 text-white/80" }))
+                        ),
+
+                        // 요일 헤더
+                        e("div", { className: "grid grid-cols-7 gap-1 mb-4" },
+                            dayNames.map(day =>
+                                e("div", {
+                                    key: day,
+                                    className: "text-center text-white/60 font-medium py-2"
+                                }, day)
+                            )
+                        ),
+
+                        // 캘린더 그리드
+                        e("div", { className: "grid grid-cols-7 gap-1" },
+                            calendarData.map((day, index) =>
+                                e("div", {
+                                    key: index,
+                                    onClick: () => handleDateClick(day.dateStr),
+                                    className: `calendar-cell relative h-16 flex flex-col items-center justify-center rounded-lg cursor-pointer group ${
+                                        day.isCurrentMonth ? 'text-white' : 'text-white/40'
+                                    } ${day.isToday ? 'today-highlight' : ''} ${
+                                        day.hasReflection ? 'bg-blue-500/20 border border-blue-400/30' : ''
+                                    }`,
+                                    title: day.hasReflection ? day.data.reflection.substring(0, 50) + (day.data.reflection.length > 50 ? '...' : '') : ''
+                                },
+                                    e("span", { className: "text-sm font-medium" }, day.date.getDate()),
+                                    day.hasReflection && e("div", { className: "absolute bottom-1" },
+                                        e("div", { className: "w-2 h-2 bg-blue-400 rounded-full" })
+                                    )
+                                )
+                            )
+                        )
+                    )
+                ),
+
+                // 리마인드 알림
+                reminders.length > 0 && e("div", { className: "fixed top-20 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4" },
+                    e("div", { className: "bg-blue-600/90 backdrop-blur-sm rounded-lg p-4 border border-blue-400/30 shadow-lg" },
+                        e("div", { className: "flex items-center gap-3" },
+                            e("div", { className: "w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center" },
+                                e("svg", { className: "w-5 h-5 text-white", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
+                                    e("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" })
+                                )
+                            ),
+                            e("div", { className: "flex-1" },
+                                e("h4", { className: "text-white font-medium text-sm" }, "리마인드 알림"),
+                                e("p", { className: "text-white/80 text-xs mt-1" }, 
+                                    `${reminders.length}개의 소원을 다시 되돌아보세요.`
+                                )
+                            ),
+                            e("button", { 
+                                className: "text-white/60 hover:text-white transition-colors",
+                                onClick: () => setReminders([])
+                            }, "✕")
+                        )
+                    )
+                ),
+
+                // 회고 작성 모달
+                e(ReflectionModal, {
+                    isOpen: isModalOpen,
+                    onClose: () => setIsModalOpen(false),
+                    selectedDate: selectedDate,
+                    onSave: handleSaveReflection,
+                    existingData: selectedDate ? wishData[selectedDate] : null
+                })
+            );
+        };
+
+        // 메인 앱 컴포넌트
+        const App = () =>
+            e("div", { className: "relative min-h-screen" },
+                e(Navbar),
+                e("main", { className: "pt-14" },
+                    e(Calendar)
+                )
+            );
+
+        // 앱 렌더링
+        ReactDOM.createRoot(document.getElementById("root")).render(e(App));
+    </script>
+</body>
+</html>
+
