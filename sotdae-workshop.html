@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>솟대공작소 - 소원의 산마루</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Yeongwol&display=swap" rel="stylesheet" />
+    
+    <style>
+      /* 로컬 폰트 정의 */
+      @font-face {
+        font-family: 'Yeongwol';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'KBIZ한마음명조';
+        src: url('./KBIZ한마음명조 M.otf') format('opentype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'happygoheung M';
+        src: url('./행복고흥M.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'gkswk';
+        src: url('./gkswk.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      
+      /* 상품 카드 애니메이션 */
+      .product-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      
+      .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* 카테고리 필터 버튼 */
+      .filter-button {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .filter-button.active {
+        background: #1f2937;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      
+      .filter-button:hover:not(.active) {
+        background: #f3f4f6;
+        transform: translateY(-1px);
+      }
+      
+      /* 상품 이미지 스타일 */
+      .product-image {
+        background: #f3f4f6;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      /* 그리드 애니메이션 */
+      .product-grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      @media (max-width: 768px) {
+        .product-grid {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+        }
+      }
+      
+      /* 로딩 애니메이션 */
+      .loading-shimmer {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+      
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      
+      /* 스크롤 애니메이션 */
+      .fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+      }
+      
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      /* Overlay menu styles (home.html과 동일) */
+      .overlay { 
+          position: fixed; 
+          inset: 0; 
+          width: 100vw; 
+          height: 100vh; 
+          background: rgba(10,18,36,0.94); 
+          display: flex; 
+          justify-content: center; 
+          align-items: flex-start; 
+          transition: opacity .4s ease; 
+          z-index: 9999; 
+          opacity: 0; 
+          pointer-events: none; 
+      }
+      .overlay.hidden { 
+          opacity: 0; 
+          pointer-events: none; 
+      }
+      .overlay.show { 
+          opacity: 1; 
+          pointer-events: auto; 
+      }
+      .close-btn { 
+          position: absolute; 
+          top: 8px; 
+          right: 40px; 
+          font-size: 28px; 
+          color: #fff; 
+          background: none; 
+          border: none; 
+          cursor: pointer; 
+          transition: transform .2s ease; 
+      }
+      @media (min-width: 768px) { 
+          .close-btn { 
+              right: 48px; 
+              top: 8px; 
+          } 
+      }
+      .close-btn:hover { 
+          transform: rotate(90deg); 
+      }
+      .menu-nav { 
+          display: flex; 
+          flex-direction: column; 
+          justify-content: center; 
+          align-items: flex-start; 
+          height: 100vh; 
+          padding-left: 1.5vw; 
+      }
+      .menu-nav ul { 
+          list-style: none; 
+          padding: 0; 
+          margin: 0; 
+          text-align: left; 
+      }
+      .menu-nav li { 
+          margin: 16px 0; 
+      }
+      .menu-nav a { 
+          text-decoration: none; 
+          font-family: 'happygoheung M', serif; 
+          font-size: 28px; 
+          font-weight: 600; 
+          letter-spacing: 4px; 
+          color: #f3f4f6; 
+          transition: opacity .2s ease, letter-spacing .3s ease; 
+          text-transform: uppercase; 
+      }
+      .menu-nav a:hover { 
+          opacity: .9; 
+          letter-spacing: 6px; 
+      }
+    </style>
+  </head>
+
+  <body class="m-0 p-0 bg-gray-50 min-h-screen" style="margin: 0; padding: 0;">
+    <!-- 네비게이션 바 -->
+    <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-sm bg-gradient-to-b from-black/10 to-transparent" style="top: 0; margin-top: 0;">
+      <div class="w-full px-6 md:px-8 py-4 flex items-center justify-between">
+        <!-- 좌측: W.S.P 로고 -->
+        <div class="flex items-center gap-3">
+          <h1 
+            class="text-xl font-normal text-black cursor-pointer"
+            style="font-family: 'Yeongwol', serif; color: #000000;"
+            onclick="window.location.href='./home.html'"
+          >
+            <span style="font-family: 'gkswk', serif;">願</span><span style="font-family: 'happygoheung M', serif;">:솟다</span>
+          </h1>
+        </div>
+        <!-- 우측: 메뉴 버튼 -->
+        <div class="relative menu-container">
+          <button 
+            id="menu-btn"
+            class="inline-flex items-center justify-center text-black transition-transform duration-200"
+            style="color: #000000;"
+            onclick="toggleMenu()"
+            aria-label="메뉴 열기"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color: #000000;">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <!-- 오버레이 메뉴 -->
+    <div id="overlay-menu" class="overlay hidden">
+      <button 
+        id="close-menu"
+        class="close-btn"
+        onclick="closeMenu()"
+        aria-label="메뉴 닫기"
+      >×</button>
+      <nav class="menu-nav">
+        <ul>
+          <li>
+            <a href="./home.html#sotdae-map" onclick="closeMenu()">솟대 지도</a>
+          </li>
+          <li>
+            <a href="./sotdae-workshop.html" onclick="closeMenu()">솟대공작소</a>
+          </li>
+          <li>
+            <a href="./calendar.html" onclick="closeMenu()">바람 일지</a>
+          </li>
+          <li>
+            <a href="./profile.html" onclick="closeMenu()">나의 솟대</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="pt-20 bg-white">
+      <!-- 페이지 타이틀 섹션 -->
+      <div class="py-16">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+          <h2 
+            class="text-4xl sm:text-5xl font-light text-gray-800 mb-6"
+            style="font-family: 'Yeongwol', serif;"
+          >
+            솟대공작소
+          </h2>
+          <p class="text-base text-gray-500 max-w-3xl mx-auto leading-relaxed">
+            마음 속 바람을 담아, 나만의 솟대로 완성하세요.<br>
+            단순한 장식이 아니라, 당신만의 특별한 의미를 담은 오브제입니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 카테고리 필터 -->
+      <div class="border-b border-gray-200 py-6">
+        <div class="max-w-6xl mx-auto px-6">
+          <div class="flex flex-wrap gap-3 justify-center">
+            <button class="filter-button active px-6 py-3 rounded-full border border-gray-300 text-gray-700 font-medium" data-category="all">
+              전체
+            </button>
+            <button class="filter-button px-6 py-3 rounded-full border border-gray-300 text-gray-700 font-medium" data-category="hope">
+              희망 & 기쁨
+            </button>
+            <button class="filter-button px-6 py-3 rounded-full border border-gray-300 text-gray-700 font-medium" data-category="comfort">
+              슬픔 & 위로
+            </button>
+            <button class="filter-button px-6 py-3 rounded-full border border-gray-300 text-gray-700 font-medium" data-category="freedom">
+              자유 & 감안
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 상품 그리드 영역 -->
+      <div class="bg-gray-50 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="product-grid" id="productGrid" style="grid-auto-rows: 1fr;">
+            <!-- 상품들이 JavaScript로 동적으로 생성됩니다 -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-gray-200 py-12">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800">솟대공작소</h3>
+            <p class="text-gray-600 text-sm">나만의 특별한 솟대를 만들어보세요</p>
+          </div>
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800">카테고리</h3>
+            <div class="space-y-2">
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">희망 & 기쁨</a>
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">슬픔 & 위로</a>
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">자유 & 감안</a>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800">고객지원</h3>
+            <div class="space-y-2">
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">문의하기</a>
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">배송안내</a>
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">교환/반품</a>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800">연락처</h3>
+            <div class="space-y-2">
+              <p class="text-gray-600 text-sm">sotdae@example.com</p>
+              <p class="text-gray-600 text-sm">02-1234-5678</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-12 pt-8 border-t border-gray-200 text-center">
+          <p class="text-gray-500 text-sm">© 2024 솟대공작소. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // 상품 데이터
+      const productsData = [
+        {
+          id: 1,
+          name: "Form 01",
+          price: 20000,
+          category: "hope",
+          image: "https://via.placeholder.com/300x300?text=Sotdae+1"
+        },
+        {
+          id: 2,
+          name: "Form 02",
+          price: 25000,
+          category: "comfort",
+          image: "https://via.placeholder.com/300x300?text=Sotdae+2"
+        },
+        {
+          id: 3,
+          name: "Form 03",
+          price: 30000,
+          category: "freedom",
+          image: "https://via.placeholder.com/300x300?text=Sotdae+3"
+        },
+        {
+          id: 4,
+          name: "Form 04",
+          price: 22000,
+          category: "hope",
+          image: "https://via.placeholder.com/300x300?text=Sotdae+4"
+        },
+        {
+          id: 5,
+          name: "Form 05",
+          price: 28000,
+          category: "comfort",
+          image: "https://via.placeholder.com/300x300?text=Sotdae+5"
+        },
+        {
+          id: 6,
+          name: "Form 06",
+          price: 32000,
+          category: "freedom",
+          image: "https://via.placeholder.com/300x300?text=Sotdae+6"
+        },
+        {
+          id: 7,
+          name: "Form 07",
+          price: 24000,
+          category: "hope",
+          image: "https://via.placeholder.com/300x300?text=Sotdae+7"
+        },
+        {
+          id: 8,
+          name: "Form 08",
+          price: 26000,
+          category: "comfort",
+          image: "https://via.placeholder.com/300x300?text=Sotdae+8"
+        }
+      ];
+
+      // 현재 선택된 카테고리
+      let currentCategory = 'all';
+
+      // 상품 이미지 매핑 (일관성 유지)
+      function getProductImage(productId) {
+        const imageMap = {
+          1: 'a1.png',       // 오리 솟대
+          2: 'sotdae4.png',  // 참새 솟대
+          3: 'a2.png',       // 비둘기 솟대
+          4: 's5.png',       // 백로 솟대
+          5: 'a5.png',       // Healing Light
+        };
+        return imageMap[productId] || 'sotdae4.png';
+      }
+
+      // 상품 카드 생성 함수
+      function createProductCard(product) {
+        const productImage = getProductImage(product.id);
+        return `
+          <div class="product-card bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden fade-in cursor-pointer" data-category="${product.category}" onclick="goToProductDetail(${product.id})">
+            <div class="aspect-square w-full bg-gray-100 rounded-t-lg overflow-hidden">
+              <img src="./${productImage}" alt="${product.name}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium text-gray-800 text-lg mb-2">${product.name}</h3>
+              <p class="text-gray-600 font-semibold">${product.price.toLocaleString()}원</p>
+            </div>
+          </div>
+        `;
+      }
+
+      // 장바구니 데이터를 localStorage에서 가져오기
+      function getCartItems() {
+        const saved = localStorage.getItem('sotdaeCart');
+        return saved ? JSON.parse(saved) : [];
+      }
+
+      // 장바구니 데이터를 localStorage에 저장
+      function saveCartItems(cartItems) {
+        localStorage.setItem('sotdaeCart', JSON.stringify(cartItems));
+      }
+
+      // 상품 상세 페이지로 이동
+      function goToProductDetail(productId) {
+        const selectedImage = getProductImage(productId);
+        
+        // localStorage에 상품 정보 저장
+        const product = productsData.find(p => p.id === productId);
+        if (product) {
+          const customization = JSON.parse(localStorage.getItem('sotdaeCustomization') || '{}');
+          customization.baseImage = './' + selectedImage;
+          customization.productId = productId;
+          customization.productName = product.name;
+          localStorage.setItem('sotdaeCustomization', JSON.stringify(customization));
+        }
+        
+        // 커스터마이즈 컬러 페이지로 이동 (이미지 파라미터 포함)
+        window.location.href = `./customize-color.html?id=${productId}&img=${encodeURIComponent(selectedImage)}`;
+      }
+
+      // 장바구니에 상품 추가
+      function addToCart(productId) {
+        const product = productsData.find(p => p.id === productId);
+        if (product) {
+          let cartItems = getCartItems();
+          const existingItem = cartItems.find(item => item.id === productId);
+          if (existingItem) {
+            existingItem.quantity += 1;
+          } else {
+            cartItems.push({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              category: product.category,
+              quantity: 1,
+              selected: true
+            });
+          }
+          
+          // localStorage에 저장
+          saveCartItems(cartItems);
+          
+          // 장바구니 개수 업데이트
+          updateCartCount();
+          
+          // 성공 메시지 표시
+          showAddToCartMessage(product.name);
+        }
+      }
+
+      // 장바구니 개수 업데이트
+      function updateCartCount() {
+        const cartItems = getCartItems();
+        const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+        const cartCount = document.getElementById('cartCount');
+        if (cartCount) {
+          cartCount.textContent = totalItems;
+          cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+      }
+
+      // 장바구니 추가 성공 메시지
+      function showAddToCartMessage(productName) {
+        // 간단한 토스트 메시지 (실제로는 더 세련된 토스트 컴포넌트 사용)
+        const message = document.createElement('div');
+        message.className = 'fixed top-20 right-6 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300';
+        message.textContent = `${productName}이(가) 장바구니에 추가되었습니다!`;
+        
+        document.body.appendChild(message);
+        
+        // 3초 후 제거
+        setTimeout(() => {
+          message.style.opacity = '0';
+          message.style.transform = 'translateX(100%)';
+          setTimeout(() => {
+            document.body.removeChild(message);
+          }, 300);
+        }, 3000);
+      }
+
+      // 상품 그리드 렌더링
+      function renderProducts(category = 'all') {
+        const productGrid = document.getElementById('productGrid');
+        const filteredProducts = category === 'all' 
+          ? productsData 
+          : productsData.filter(product => product.category === category);
+        
+        productGrid.innerHTML = filteredProducts.map(product => createProductCard(product)).join('');
+        
+        // 스크롤 애니메이션 적용
+        setTimeout(() => {
+          const cards = document.querySelectorAll('.fade-in');
+          cards.forEach((card, index) => {
+            setTimeout(() => {
+              card.classList.add('visible');
+            }, index * 100);
+          });
+        }, 100);
+      }
+
+      // 카테고리 필터 이벤트
+      function initCategoryFilters() {
+        const filterButtons = document.querySelectorAll('.filter-button');
+        
+        filterButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            // 모든 버튼에서 active 클래스 제거
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // 클릭된 버튼에 active 클래스 추가
+            button.classList.add('active');
+            
+            // 선택된 카테고리 업데이트
+            currentCategory = button.dataset.category;
+            
+            // 상품 그리드 다시 렌더링
+            renderProducts(currentCategory);
+          });
+        });
+      }
+
+      // 상품 카드 클릭 이벤트 (이제 카드 자체에 onclick이 있으므로 불필요)
+      function initProductClicks() {
+        // 카드 자체에 onclick="goToProductDetail()" 이벤트가 있으므로
+        // 이 함수는 더 이상 필요하지 않습니다.
+      }
+
+      // 오버레이 메뉴 기능 (home.html과 동일)
+      function toggleMenu() {
+        const overlay = document.getElementById('overlay-menu');
+        if (overlay) {
+          overlay.classList.toggle('hidden');
+          overlay.classList.toggle('show');
+        }
+      }
+
+      function closeMenu() {
+        const overlay = document.getElementById('overlay-menu');
+        if (overlay) {
+          overlay.classList.add('hidden');
+          overlay.classList.remove('show');
+        }
+      }
+
+      // 메뉴 외부 클릭 시 닫기
+      document.addEventListener('click', function(e) {
+        const overlay = document.getElementById('overlay-menu');
+        if (overlay && overlay.classList.contains('show')) {
+          if (!e.target.closest('.menu-container') && !e.target.closest('#overlay-menu')) {
+            closeMenu();
+          }
+        }
+      });
+
+      // ESC 키로 메뉴 닫기
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeMenu();
+        }
+      });
+
+      // 페이지 로드 시 초기화
+      document.addEventListener('DOMContentLoaded', () => {
+        renderProducts();
+        initCategoryFilters();
+        updateCartCount(); // 장바구니 개수 초기화
+      });
+    </script>
+  </body>
+</html>

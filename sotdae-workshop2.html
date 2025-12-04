@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>장바구니 - 솟대공작소</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Yeongwol&display=swap" rel="stylesheet" />
+    
+    <style>
+      /* 로컬 폰트 정의 */
+        @font-face {
+        font-family: 'Yeongwol';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'KBIZ한마음명조';
+        src: url('./KBIZ한마음명조 M.otf') format('opentype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'happygoheung M';
+        src: url('./행복고흥M.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'gkswk';
+        src: url('./gkswk.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      
+      /* 장바구니 아이템 스타일 */
+      .cart-item {
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
+      }
+      
+      .cart-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border-color: #d1d5db;
+      }
+      
+      /* 수량 조절 버튼 */
+      .quantity-btn {
+        transition: all 0.2s ease;
+        border: 1px solid #d1d5db;
+      }
+      
+      .quantity-btn:hover {
+        background: #f3f4f6;
+        border-color: #9ca3af;
+      }
+      
+      .quantity-btn:active {
+        transform: scale(0.95);
+      }
+      
+      /* 체크박스 스타일 */
+      .custom-checkbox {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #d1d5db;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+      }
+      
+      .custom-checkbox:checked {
+        background: #1f2937;
+        border-color: #1f2937;
+      }
+      
+      .custom-checkbox:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      
+      /* 상품 이미지 스타일 */
+      .product-image {
+        background: #f3f4f6;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      /* 구매 버튼 */
+      .purchase-btn {
+        background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .purchase-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(31, 41, 55, 0.3);
+      }
+      
+      .purchase-btn:active {
+        transform: translateY(0);
+      }
+      
+      /* 빈 장바구니 상태 */
+      .empty-cart {
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        border: 2px dashed #d1d5db;
+      }
+      
+      /* 애니메이션 */
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+      }
+      
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      /* 스크롤바 스타일링 */
+      .cart-items::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      .cart-items::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 3px;
+      }
+      
+      .cart-items::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+      
+      .cart-items::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* Overlay menu styles (sotdae-workshop.html과 동일) */
+      .overlay { 
+          position: fixed; 
+          inset: 0; 
+          width: 100vw; 
+          height: 100vh; 
+          background: rgba(10,18,36,0.94); 
+          display: flex; 
+          justify-content: center; 
+          align-items: flex-start; 
+          transition: opacity .4s ease; 
+          z-index: 9999; 
+          opacity: 0; 
+          pointer-events: none; 
+      }
+      .overlay.hidden { 
+          opacity: 0; 
+          pointer-events: none; 
+      }
+      .overlay.show { 
+          opacity: 1; 
+          pointer-events: auto; 
+      }
+      .close-btn { 
+          position: absolute; 
+          top: 8px; 
+          right: 40px; 
+          font-size: 28px; 
+          color: #fff; 
+          background: none; 
+          border: none; 
+          cursor: pointer; 
+          transition: transform .2s ease; 
+      }
+      @media (min-width: 768px) { 
+          .close-btn { 
+              right: 48px; 
+              top: 8px; 
+          } 
+      }
+      .close-btn:hover { 
+          transform: rotate(90deg); 
+      }
+      .menu-nav { 
+          display: flex; 
+          flex-direction: column; 
+          justify-content: center; 
+          align-items: flex-start; 
+          height: 100vh; 
+          padding-left: 1.5vw; 
+      }
+      .menu-nav ul { 
+          list-style: none; 
+          padding: 0; 
+          margin: 0; 
+          text-align: left; 
+      }
+      .menu-nav li { 
+          margin: 16px 0; 
+      }
+      .menu-nav a { 
+          text-decoration: none; 
+          font-family: 'happygoheung M', serif; 
+          font-size: 28px; 
+          font-weight: 600; 
+          letter-spacing: 4px; 
+          color: #f3f4f6; 
+          transition: opacity .2s ease, letter-spacing .3s ease; 
+          text-transform: uppercase; 
+      }
+      .menu-nav a:hover { 
+          opacity: .9; 
+          letter-spacing: 6px; 
+      }
+    </style>
+  </head>
+
+  <body class="m-0 p-0 bg-gray-50 min-h-screen">
+    <!-- 네비게이션 바 -->
+    <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-sm bg-gradient-to-b from-black/10 to-transparent" style="top: 0; margin-top: 0;">
+      <div class="w-full px-6 md:px-8 py-4 flex items-center justify-between">
+        <!-- 좌측: W.S.P 로고 -->
+        <div class="flex items-center gap-3">
+          <h1 
+            class="text-xl font-normal text-black cursor-pointer"
+            style="font-family: 'Yeongwol', serif; color: #000000;"
+            onclick="window.location.href='./home.html'"
+          >
+            <span style="font-family: 'gkswk', serif;">願</span><span style="font-family: 'happygoheung M', serif;">:솟다</span>
+          </h1>
+        </div>
+        <!-- 우측: 메뉴 버튼 -->
+        <div class="relative menu-container">
+          <button 
+            id="menu-btn"
+            class="inline-flex items-center justify-center text-black transition-transform duration-200"
+            style="color: #000000;"
+            onclick="toggleMenu()"
+            aria-label="메뉴 열기"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color: #000000;">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <!-- 오버레이 메뉴 -->
+    <div id="overlay-menu" class="overlay hidden">
+      <button 
+        id="close-menu"
+        class="close-btn"
+        onclick="closeMenu()"
+        aria-label="메뉴 닫기"
+      >×</button>
+      <nav class="menu-nav">
+        <ul>
+          <li>
+            <a href="./home.html#sotdae-map" onclick="closeMenu()">솟대 지도</a>
+          </li>
+          <li>
+            <a href="./sotdae-workshop.html" onclick="closeMenu()">솟대공작소</a>
+          </li>
+          <li>
+            <a href="./calendar.html" onclick="closeMenu()">바람 일지</a>
+          </li>
+          <li>
+            <a href="./profile.html" onclick="closeMenu()">나의 솟대</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="pt-20 bg-white">
+      <!-- 페이지 타이틀 섹션 -->
+      <div class="py-12">
+        <div class="max-w-6xl mx-auto px-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 
+                class="text-4xl sm:text-5xl font-light text-gray-800 mb-4"
+                style="font-family: 'Yeongwol', serif;"
+              >
+                장바구니
+              </h2>
+              <p class="text-lg text-gray-600">
+                선택한 솟대들을 확인하고 구매하세요
+              </p>
+            </div>
+            <div class="hidden md:flex items-center gap-4">
+              <button onclick="window.location.href='./sotdae-workshop.html'" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                쇼핑 계속하기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 장바구니 콘텐츠 -->
+      <div class="bg-gray-50 py-8">
+        <div class="max-w-6xl mx-auto px-6">
+          <div class="grid lg:grid-cols-3 gap-8">
+            <!-- 장바구니 아이템들 -->
+            <div class="lg:col-span-2">
+              <!-- 선택 옵션 -->
+              <div class="bg-white rounded-lg p-4 mb-6 shadow-sm border border-gray-200">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                    <input type="checkbox" id="selectAll" class="custom-checkbox" checked>
+                    <label for="selectAll" class="text-gray-700 font-medium cursor-pointer">전체 선택</label>
+                  </div>
+                  <button id="deleteSelected" class="text-red-600 hover:text-red-700 text-sm font-medium transition-colors">
+                    선택 삭제
+                  </button>
+                </div>
+              </div>
+
+              <!-- 장바구니 아이템 리스트 -->
+              <div class="cart-items space-y-4 max-h-96 overflow-y-auto" id="cartItems">
+                <!-- 장바구니 아이템들이 JavaScript로 동적으로 생성됩니다 -->
+              </div>
+
+              <!-- 빈 장바구니 상태 -->
+              <div id="emptyCart" class="empty-cart rounded-lg p-12 text-center hidden">
+                <div class="text-6xl mb-4">🛒</div>
+                <h3 class="text-xl font-medium text-gray-600 mb-2">장바구니가 비어있습니다</h3>
+                <p class="text-gray-500 mb-6">마음에 드는 솟대를 선택해보세요</p>
+                <button onclick="window.location.href='./sotdae-workshop.html'" class="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                  쇼핑하러 가기
+                </button>
+              </div>
+            </div>
+
+            <!-- 주문 요약 -->
+            <div class="lg:col-span-1">
+              <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200 sticky top-24">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">주문 요약</h3>
+                
+                <div class="space-y-3 mb-6">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">상품 금액</span>
+                    <span class="text-gray-800" id="subtotal">0원</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">배송비</span>
+                    <span class="text-gray-800" id="shipping">3,000원</span>
+                  </div>
+                  <div class="border-t border-gray-200 pt-3">
+                    <div class="flex justify-between text-lg font-semibold">
+                      <span class="text-gray-800">총 결제금액</span>
+                      <span class="text-gray-800" id="total">3,000원</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="space-y-3">
+                  <button class="purchase-btn w-full py-4 text-white font-medium rounded-lg">
+                    선택한 상품 주문하기
+                  </button>
+                  <button class="w-full py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    위시리스트에 추가
+                  </button>
+                </div>
+
+                <!-- 배송 정보 -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                  <h4 class="text-sm font-medium text-gray-800 mb-3">배송 정보</h4>
+                  <div class="text-xs text-gray-600 space-y-1">
+                    <p>• 무료배송: 50,000원 이상 구매시</p>
+                    <p>• 일반배송: 3,000원 (1-2일 소요)</p>
+                    <p>• 제작기간: 3-5일 (맞춤 제작)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-gray-200 py-12">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800">솟대공작소</h3>
+            <p class="text-gray-600 text-sm">나만의 특별한 솟대를 만들어보세요</p>
+          </div>
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800">고객지원</h3>
+            <div class="space-y-2">
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">문의하기</a>
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">배송안내</a>
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">교환/반품</a>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800">주문관리</h3>
+            <div class="space-y-2">
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">주문조회</a>
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">배송조회</a>
+              <a href="#" class="block text-gray-600 hover:text-gray-800 transition text-sm">취소/반품</a>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800">연락처</h3>
+            <div class="space-y-2">
+              <p class="text-gray-600 text-sm">sotdae@example.com</p>
+              <p class="text-gray-600 text-sm">02-1234-5678</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-12 pt-8 border-t border-gray-200 text-center">
+          <p class="text-gray-500 text-sm">© 2024 솟대공작소. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // 오버레이 메뉴 기능 (sotdae-workshop.html과 동일)
+      function toggleMenu() {
+        const overlay = document.getElementById('overlay-menu');
+        if (overlay) {
+          overlay.classList.toggle('hidden');
+          overlay.classList.toggle('show');
+        }
+      }
+
+      function closeMenu() {
+        const overlay = document.getElementById('overlay-menu');
+        if (overlay) {
+          overlay.classList.add('hidden');
+          overlay.classList.remove('show');
+        }
+      }
+
+      // 메뉴 외부 클릭 시 닫기
+      document.addEventListener('click', function(e) {
+        const overlay = document.getElementById('overlay-menu');
+        if (overlay && overlay.classList.contains('show')) {
+          if (!e.target.closest('.menu-container') && !e.target.closest('#overlay-menu')) {
+            closeMenu();
+          }
+        }
+      });
+
+      // ESC 키로 메뉴 닫기
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeMenu();
+        }
+      });
+
+      // 장바구니 데이터를 localStorage에서 가져오기
+      function getCartItems() {
+        const saved = localStorage.getItem('sotdaeCart');
+        return saved ? JSON.parse(saved) : [];
+      }
+
+      // 장바구니 데이터를 localStorage에 저장
+      function saveCartItems(cartItems) {
+        localStorage.setItem('sotdaeCart', JSON.stringify(cartItems));
+      }
+
+      // 색상 매핑 (커스터마이징 페이지와 동일)
+      const colorMap = {
+        'black': { hue: 0, saturate: 0, brightness: 0.2 },
+        'natural': { hue: 30, saturate: 0.3, brightness: 0.9 },
+        'red': { hue: 0, saturate: 1, brightness: 0.8 },
+        'orange': { hue: 30, saturate: 1, brightness: 0.8 },
+        'yellow': { hue: 60, saturate: 1, brightness: 0.9 },
+        'green': { hue: 120, saturate: 1, brightness: 0.7 },
+        'blue': { hue: 240, saturate: 1, brightness: 0.8 },
+        'navy': { hue: 240, saturate: 1, brightness: 0.4 },
+        'brown': { hue: 30, saturate: 0.8, brightness: 0.4 },
+        'white': { hue: 0, saturate: 0, brightness: 1 },
+        'gray': { hue: 0, saturate: 0, brightness: 0.5 }
+      };
+
+      // 색상 필터 적용 함수
+      function getColorFilter(color) {
+        const colorData = colorMap[color];
+        if (colorData) {
+          return `hue-rotate(${colorData.hue}deg) saturate(${colorData.saturate}) brightness(${colorData.brightness})`;
+        }
+        return '';
+      }
+
+      // 장바구니 데이터
+      let cartData = getCartItems();
+
+      // 장바구니 아이템 생성 함수
+      function createCartItem(item) {
+        // 커스터마이징 정보 표시
+        let customizationInfo = '';
+        if (item.customization) {
+          const custom = item.customization;
+          customizationInfo = `
+            <div class="text-xs text-gray-500 mt-1">
+              ${custom.color ? `색상: ${custom.color} | ` : ''}
+              ${custom.initial ? `이니셜: ${custom.initial} | ` : ''}
+              ${custom.size ? `크기: ${custom.size}px | ` : ''}
+              ${custom.font ? `폰트: ${custom.font} | ` : ''}
+              ${custom.position ? `위치: ${custom.position}` : ''}
+            </div>
+          `;
+        }
+        
+        // 색상 필터 적용
+        const colorFilter = item.customization && item.customization.color ? getColorFilter(item.customization.color) : '';
+        
+        return `
+          <div class="cart-item bg-white rounded-lg p-4 fade-in" data-id="${item.id}">
+            <div class="flex items-center gap-4">
+              <!-- 체크박스 -->
+              <input type="checkbox" class="custom-checkbox item-checkbox" ${item.selected ? 'checked' : ''} data-id="${item.id}">
+              
+              <!-- 상품 이미지 -->
+              <div class="w-20 h-20 rounded-lg flex-shrink-0 bg-gray-100 overflow-hidden">
+                <img src="${item.image || './sotdae.png'}" alt="${item.name}" class="w-full h-full object-cover" style="filter: ${colorFilter}">
+              </div>
+              
+              <!-- 상품 정보 -->
+              <div class="flex-1 min-w-0">
+                <h3 class="font-medium text-gray-800 text-lg mb-1">${item.name}</h3>
+                <p class="text-gray-600 text-sm">${item.category ? `카테고리: ${getCategoryName(item.category)}` : '커스터마이징 제품'}</p>
+                ${customizationInfo}
+                <p class="text-gray-800 font-semibold text-lg">${item.price.toLocaleString()}원</p>
+              </div>
+              
+              <!-- 수량 조절 -->
+              <div class="flex items-center gap-2">
+                <button class="quantity-btn w-8 h-8 rounded-md flex items-center justify-center text-gray-600 hover:text-gray-800" onclick="updateQuantity('${item.id}', -1)">
+                  −
+                </button>
+                <span class="w-12 text-center font-medium text-gray-800">${item.quantity}</span>
+                <button class="quantity-btn w-8 h-8 rounded-md flex items-center justify-center text-gray-600 hover:text-gray-800" onclick="updateQuantity('${item.id}', 1)">
+                  +
+                </button>
+              </div>
+              
+              <!-- 삭제 버튼 -->
+              <button class="text-red-600 hover:text-red-700 p-2" onclick="removeItem('${item.id}')">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // 카테고리 이름 변환
+      function getCategoryName(category) {
+        const categoryNames = {
+          'hope': '희망 & 기쁨',
+          'comfort': '슬픔 & 위로',
+          'freedom': '자유 & 감안'
+        };
+        return categoryNames[category] || category;
+      }
+
+      // 장바구니 렌더링
+      function renderCart() {
+        cartData = getCartItems();
+        const cartItems = document.getElementById('cartItems');
+        const emptyCart = document.getElementById('emptyCart');
+        
+        if (cartData.length === 0) {
+          cartItems.innerHTML = '';
+          emptyCart.classList.remove('hidden');
+        } else {
+          emptyCart.classList.add('hidden');
+          cartItems.innerHTML = cartData.map(item => createCartItem(item)).join('');
+          
+          // 애니메이션 적용
+          setTimeout(() => {
+            const items = document.querySelectorAll('.fade-in');
+            items.forEach((item, index) => {
+              setTimeout(() => {
+                item.classList.add('visible');
+              }, index * 100);
+            });
+          }, 100);
+        }
+        
+        updateOrderSummary();
+      }
+
+      // 수량 업데이트
+      function updateQuantity(itemId, change) {
+        cartData = getCartItems();
+        const item = cartData.find(item => item.id == itemId);
+        if (item) {
+          item.quantity = Math.max(1, item.quantity + change);
+          saveCartItems(cartData);
+          renderCart();
+        }
+      }
+
+      // 아이템 삭제
+      function removeItem(itemId) {
+        cartData = getCartItems();
+        cartData = cartData.filter(item => item.id != itemId);
+        saveCartItems(cartData);
+        renderCart();
+      }
+
+      // 선택 상태 토글
+      function toggleItemSelection(itemId) {
+        cartData = getCartItems();
+        const item = cartData.find(item => item.id == itemId);
+        if (item) {
+          item.selected = !item.selected;
+          saveCartItems(cartData);
+          updateOrderSummary();
+        }
+      }
+
+      // 전체 선택/해제
+      function toggleSelectAll() {
+        cartData = getCartItems();
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const allSelected = selectAllCheckbox.checked;
+        
+        cartData.forEach(item => {
+          item.selected = allSelected;
+        });
+        
+        saveCartItems(cartData);
+        renderCart();
+      }
+
+      // 선택된 아이템 삭제
+      function deleteSelected() {
+        cartData = getCartItems();
+        cartData = cartData.filter(item => !item.selected);
+        saveCartItems(cartData);
+        renderCart();
+      }
+
+      // 주문 요약 업데이트
+      function updateOrderSummary() {
+        cartData = getCartItems();
+        const selectedItems = cartData.filter(item => item.selected);
+        const subtotal = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const shipping = subtotal >= 50000 ? 0 : 3000;
+        const total = subtotal + shipping;
+        
+        document.getElementById('subtotal').textContent = subtotal.toLocaleString() + '원';
+        document.getElementById('shipping').textContent = shipping === 0 ? '무료' : shipping.toLocaleString() + '원';
+        document.getElementById('total').textContent = total.toLocaleString() + '원';
+      }
+
+      // 이벤트 리스너 초기화
+      function initEventListeners() {
+        // 전체 선택 체크박스
+        document.getElementById('selectAll').addEventListener('change', toggleSelectAll);
+        
+        // 선택 삭제 버튼
+        document.getElementById('deleteSelected').addEventListener('click', deleteSelected);
+        
+        // 개별 아이템 체크박스
+        document.addEventListener('change', (e) => {
+          if (e.target.classList.contains('item-checkbox')) {
+            const itemId = parseInt(e.target.dataset.id);
+            toggleItemSelection(itemId);
+          }
+        });
+      }
+
+      // localStorage 초기화 (테스트용)
+      function clearCart() {
+        localStorage.removeItem('sotdaeCart');
+        cartData = [];
+        renderCart();
+      }
+
+      // 페이지 로드 시 초기화
+      document.addEventListener('DOMContentLoaded', () => {
+        // 테스트용: localStorage 초기화 (실제 운영시에는 제거)
+        // clearCart();
+        
+        renderCart();
+        initEventListeners();
+      });
+    </script>
+  </body>
+</html>

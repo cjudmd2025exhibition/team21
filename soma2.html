@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>소원의 기록</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* 폰트 정의 */
+    @font-face {
+      font-family: 'Yeongwol';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+      font-weight: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'KBIZ한마음명조';
+      src: url('./KBIZ한마음명조 M.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'happygoheung M';
+      src: url('./행복고흥M.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'gkswk';
+      src: url('./gkswk.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    
+    :root {
+      color-scheme: light;
+      --bg: #f8f7f4;
+      --text: #1b1b1b;
+      --muted: #8c8984;
+      --card-bg: #fffdf9;
+      --shadow: 0 18px 40px rgba(0,0,0,0.08);
+      --radius: 18px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      background-image: url('./soma2.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60px;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+    /* top navigation */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0));
+    }
+    .topbar .inner {
+      width: 100%;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    @media (min-width: 768px) {
+      .topbar .inner {
+        padding: 16px 32px;
+      }
+    }
+    .logo {
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: #f7f6f2;
+      cursor: pointer;
+      font-weight: 400;
+    }
+    #menu-btn {
+      border: none;
+      background: none;
+      color: #f7f6f2;
+      width: 42px; height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform .25s ease;
+    }
+    #menu-btn:hover { transform: scale(1.05); }
+    #menu-btn:active { transform: scale(0.95); }
+
+    .overlay-menu {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,18,36,0.94);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
+      z-index: 35;
+    }
+    .overlay-menu.show { opacity: 1; pointer-events: all; }
+    .overlay-menu nav {
+      padding-left: 1.5vw;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .overlay-menu nav ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: flex-start;
+      font-family: 'happygoheung M', serif;
+      letter-spacing: 4px;
+      font-size: 28px;
+      font-weight: 600;
+      color: #f3f4f6;
+      text-transform: uppercase;
+    }
+    .overlay-menu nav a {
+      text-decoration: none;
+      color: inherit;
+      transition: letter-spacing .25s ease, opacity .25s ease;
+    }
+    .overlay-menu nav a:hover { letter-spacing: 6px; opacity: 0.9; }
+    #close-menu {
+      position: absolute;
+      top: 12px;
+      right: clamp(28px, 8vw, 48px);
+      background: none;
+      border: none;
+      color: #f3f4f6;
+      font-size: 32px;
+      cursor: pointer;
+      transition: transform .2s ease;
+    }
+    #close-menu:hover { transform: rotate(90deg); }
+
+    header.main-header {
+      width: min(1120px, 90vw);
+      text-align: center;
+      padding: clamp(60px, 10vw, 80px) 0 48px;
+    }
+    header.main-header h1 {
+      font-size: clamp(30px, 5vw, 44px);
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      margin-bottom: 12px;
+      color: white;
+      font-family: 'Yeongwol', serif;
+    }
+    header.main-header p {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .region-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    .region-btn {
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+    }
+    .region-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .region-btn.active {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+
+    main {
+      width: min(1120px, 90vw);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: clamp(28px, 4vw, 44px);
+      padding-bottom: 80px;
+    }
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.05);
+      transition: transform .3s ease, box-shadow .3s ease;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    .card.show { animation: fadeUp .45s ease forwards; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .card figure { position: relative; width: 100%; height: 220px; overflow: hidden; }
+    .card img {
+      width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease;
+    }
+    .card:hover img { transform: scale(1.05); }
+    .card-content { display: none; }
+    .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(17,17,17,0.1), rgba(17,17,17,0.8));
+      color: #f8f7f4;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 22px 24px;
+      opacity: 0; transform: translateY(8%);
+      transition: opacity .3s ease, transform .3s ease;
+    }
+    .card:hover .overlay { opacity: 1; transform: translateY(0); }
+    .overlay strong { font-size: 13px; letter-spacing: 2px; margin-bottom: 6px; }
+    .overlay span { font-size: 12px; opacity: .85; line-height: 1.6; }
+
+    nav.pagination {
+      width: min(1120px, 90vw);
+      display: flex; justify-content: center; align-items: center;
+      gap: 12px; padding: 36px 0 60px; font-size: 14px;
+    }
+    .empty-message {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 80px 20px;
+      color: rgba(255,255,255,0.7);
+    }
+    .pagination button {
+      border: none; background: none; color: var(--muted); cursor: pointer;
+      padding: 8px 12px; border-radius: 999px; transition: background .25s ease, color .25s ease;
+      font-size: 13px; letter-spacing: 1px;
+    }
+    .pagination button:hover { background: rgba(0,0,0,0.06); color: var(--text); }
+    .pagination button.active {
+      background: var(--text); color: var(--bg); box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    }
+    .pagination button.arrow { font-size: 16px; padding: 8px 14px; }
+
+    footer {
+      font-size: 12px; color: rgba(0,0,0,0.45); padding-bottom: 52px; text-align: center;
+    }
+
+    @media (max-width: 960px) { main { gap: clamp(20px, 6vw, 32px); } }
+    @media (max-width: 600px) {
+      main { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      header.main-header { padding: 96px 0 36px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <div class="logo" onclick="location.href='home.html'"><span style="font-family: 'gkswk', serif;">願</span><span style="font-family: 'happygoheung M', serif;">:솟다</span></div>
+      <button id="menu-btn" aria-label="메뉴 열기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </div>
+  </header>
+  <div class="overlay-menu" id="overlay-menu">
+    <button id="close-menu" aria-label="메뉴 닫기">×</button>
+    <nav>
+      <ul>
+        <li><a href="home.html#sotdae-map">솟대 지도</a></li>
+        <li><a href="sotdae-workshop.html">솟대공작소</a></li>
+        <li><a href="calendar.html">바람 일지</a></li>
+        <li><a href="profile.html">나의 솟대</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <header class="main-header">
+    <h1>소원의 기록</h1>
+    <p>WISHES FROM THE MOUNTAIN</p>
+    <div class="region-buttons" id="region-buttons">
+      <button class="region-btn active" data-region="all">전체</button>
+      <button class="region-btn" data-region="서울">서울</button>
+      <button class="region-btn" data-region="경기">경기</button>
+      <button class="region-btn" data-region="강원">강원</button>
+      <button class="region-btn" data-region="충청">충청</button>
+      <button class="region-btn" data-region="전라">전라</button>
+      <button class="region-btn" data-region="경상">경상</button>
+      <button class="region-btn" data-region="제주">제주</button>
+    </div>
+  </header>
+
+  <main id="grid"></main>
+
+  <nav class="pagination" id="pager"></nav>
+
+  <footer>
+    © 2025 願:솟다 – All wishes are winds in the sky.
+  </footer>
+
+  <script>
+    const pages = [
+      [
+        { img: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80', title: '올해 안에 졸업전시 완성', summary: '디지털 바람에 실려, 우리의 소망이 하늘에 닿기를.', author: '김민수', date: '2025.02.01', wish: '마음껏 표현하고 서로를 응원하는 전시가 되기를.', region: '서울' },
+        { img: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80', title: '솟대 위의 새', summary: '하늘과 맞닿은 산마루에서 나는 오늘도 바람을 기다린다.', author: '이서윤', date: '2025.01.28', wish: '오래도록 흔들려도 무너지지 않는 마음이 되기를.', region: '경기' },
+        { img: 'https://images.unsplash.com/photo-1470770903676-69b98201ea1c?auto=format&fit=crop&w=900&q=80', title: '바람, 그리고 빛', summary: '황혼의 빛과 함께 흘러가는 순간들을 기록한다.', author: '정하람', date: '2025.01.25', wish: '미뤄두었던 꿈들도 다시 날개를 달기를.', region: '강원' },
+        { img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80', title: '소원을 쌓다', summary: '파도 위로 쌓아올린 마음이 무너지지 않기를.', author: '박서진', date: '2025.01.20', wish: '우리가 함께한 시간이 아름답게 남기를.', region: '충청' },
+        { img: 'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=900&q=80', title: '빛나는 약속', summary: '빛이 닿지 않는 곳에서도 서로를 비추길.', author: '문다온', date: '2025.01.15', wish: '어떤 날에는 우리에게 작은 기적이 있기를.', region: '전라' },
+        { img: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80', title: '하늘의 소리', summary: '솟대가 바람에 흔들릴 때마다 우리는 답을 듣는다.', author: '서이든', date: '2025.01.10', wish: '멈춰 있던 노래가 다시 이어지기를.', region: '경상' }
+      ],
+      [
+        { img: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=80', title: '새벽의 시선', summary: '희미한 빛을 따라 걷는 길 위에 서 있다.', author: '한시온', date: '2024.12.30', wish: '한 해의 끝에서 서로의 안부를 묻는 사람이 되기를.', region: '제주' },
+        { img: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80', title: '연대의 약속', summary: '서로의 어깨에 잠시 기대어 숨을 고른다.', author: '최미나', date: '2024.12.18', wish: '더 큰 바람을 향해 함께 걸을 용기를 나누기를.', region: '서울' },
+        { img: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=80', title: '녹색의 숨', summary: '숲이 우리에게 들려주는 이야기.', author: '조하연', date: '2024.12.08', wish: '숨 가쁘던 시간도 나무처럼 뿌리내리기를.', region: '경기' },
+        { img: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80', title: '끝없는 수평선', summary: '어디로 가든 닿을 수 있는 곳이 있음을 믿는다.', author: '양하율', date: '2024.11.30', wish: '흐릿하게 보이는 꿈도 선명해지기를.', region: '강원' },
+        { img: 'https://images.unsplash.com/photo-1469474968028-78f6d58a?auto=format&fit=crop&w=900&q=80', title: '바람의 결', summary: '손끝으로 느낀 공기의 결을 기록한다.', author: '강채은', date: '2024.11.20', wish: '흔들림을 두려워하지 않는 사람이 되기를.', region: '충청' },
+        { img: 'https://images.unsplash.com/photo-1469474968028-0f568197?auto=format&fit=crop&w=900&q=80', title: '작은 불씨', summary: '밤하늘에서도 꺼지지 않는 마음을 지켜본다.', author: '유다해', date: '2024.11.10', wish: '나의 불빛이 누군가에게 온기가 되기를.', region: '전라' }
+      ],
+      [
+        { img: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=900&q=80', title: '기억의 온도', summary: '오래된 사진 속 온기를 찾아 헤맨다.', author: '임다윤', date: '2024.09.25', wish: '희미해진 기억들도 다시 우리 곁에 남기를.', region: '경상' },
+        { img: 'https://images.unsplash.com/photo-1519681393784-d1202670008?auto=format&fit=crop&w=900&q=80', title: '첫눈의 속삭임', summary: '차갑고 맑은 공기 사이로 퍼지는 바람.', author: '공희온', date: '2024.10.30', wish: '또 한 번의 시작 앞에서 서로를 응원하기를.', region: '제주' },
+        { img: 'https://images.unsplash.com/photo-1491366452860-0cf8493a3a7d?auto=format&fit=crop&w=900&q=80', title: '청량한 파도', summary: '흰 파도가 부서지는 그 자리에서 약속한다.', author: '노아린', date: '2024.10.16', wish: '이 순간의 설렘이 오래도록 남기를.', region: '서울' },
+        { img: 'https://images.unsplash.com/photo-1527772839745-6b98f1c8ef2f?auto=format&fit=crop&w=900&q=80', title: '불빛 아래', summary: '도시의 불빛 속에서도 우리는 서로를 알아본다.', author: '배서하', date: '2024.10.02', wish: '더 이상 혼자가 아니라고 말할 수 있기를.', region: '경기' },
+        { img: 'https://images.unsplash.com/photo-1524504388940-b1c1720?auto=format&fit=crop&w=900&q=80', title: '하늘빛 약속', summary: '저녁노을이 물든 약속의 순간.', author: '권연우', date: '2024.09.12', wish: '우리의 바람이 같은 방향을 향하기를.', region: '강원' },
+        { img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80', title: '빛나는 숨결', summary: '숨을 고르고 마주 보는 시간.', author: '진민서', date: '2024.09.01', wish: '매일의 작은 숨결도 소중히 기억되기를.', region: '충청' }
+      ]
+    ];
+
+    const grid = document.getElementById('grid');
+    const pager = document.getElementById('pager');
+    let currentPage = 0;
+
+    const createCard = ({ img, title, summary, author, date, wish }, index = 0, pageIndex = 0) => {
+      const article = document.createElement('article');
+      article.className = 'card';
+      
+      // 가운데 이미지(첫 번째 페이지의 첫 번째 카드)인 경우 호버 텍스트 변경
+      const isCenterCard = pageIndex === 0 && index === 0;
+      const hoverText = isCenterCard ? '가족 모두 건강하게 지내고 싶어요.' : wish;
+      
+      article.innerHTML = `
+        <figure>
+          <img src="${img}" alt="${title}" loading="lazy" draggable="false" />
+        </figure>
+        <div class="card-content">
+          <h3>${title}</h3>
+          <p>${summary}</p>
+        </div>
+        <div class="overlay">
+          <strong>${author}</strong>
+          <span>${date}</span>
+          <span>${hoverText}</span>
+        </div>
+      `;
+      
+      // 첫 번째 페이지의 첫 번째 카드인 경우 클릭 이벤트 추가
+      if (isCenterCard) {
+        article.addEventListener('click', () => {
+          window.location.href = './soma3.html';
+        });
+      }
+      
+      return article;
+    };
+
+    const renderCards = (pageIndex) => {
+      grid.innerHTML = '';
+      pages[pageIndex].forEach((item, cardIndex) => {
+        const card = createCard(item, cardIndex, pageIndex);
+        grid.appendChild(card);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => card.classList.add('show'));
+        });
+      });
+    };
+
+    const renderPagination = () => {
+      pager.innerHTML = '';
+      const prev = document.createElement('button');
+      prev.className = 'arrow';
+      prev.textContent = '←';
+      prev.disabled = currentPage === 0;
+      prev.addEventListener('click', () => {
+        if (currentPage > 0) {
+          currentPage -= 1;
+          renderCards(currentPage);
+          renderPagination();
+        }
+      });
+      pager.appendChild(prev);
+
+      pages.forEach((_, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = i + 1;
+        if (i === currentPage) btn.classList.add('active');
+        btn.addEventListener('click', () => {
+          currentPage = i;
+          renderCards(currentPage);
+          renderPagination();
+        });
+        pager.appendChild(btn);
+      });
+
+      const next = document.createElement('button');
+      next.className = 'arrow';
+      next.textContent = '→';
+      next.disabled = currentPage === pages.length - 1;
+      next.addEventListener('click', () => {
+        if (currentPage < pages.length - 1) {
+          currentPage += 1;
+          renderCards(currentPage);
+          renderPagination();
+        }
+      });
+      pager.appendChild(next);
+    };
+
+    // 현재 모드 추적 (pages 모드인지 wish 모드인지)
+    let isWishMode = false;
+
+    // 소원 불러오기 함수
+    function loadWishes(region) {
+      try {
+        // 지역명 정규화 (공백 제거, trim)
+        const normalizedRegion = String(region).trim();
+        const key = `wish_${normalizedRegion}`;
+        
+        // localStorage에서 데이터 가져오기
+        const storedData = localStorage.getItem(key);
+        console.log(`[loadWishes] 지역: ${normalizedRegion}, 키: ${key}`);
+        console.log(`[loadWishes] 저장된 데이터:`, storedData);
+        
+        if (!storedData) {
+          console.log(`[loadWishes] 데이터 없음 - 빈 배열 반환`);
+          return [];
+        }
+        
+        const wishes = JSON.parse(storedData);
+        console.log(`[loadWishes] 파싱된 소원 배열:`, wishes);
+        console.log(`[loadWishes] 소원 개수: ${wishes.length}`);
+        
+        // 배열이 아닌 경우 처리
+        if (!Array.isArray(wishes)) {
+          console.warn(`[loadWishes] 배열이 아님, 빈 배열 반환`);
+          return [];
+        }
+        
+        return wishes;
+      } catch (error) {
+        console.error('[loadWishes] 소원 불러오기 실패:', error);
+        console.error('[loadWishes] 에러 상세:', error.message);
+        return [];
+      }
+    }
+
+    // 소원 목록 표시 함수
+    function displayWishes(region) {
+      console.log(`[displayWishes] 시작 - 지역: ${region}`);
+      
+      // 지역명 정규화
+      const normalizedRegion = String(region).trim();
+      console.log(`[displayWishes] 정규화된 지역: "${normalizedRegion}"`);
+      
+      const wishes = loadWishes(normalizedRegion);
+      const grid = document.getElementById('grid');
+      
+      if (!grid) {
+        console.error('[displayWishes] grid 요소를 찾을 수 없습니다!');
+        return;
+      }
+      
+      // 기존 카드 제거
+      grid.innerHTML = '';
+      isWishMode = true;
+      
+      console.log(`[displayWishes] 불러온 소원 개수: ${wishes.length}`);
+      
+      if (wishes.length === 0) {
+        // 소원이 없는 경우
+        console.log(`[displayWishes] 소원 없음 - 빈 메시지 표시`);
+        const emptyMsg = document.createElement('div');
+        emptyMsg.className = 'empty-message';
+        emptyMsg.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: rgba(255,255,255,0.7);';
+        emptyMsg.innerHTML = `
+          <div style="font-size: 18px; margin-bottom: 12px; font-family: 'Yeongwol', serif;">등록된 소원이 없습니다</div>
+          <div style="font-size: 13px; opacity: 0.6;">${normalizedRegion} 지역에 소원을 올려보세요.</div>
+        `;
+        grid.appendChild(emptyMsg);
+        
+        // 페이지네이션 숨기기
+        const pager = document.getElementById('pager');
+        if (pager) {
+          pager.style.display = 'none';
+        }
+        return;
+      }
+      
+      // 소원이 있는 경우 카드 형태로 표시
+      console.log(`[displayWishes] ${wishes.length}개의 소원 카드 생성 시작`);
+      
+      wishes.forEach((wish, index) => {
+        // wish가 문자열인지 확인
+        const wishText = String(wish).trim();
+        if (!wishText) {
+          console.warn(`[displayWishes] 인덱스 ${index}의 소원이 비어있음, 건너뜀`);
+          return;
+        }
+        
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(24px)';
+        
+        // 랜덤 이미지 선택 (기존 pages에서)
+        const randomImg = pages[0] && pages[0][index % pages[0].length]?.img || 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80';
+        
+        card.innerHTML = `
+          <figure>
+            <img src="${randomImg}" alt="소원" loading="lazy" draggable="false" />
+          </figure>
+          <div class="card-content">
+            <h3>${normalizedRegion} 지역의 소원</h3>
+            <p>${wishText}</p>
+          </div>
+          <div class="overlay">
+            <strong>${normalizedRegion}</strong>
+            <span>${new Date().toLocaleDateString('ko-KR')}</span>
+            <span>${wishText}</span>
+          </div>
+        `;
+        
+        grid.appendChild(card);
+        
+        // 애니메이션
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+            card.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+            card.classList.add('show');
+          });
+        });
+      });
+      
+      console.log(`[displayWishes] 완료 - ${wishes.length}개의 카드 표시됨`);
+      
+      // 페이지네이션 숨기기 (소원 목록 표시 시)
+      const pager = document.getElementById('pager');
+      if (pager) {
+        pager.style.display = 'none';
+      }
+    }
+
+    // 초기 렌더링
+    renderCards(currentPage);
+    renderPagination();
+
+    // 지역 선택 버튼 이벤트
+    const regionButtons = document.querySelectorAll('.region-btn');
+    let currentSelectedRegion = 'all';
+    
+    regionButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // 모든 버튼에서 active 클래스 제거
+        regionButtons.forEach(b => b.classList.remove('active'));
+        // 클릭한 버튼에 active 클래스 추가
+        btn.classList.add('active');
+        
+        // 선택된 지역 정보 가져오기
+        const selectedRegion = btn.dataset.region;
+        console.log(`[지역 버튼 클릭] 선택된 지역: "${selectedRegion}"`);
+        console.log(`[지역 버튼 클릭] dataset.region 값:`, btn.dataset.region);
+        console.log(`[지역 버튼 클릭] 버튼 텍스트:`, btn.textContent);
+        
+        currentSelectedRegion = selectedRegion;
+        
+        if (selectedRegion === 'all') {
+          // 전체 보기 - 기존 카드 표시
+          console.log(`[지역 버튼 클릭] 전체 모드로 전환`);
+          isWishMode = false;
+          const pager = document.getElementById('pager');
+          if (pager) {
+            pager.style.display = 'flex';
+          }
+          renderCards(currentPage);
+          renderPagination();
+        } else {
+          // 특정 지역 선택 - 소원 목록 표시
+          console.log(`[지역 버튼 클릭] 지역 모드로 전환: ${selectedRegion}`);
+          if (!selectedRegion || selectedRegion.trim() === '') {
+            console.error(`[지역 버튼 클릭] 지역명이 비어있음!`);
+            return;
+          }
+          displayWishes(selectedRegion);
+        }
+      });
+    });
+
+    const menuBtn = document.getElementById('menu-btn');
+    const closeBtn = document.getElementById('close-menu');
+    const overlayMenu = document.getElementById('overlay-menu');
+
+    menuBtn.addEventListener('click', () => {
+      overlayMenu.classList.add('show');
+    });
+    closeBtn.addEventListener('click', () => {
+      overlayMenu.classList.remove('show');
+    });
+    overlayMenu.addEventListener('click', (e) => {
+      if (e.target === overlayMenu) overlayMenu.classList.remove('show');
+    });
+  </script>
+</body>
+</html>

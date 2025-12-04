@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>소원 상세보기 - 소원의 산마루</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Yeongwol&display=swap" rel="stylesheet" />
+    
+    <style>
+      /* 로컬 폰트 정의 */
+      @font-face {
+        font-family: 'Yeongwol';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'KBIZ한마음명조';
+        src: url('./KBIZ한마음명조 M.otf') format('opentype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'happygoheung M';
+        src: url('./행복고흥M.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'gkswk';
+        src: url('./gkswk.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      
+      /* Overlay menu styles (home.html과 동일) */
+      .overlay { 
+          position: fixed; 
+          inset: 0; 
+          width: 100vw; 
+          height: 100vh; 
+          background: rgba(10,18,36,0.94); 
+          display: flex; 
+          justify-content: center; 
+          align-items: flex-start; 
+          transition: opacity .4s ease; 
+          z-index: 9999; 
+          opacity: 0; 
+          pointer-events: none; 
+      }
+      .overlay.hidden { 
+          opacity: 0; 
+          pointer-events: none; 
+      }
+      .overlay.show { 
+          opacity: 1; 
+          pointer-events: auto; 
+      }
+      .close-btn { 
+          position: absolute; 
+          top: 8px; 
+          right: 40px; 
+          font-size: 28px; 
+          color: #fff; 
+          background: none; 
+          border: none; 
+          cursor: pointer; 
+          transition: transform .2s ease; 
+      }
+      @media (min-width: 768px) { 
+          .close-btn { 
+              right: 48px; 
+              top: 8px; 
+          } 
+      }
+      .close-btn:hover { 
+          transform: rotate(90deg); 
+      }
+      .menu-nav { 
+          display: flex; 
+          flex-direction: column; 
+          justify-content: center; 
+          align-items: flex-start; 
+          height: 100vh; 
+          padding-left: 1.5vw; 
+      }
+      .menu-nav ul { 
+          list-style: none; 
+          padding: 0; 
+          margin: 0; 
+          text-align: left; 
+      }
+      .menu-nav li { 
+          margin: 16px 0; 
+      }
+      .menu-nav a { 
+          text-decoration: none; 
+          font-family: 'happygoheung M', serif; 
+          font-size: 28px; 
+          font-weight: 600; 
+          letter-spacing: 4px; 
+          color: #f3f4f6; 
+          transition: opacity .2s ease, letter-spacing .3s ease; 
+          text-transform: uppercase; 
+      }
+      .menu-nav a:hover { 
+          opacity: .9; 
+          letter-spacing: 6px; 
+      }
+    </style>
+  </head>
+
+  <body class="m-0 p-0 overflow-x-hidden bg-black">
+    <!-- 뒤로가기 버튼 -->
+    <button 
+      class="fixed top-6 left-6 z-50 text-white/80 hover:text-white text-2xl font-light transition-all duration-300 hover:scale-110"
+      onclick="window.location.href='./soma2.html'"
+      title="소원 목록으로 돌아가기"
+    >
+      ←
+    </button>
+
+    <!-- 네비게이션 바 -->
+    <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-sm bg-gradient-to-b from-black/10 to-transparent">
+      <div class="w-full px-6 md:px-8 py-4 flex items-center justify-between">
+        <!-- 좌측: W.S.P 로고 -->
+        <div class="flex items-center gap-3">
+          <h1 
+            class="text-xl font-normal text-white cursor-pointer"
+            style="font-family: 'Yeongwol', serif;"
+            onclick="window.location.href='./home.html'"
+          >
+            <span style="font-family: 'gkswk', serif;">願</span><span style="font-family: 'happygoheung M', serif;">:솟다</span>
+          </h1>
+        </div>
+        <!-- 우측: 메뉴 버튼 -->
+        <div class="relative menu-container">
+          <button 
+            id="menu-btn"
+            class="inline-flex items-center justify-center text-white transition-transform duration-200"
+            onclick="toggleMenu()"
+            aria-label="메뉴 열기"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <!-- 오버레이 메뉴 -->
+    <div id="overlay-menu" class="overlay hidden">
+      <button 
+        id="close-menu"
+        class="close-btn"
+        onclick="closeMenu()"
+        aria-label="메뉴 닫기"
+      >×</button>
+      <nav class="menu-nav">
+        <ul>
+          <li>
+            <a href="./home.html#sotdae-map" onclick="closeMenu()">솟대 지도</a>
+          </li>
+          <li>
+            <a href="./sotdae-workshop.html" onclick="closeMenu()">솟대공작소</a>
+          </li>
+          <li>
+            <a href="./calendar.html" onclick="closeMenu()">바람 일지</a>
+          </li>
+          <li>
+            <a href="./profile.html" onclick="closeMenu()">나의 솟대</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <main 
+      class="relative min-h-screen bg-cover bg-center bg-fixed pt-20"
+      style="background-image: url('./soma2.png');"
+    >
+      <!-- 어두운 오버레이 -->
+      <div class="absolute inset-0 bg-black/40"></div>
+      
+      <!-- 중앙 패널 -->
+      <div class="relative z-10 min-h-screen flex items-center justify-center px-6 py-12">
+        <div class="w-full max-w-4xl">
+          <!-- 반투명 패널 -->
+          <div class="bg-black/30 backdrop-blur-md rounded-lg p-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+              <!-- 메인 카드 -->
+              <div class="flex-1">
+                <div class="bg-white/10 backdrop-blur-md rounded-lg shadow-lg p-8">
+                  <!-- 상단: 카테고리 + 프로필 -->
+                  <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center space-x-4">
+                      <span class="px-3 py-1 bg-indigo-500 text-white text-sm font-medium rounded-full">
+                        건강
+                      </span>
+                      <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center">
+                          <span class="text-white font-medium text-sm">김</span>
+                        </div>
+                        <div>
+                          <p class="text-white font-medium">김민수</p>
+                          <p class="text-white/60 text-xs">2시간 전</p>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-full text-sm font-medium hover:bg-indigo-500 transition-colors">
+                      팔로우
+                    </button>
+                  </div>
+
+                  <!-- 본문: 소원 글 -->
+                  <div class="mb-6">
+                    <h2 
+                      class="text-2xl font-medium text-white mb-4"
+                      style="font-family: 'Yeongwol', serif;"
+                    >
+                      가족 모두 건강하게 지내고 싶어요
+                    </h2>
+                    <div class="text-white/80 leading-relaxed space-y-4">
+                      <p>
+                        요즘 부모님이 나이가 들어가시면서 건강이 걱정됩니다. 아버지는 요즘 허리가 자주 아프시고, 어머니는 고혈압 때문에 약을 드시고 계세요.
+                      </p>
+                      <p>
+                        저도 직장 생활로 스트레스를 많이 받아서 몸이 예전 같지 않다는 걸 느끼고 있어요. 가족 모두가 건강하게 오래오래 함께하고 싶습니다.
+                      </p>
+                      <p>
+                        특히 올해는 가족 건강을 위해 정기적인 건강검진을 받고, 함께 운동도 하고 싶어요. 건강한 몸이 최고의 재산이니까요.
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- 하단: 위치 정보 -->
+                  <div class="flex items-center space-x-2 text-white/60">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span class="text-sm">In Seoul</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 사이드 액션 버튼들 -->
+              <div class="flex lg:flex-col gap-4 lg:gap-6">
+                <!-- 저장하기 -->
+                <button class="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group">
+                  <span class="text-2xl group-hover:scale-110 transition-transform">💾</span>
+                </button>
+                
+                <!-- 공유하기 -->
+                <button class="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group">
+                  <span class="text-2xl group-hover:scale-110 transition-transform">🔗</span>
+                </button>
+                
+                <!-- 연락하기 -->
+                <button class="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group">
+                  <span class="text-2xl group-hover:scale-110 transition-transform">✉️</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+      // 오버레이 메뉴 기능 (home.html과 동일)
+      function toggleMenu() {
+        const overlay = document.getElementById('overlay-menu');
+        if (overlay) {
+          overlay.classList.toggle('hidden');
+          overlay.classList.toggle('show');
+        }
+      }
+
+      function closeMenu() {
+        const overlay = document.getElementById('overlay-menu');
+        if (overlay) {
+          overlay.classList.add('hidden');
+          overlay.classList.remove('show');
+        }
+      }
+
+      // 메뉴 외부 클릭 시 닫기
+      document.addEventListener('click', function(e) {
+        const overlay = document.getElementById('overlay-menu');
+        if (overlay && overlay.classList.contains('show')) {
+          if (!e.target.closest('.menu-container') && !e.target.closest('#overlay-menu')) {
+            closeMenu();
+          }
+        }
+      });
+
+      // ESC 키로 메뉴 닫기
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeMenu();
+        }
+      });
+
+      // 버튼 클릭 이벤트
+      document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const buttonText = this.textContent.trim();
+          
+          if (buttonText === '팔로우') {
+            this.textContent = '팔로잉';
+            this.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
+            this.classList.add('bg-gray-600', 'hover:bg-gray-500');
+          } else if (buttonText === '팔로잉') {
+            this.textContent = '팔로우';
+            this.classList.remove('bg-gray-600', 'hover:bg-gray-500');
+            this.classList.add('bg-indigo-600', 'hover:bg-indigo-500');
+          } else if (buttonText === '💾') {
+            alert('소원이 저장되었습니다!');
+          } else if (buttonText === '🔗') {
+            alert('링크가 복사되었습니다!');
+          } else if (buttonText === '✉️') {
+            window.location.href = 'soma-chat.html';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

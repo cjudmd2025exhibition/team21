@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소원 마당 - 연락하기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Yeongwol';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'KBIZ한마음명조';
+            src: url('./KBIZ한마음명조 M.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'happygoheung M';
+            src: url('./행복고흥M.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'gkswk';
+            src: url('./gkswk.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        /* Overlay menu styles (home.html과 동일) */
+        .overlay { 
+            position: fixed; 
+            inset: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            background: rgba(10,18,36,0.94); 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            transition: opacity .4s ease; 
+            z-index: 9999; 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .overlay.hidden { 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .overlay.show { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        .close-btn { 
+            position: absolute; 
+            top: 8px; 
+            right: 40px; 
+            font-size: 28px; 
+            color: #fff; 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            transition: transform .2s ease; 
+        }
+        @media (min-width: 768px) { 
+            .close-btn { 
+                right: 48px; 
+                top: 8px; 
+            } 
+        }
+        .close-btn:hover { 
+            transform: rotate(90deg); 
+        }
+        .menu-nav { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: flex-start; 
+            height: 100vh; 
+            padding-left: 1.5vw; 
+        }
+        .menu-nav ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            text-align: left; 
+        }
+        .menu-nav li { 
+            margin: 16px 0; 
+        }
+        .menu-nav a { 
+            text-decoration: none; 
+            font-family: 'happygoheung M', serif; 
+            font-size: 28px; 
+            font-weight: 600; 
+            letter-spacing: 4px; 
+            color: #f3f4f6; 
+            transition: opacity .2s ease, letter-spacing .3s ease; 
+            text-transform: uppercase; 
+        }
+        .menu-nav a:hover { 
+            opacity: .9; 
+            letter-spacing: 6px; 
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        .yeongwol {
+            font-family: 'Yeongwol', serif;
+        }
+        
+        .message-bubble-left {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 1px solid #dee2e6;
+        }
+        
+        .message-bubble-right {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+        
+        .chat-container {
+            height: calc(100vh - 200px);
+        }
+        
+        .message-input {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- 네비게이션 바 -->
+    <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-sm bg-gradient-to-b from-black/10 to-transparent">
+      <div class="w-full px-6 md:px-8 py-4 flex items-center justify-between">
+        <!-- 좌측: W.S.P 로고 -->
+        <div class="flex items-center gap-3">
+          <h1 
+            class="text-xl font-normal text-white cursor-pointer"
+            style="font-family: 'Yeongwol', serif;"
+            onclick="window.location.href='./home.html'"
+          >
+            <span style="font-family: 'gkswk', serif;">願</span><span style="font-family: 'happygoheung M', serif;">:솟다</span>
+          </h1>
+        </div>
+        <!-- 우측: 메뉴 버튼 -->
+        <div class="relative menu-container">
+          <button 
+            id="menu-btn"
+            class="inline-flex items-center justify-center text-white transition-transform duration-200"
+            onclick="toggleMenu()"
+            aria-label="메뉴 열기"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <!-- 오버레이 메뉴 -->
+    <div id="overlay-menu" class="overlay hidden">
+      <button 
+        id="close-menu"
+        class="close-btn"
+        onclick="closeMenu()"
+        aria-label="메뉴 닫기"
+      >×</button>
+      <nav class="menu-nav">
+        <ul>
+          <li>
+            <a href="./home.html#sotdae-map" onclick="closeMenu()">솟대 지도</a>
+          </li>
+          <li>
+            <a href="./sotdae-workshop.html" onclick="closeMenu()">솟대공작소</a>
+          </li>
+          <li>
+            <a href="./calendar.html" onclick="closeMenu()">바람 일지</a>
+          </li>
+          <li>
+            <a href="./profile.html" onclick="closeMenu()">나의 솟대</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="pt-16 min-h-screen bg-cover bg-center bg-fixed" style="background-image: url('./soma2.png');">
+        <!-- 어두운 오버레이 -->
+        <div class="absolute inset-0 bg-black/40"></div>
+        
+        <!-- 채팅 컨테이너 -->
+        <div class="relative z-10 max-w-4xl mx-auto px-4 py-8">
+            <!-- 채팅 헤더 -->
+            <div class="bg-white/90 backdrop-blur-sm rounded-t-2xl p-6 border-b border-gray-200">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-medium text-lg">김</span>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900">김민수</h2>
+                        <p class="text-sm text-gray-500">소원 작성자</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 메시지 영역 -->
+            <div class="bg-white/80 backdrop-blur-sm chat-container overflow-y-auto p-6 space-y-4" id="chatMessages">
+                <!-- 대화창이 비어있음 - 사용자가 먼저 메시지를 보내야 함 -->
+            </div>
+            
+            <!-- 메시지 입력창 -->
+            <div class="bg-white/90 backdrop-blur-sm rounded-b-2xl p-4 border-t border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <div class="flex-1">
+                        <input 
+                            type="text" 
+                            id="messageInput" 
+                            placeholder="메시지를 입력하세요..."
+                            class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                            onkeypress="handleKeyPress(event)"
+                        >
+                    </div>
+                    <button 
+                        onclick="sendMessage()" 
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full transition-colors duration-200 shadow-lg hover:shadow-xl"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 오버레이 메뉴 기능 (home.html과 동일)
+        function toggleMenu() {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay) {
+                overlay.classList.toggle('hidden');
+                overlay.classList.toggle('show');
+            }
+        }
+
+        function closeMenu() {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('show');
+            }
+        }
+
+        // 메뉴 외부 클릭 시 닫기
+        document.addEventListener('click', function(e) {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay && overlay.classList.contains('show')) {
+                if (!e.target.closest('.menu-container') && !e.target.closest('#overlay-menu')) {
+                    closeMenu();
+                }
+            }
+        });
+
+        // ESC 키로 메뉴 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        });
+
+        // 대화 히스토리 저장
+        let conversationHistory = [];
+        
+        // OpenAI API 설정
+        // 실제 사용을 위해서는 OpenAI API 키를 발급받아 아래에 입력하세요
+        // https://platform.openai.com/api-keys 에서 발급 가능
+        const API_KEY = 'sk-your-openai-api-key-here'; // 여기에 실제 API 키를 입력하세요
+        const API_URL = 'https://api.openai.com/v1/chat/completions';
+        
+        // 메시지 전송 함수
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (message === '') return;
+            
+            // 사용자 메시지 추가
+            addMessage(message, 'right');
+            
+            // 대화 히스토리에 추가
+            conversationHistory.push({ role: 'user', content: message });
+            
+            // 입력창 초기화
+            messageInput.value = '';
+            
+            // 로딩 메시지 표시
+            const loadingId = addLoadingMessage();
+            
+            // AI 응답 요청
+            getAIResponse(message, loadingId);
+        }
+        
+        // AI 응답 요청 함수
+        async function getAIResponse(userMessage, loadingId) {
+            // API 키가 설정되지 않은 경우 시뮬레이션 응답 사용
+            if (API_KEY === 'sk-your-openai-api-key-here') {
+                // 김민수로서의 맞춤형 시뮬레이션 응답 (대화 히스토리 고려)
+                setTimeout(() => {
+                    const response = generateKimMinSuResponse(userMessage, conversationHistory);
+                    conversationHistory.push({ role: 'assistant', content: response });
+                    removeLoadingMessage(loadingId);
+                    addMessage(response, 'left');
+                }, 800 + Math.random() * 1200); // 0.8~2초 사이 랜덤으로 응답 (더 자연스럽게)
+                return;
+            }
+            
+            try {
+                // 시스템 메시지와 대화 히스토리 포함
+                const messages = [
+                    {
+                        role: 'system',
+                        content: '당신은 김민수라는 30대 직장인입니다. 가족 건강에 대한 소원을 소원 마당에 올린 사람입니다. 부모님이 나이가 들어가시면서 건강이 걱정되고, 가족 모두가 건강하게 오래오래 함께하고 싶어합니다. 사용자와 대화할 때는 본인의 소원과 경험을 바탕으로 자연스럽고 진심 어린 대화를 나누세요. 한국어로 답변하고, 1인칭으로 말하세요. 대화 맥락을 고려하여 자연스럽게 대화하세요.'
+                    },
+                    ...conversationHistory.slice(-10), // 최근 10개 대화만 포함 (컨텍스트 유지)
+                    {
+                        role: 'user',
+                        content: userMessage
+                    }
+                ];
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: messages,
+                        max_tokens: 500,
+                        temperature: 0.7
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API 요청 실패: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const aiMessage = data.choices[0].message.content;
+                
+                // 대화 히스토리에 추가
+                conversationHistory.push({ role: 'assistant', content: aiMessage });
+                
+                // 로딩 메시지 제거하고 AI 응답 추가
+                removeLoadingMessage(loadingId);
+                addMessage(aiMessage, 'left');
+                
+            } catch (error) {
+                console.error('AI 응답 오류:', error);
+                
+                // 로딩 메시지 제거하고 오류 메시지 추가
+                removeLoadingMessage(loadingId);
+                addMessage('죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', 'left');
+            }
+        }
+        
+        // 로딩 메시지 추가
+        function addLoadingMessage() {
+            const chatMessages = document.getElementById('chatMessages');
+            const loadingId = 'loading-' + Date.now();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.id = loadingId;
+            messageDiv.innerHTML = `
+                <div class="flex justify-start">
+                    <div class="flex items-end space-x-2 max-w-xs lg:max-w-md">
+                        <div class="w-8 h-8 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-medium text-xs">김</span>
+                        </div>
+                        <div class="message-bubble-left px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
+                            <div class="flex space-x-1">
+                                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            return loadingId;
+        }
+        
+        // 로딩 메시지 제거
+        function removeLoadingMessage(loadingId) {
+            const loadingElement = document.getElementById(loadingId);
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+        }
+        
+        // 김민수로서의 맞춤형 응답 생성 (대화 히스토리 고려)
+        function generateKimMinSuResponse(userMessage, history) {
+            const message = userMessage.toLowerCase();
+            const lastResponse = history.length > 0 && history[history.length - 1].role === 'assistant' 
+                ? history[history.length - 1].content.toLowerCase() 
+                : '';
+            
+            // 첫 인사인지 확인
+            const isFirstMessage = history.length === 0;
+            
+            // 인사 관련
+            if (message.includes('안녕') || message.includes('hello') || message.includes('hi') || isFirstMessage) {
+                const greetings = [
+                    "안녕하세요! 저는 김민수입니다. 제 소원에 대해 관심을 가져주셔서 정말 감사해요!",
+                    "안녕하세요! 가족 건강 소원을 올린 김민수입니다. 제 소원을 응원해주셔서 고마워요.",
+                    "안녕하세요! 저는 김민수라고 해요. 소원 마당에서 만나뵈어서 반가워요!"
+                ];
+                return greetings[Math.floor(Math.random() * greetings.length)];
+            }
+            
+            // 소원 관련 질문
+            if (message.includes('소원') || message.includes('바라') || message.includes('원해')) {
+                if (message.includes('건강')) {
+                    return "네, 제 소원은 가족 건강이에요. 요즘 부모님이 나이가 들어가시면서 정말 걱정이 많아요. 아버지는 허리가 자주 아프시고, 어머니는 고혈압 때문에 약을 드시고 계세요.";
+                } else if (message.includes('가족')) {
+                    return "가족이 정말 소중하죠. 저도 직장 생활로 바쁘지만, 가족과 함께하는 시간을 더 많이 갖고 싶어요. 특히 부모님과 함께하는 시간이 점점 소중해지는 것 같아요.";
+                } else {
+                    return "제 소원은 가족 모두가 건강하게 지내는 거예요. 부모님이 나이가 들어가시면서 건강이 걱정돼서 이 소원을 올렸습니다.";
+                }
+            }
+            
+            // 가족 관련
+            if (message.includes('가족') || message.includes('부모') || message.includes('어머니') || message.includes('아버지')) {
+                const familyResponses = [
+                    "네, 부모님이 정말 걱정돼요. 요즘 아버지는 허리가 자주 아프시고, 어머니는 고혈압 때문에 약을 드시고 계세요. 가족 모두가 건강하게 오래오래 함께하고 싶어요.",
+                    "부모님 건강이 제일 걱정이에요. 요즘 자주 연락드리고 있는데, 건강을 위해 뭘 도와드릴 수 있을까 고민이 많아요.",
+                    "가족이 정말 소중하죠. 저도 부모님 댁에 자주 전화드리고, 주말에는 시간을 내서 방문하려고 해요."
+                ];
+                return familyResponses[Math.floor(Math.random() * familyResponses.length)];
+            }
+            
+            // 건강 관련
+            if (message.includes('건강') || message.includes('병') || message.includes('아프')) {
+                const healthResponses = [
+                    "정말 건강이 최고죠. 저도 요즘 직장 스트레스로 몸이 예전 같지 않다는 걸 느끼고 있어요. 올해는 가족과 함께 정기적인 건강검진을 받고 운동도 하고 싶어요.",
+                    "건강이 정말 중요하죠. 부모님도 건강검진을 정기적으로 받으시고 계신데, 그때마다 걱정이 많아요. 다행히 큰 문제는 없으시지만...",
+                    "올해는 가족 건강을 위해 더 신경 쓰려고 해요. 함께 운동도 하고, 건강한 식단도 같이 챙기려고 해요."
+                ];
+                return healthResponses[Math.floor(Math.random() * healthResponses.length)];
+            }
+            
+            // 직장 관련
+            if (message.includes('직장') || message.includes('일') || message.includes('회사') || message.includes('업무')) {
+                const workResponses = [
+                    "직장 생활도 바쁘지만, 가족이 더 중요해요. 요즘은 업무 스트레스도 많고 몸도 예전 같지 않아서, 가족 건강이 더욱 걱정돼요.",
+                    "회사 일도 바쁘지만, 주말에는 가족 시간을 최대한 확보하려고 해요. 부모님도 자주 뵙고 싶어하시는데...",
+                    "직장인이라 시간이 부족하지만, 가족이 우선이에요. 퇴근 후에도 부모님께 전화드리고, 주말에는 시간을 내서 뵙고 있어요."
+                ];
+                return workResponses[Math.floor(Math.random() * workResponses.length)];
+            }
+            
+            // 질문 관련
+            if (message.includes('어떻게') || message.includes('방법') || message.includes('도움') || message.includes('어떡')) {
+                const helpResponses = [
+                    "저도 어떻게 하면 좋을지 고민이 많아요. 일단 가족과 함께 정기적인 건강검진을 받고, 함께 운동하는 시간을 늘려보려고 해요.",
+                    "부모님 건강을 위해 뭘 할 수 있을까 항상 생각해요. 일단 자주 연락드리고, 주말에는 시간을 내서 함께 보내려고 해요.",
+                    "가족 건강을 위해 건강검진, 운동, 식단 관리 이런 것들을 함께 하려고 해요. 특히 부모님께 좋은 영향을 줄 수 있도록요."
+                ];
+                return helpResponses[Math.floor(Math.random() * helpResponses.length)];
+            }
+            
+            // 감사 관련
+            if (message.includes('감사') || message.includes('고마') || message.includes('thanks') || message.includes('감사해')) {
+                const thanksResponses = [
+                    "천만에요! 제 소원에 대해 관심을 가져주셔서 정말 고마워요. 함께 응원해주시니 힘이 나네요!",
+                    "제가 감사해야죠! 소원을 응원해주셔서 정말 고마워요.",
+                    "함께 응원해주시니 정말 힘이 나요. 감사합니다!"
+                ];
+                return thanksResponses[Math.floor(Math.random() * thanksResponses.length)];
+            }
+            
+            // 슬픔/힘듦 관련
+            if (message.includes('힘들') || message.includes('슬프') || message.includes('우울') || message.includes('괴로') || message.includes('어렵')) {
+                const comfortResponses = [
+                    "저도 가족 건강이 걱정돼서 마음이 무거워요. 하지만 혼자 고민하지 말고 함께 응원해주시니 정말 감사해요. 함께 힘내요!",
+                    "힘든 일이 있으시면 저도 같이 아파해요. 함께 응원하면서 소원이 이루어지길 바라요.",
+                    "가족 건강이 걱정돼서 마음이 무겁지만, 응원해주시는 분들이 계셔서 힘이 나요. 함께 힘내요!"
+                ];
+                return comfortResponses[Math.floor(Math.random() * comfortResponses.length)];
+            }
+            
+            // 기쁨/좋은 일 관련
+            if (message.includes('좋') || message.includes('기쁘') || message.includes('행복') || message.includes('성공') || message.includes('축하')) {
+                const happyResponses = [
+                    "정말 기쁜 일이 있으신가 보네요! 저도 가족이 건강하게 지내는 그날까지 기다리고 있어요. 함께 응원해요!",
+                    "좋은 일이 있으시다니 저도 기쁘네요! 저도 가족 건강 소원이 이루어지길 바라요.",
+                    "기쁜 소식 들려주셔서 감사해요! 저도 가족 건강 소원이 이루어지면 정말 행복할 것 같아요."
+                ];
+                return happyResponses[Math.floor(Math.random() * happyResponses.length)];
+            }
+            
+            // 소원 마당 관련
+            if (message.includes('소원 마당') || message.includes('산마루') || message.includes('솟대')) {
+                return "소원 마당에서 제 소원을 올리고 나니 마음이 한결 가벼워졌어요. 다른 분들도 응원해주시고, 저도 다른 분들의 소원을 응원할 수 있어서 좋아요.";
+            }
+            
+            // 질문 (뭐, 언제, 어디, 누구 등)
+            if (message.includes('뭐') || message.includes('무엇') || message.includes('어떤') || message.includes('어디') || message.includes('언제') || message.includes('누구')) {
+                const questionResponses = [
+                    "제 소원은 가족 모두가 건강하게 지내는 거예요. 부모님이 나이가 들어가시면서 정말 걱정이 많아서요.",
+                    "저는 김민수라고 해요. 30대 직장인이고, 가족 건강이 가장 걱정돼요.",
+                    "부모님 건강이 가장 걱정이에요. 특히 아버지 허리와 어머니 고혈압 때문에요."
+                ];
+                return questionResponses[Math.floor(Math.random() * questionResponses.length)];
+            }
+            
+            // 응답/동의 표현
+            if (message.includes('맞') || message.includes('그렇') || message.includes('그래') || message.includes('좋아')) {
+                const agreeResponses = [
+                    "네, 맞아요! 가족이 정말 소중하죠.",
+                    "그렇죠! 함께 응원해주시니 정말 고마워요.",
+                    "네, 함께 소원을 응원해요!"
+                ];
+                return agreeResponses[Math.floor(Math.random() * agreeResponses.length)];
+            }
+            
+            // 기본 응답 (대화 맥락 고려)
+            const defaultResponses = [
+                "정말 좋은 이야기네요! 저도 가족 건강에 대한 소원을 올렸는데, 함께 응원해주시니 정말 고마워요.",
+                "제 소원은 가족 모두가 건강하게 지내는 거예요. 부모님이 나이가 들어가시면서 정말 걱정이 많아요.",
+                "가족이 정말 소중하죠. 저도 부모님 건강이 걱정돼서 이 소원을 올렸어요.",
+                "함께 응원해주시니 정말 힘이 나네요! 가족 건강 소원이 이루어지길 바라요.",
+                "소원 마당에서 다른 분들과 소원을 나누고 응원할 수 있어서 정말 좋아요.",
+                "네, 말씀 잘 들었어요. 제 소원도 응원해주셔서 고마워요!",
+                "정말 공감이 가네요. 가족 건강은 누구나 걱정되는 부분이죠."
+            ];
+            
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
+        
+        // 메시지 추가 함수
+        function addMessage(message, direction) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ko-KR', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            
+            if (direction === 'right') {
+                messageDiv.innerHTML = `
+                    <div class="flex justify-end">
+                        <div class="flex items-end space-x-2 max-w-xs lg:max-w-md">
+                            <div class="message-bubble-right px-4 py-3 rounded-2xl rounded-br-md shadow-sm">
+                                <p class="text-white text-sm">${message}</p>
+                                <p class="text-xs text-blue-100 mt-1">${timeString}</p>
+                            </div>
+                            <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex justify-start">
+                        <div class="flex items-end space-x-2 max-w-xs lg:max-w-md">
+                            <div class="w-8 h-8 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white font-medium text-xs">김</span>
+                            </div>
+                            <div class="message-bubble-left px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
+                                <p class="text-gray-800 text-sm">${message}</p>
+                                <p class="text-xs text-gray-500 mt-1">${timeString}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            
+            // 스크롤을 맨 아래로
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // 엔터키로 메시지 전송
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        window.addEventListener('load', () => {
+            // 대화창이 비어있으므로 스크롤할 필요 없음
+            // 사용자가 첫 메시지를 보내면 자동으로 스크롤됨
+            
+            // 입력창에 포커스
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) {
+                messageInput.focus();
+            }
+            
+            // 첫 인사 메시지 추가 (선택사항)
+            // addMessage("안녕하세요! 가족 건강 소원을 올린 김민수입니다. 제 소원에 대해 궁금한 점이 있으시면 언제든 말씀해주세요.", 'left');
+        });
+    </script>
+</body>
+</html>

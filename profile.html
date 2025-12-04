@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로필 - 소원의 산마루</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'Yeongwol';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'KBIZ한마음명조';
+            src: url('./KBIZ한마음명조 M.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'happygoheung M';
+            src: url('./행복고흥M.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'gkswk';
+            src: url('./gkswk.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        .yeongwol {
+            font-family: 'Yeongwol', serif;
+        }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* Overlay menu styles (home.html과 동일) */
+        .overlay { 
+            position: fixed; 
+            inset: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            background: rgba(10,18,36,0.94); 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            transition: opacity .4s ease; 
+            z-index: 9999; 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .overlay.hidden { 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .overlay.show { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        .close-btn { 
+            position: absolute; 
+            top: 8px; 
+            right: 40px; 
+            font-size: 28px; 
+            color: #fff; 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            transition: transform .2s ease; 
+        }
+        @media (min-width: 768px) { 
+            .close-btn { 
+                right: 48px; 
+                top: 8px; 
+            } 
+        }
+        .close-btn:hover { 
+            transform: rotate(90deg); 
+        }
+        .menu-nav { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: flex-start; 
+            height: 100vh; 
+            padding-left: 1.5vw; 
+        }
+        .menu-nav ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            text-align: left; 
+        }
+        .menu-nav li { 
+            margin: 16px 0; 
+        }
+        .menu-nav a { 
+            text-decoration: none; 
+            font-family: 'happygoheung M', serif; 
+            font-size: 28px; 
+            font-weight: 600; 
+            letter-spacing: 4px; 
+            color: #f3f4f6; 
+            transition: opacity .2s ease, letter-spacing .3s ease; 
+            text-transform: uppercase; 
+        }
+        .menu-nav a:hover { 
+            opacity: .9; 
+            letter-spacing: 6px; 
+        }
+    </style>
+</head>
+
+<body class="m-0 p-0 overflow-x-hidden bg-black">
+    <!-- 네비게이션 바 -->
+    <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-sm bg-gradient-to-b from-black/10 to-transparent">
+        <div class="w-full px-6 md:px-8 py-4 flex items-center justify-between">
+            <!-- 좌측: W.S.P 로고 -->
+            <div class="flex items-center gap-3">
+                <h1 
+                    class="text-xl font-normal text-white cursor-pointer"
+                    style="font-family: 'Yeongwol', serif;"
+                    onclick="window.location.href='./home.html'"
+                >
+                    <span style="font-family: 'gkswk', serif;">願</span><span style="font-family: 'happygoheung M', serif;">:솟다</span>
+                </h1>
+            </div>
+            <!-- 우측: 메뉴 버튼 -->
+            <div class="relative menu-container">
+                <button 
+                    id="menu-btn"
+                    class="inline-flex items-center justify-center text-white transition-transform duration-200"
+                    onclick="toggleMenu()"
+                    aria-label="메뉴 열기"
+                >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 오버레이 메뉴 -->
+    <div id="overlay-menu" class="overlay hidden">
+        <button 
+            id="close-menu"
+            class="close-btn"
+            onclick="closeMenu()"
+            aria-label="메뉴 닫기"
+        >×</button>
+        <nav class="menu-nav">
+            <ul>
+                <li>
+                    <a href="./home.html#sotdae-map" onclick="closeMenu()">솟대 지도</a>
+                </li>
+                <li>
+                    <a href="./sotdae-workshop.html" onclick="closeMenu()">솟대공작소</a>
+                </li>
+                <li>
+                    <a href="./calendar.html" onclick="closeMenu()">바람 일지</a>
+                </li>
+                <li>
+                    <a href="./profile.html" onclick="closeMenu()">나의 솟대</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <main 
+        class="relative min-h-screen bg-cover bg-center pt-20"
+        style="background-image: url('./my.png');"
+    >
+        <!-- 어두운 오버레이 -->
+        <div class="absolute inset-0 bg-black/40"></div>
+        
+        <!-- 좌측 중앙 햄버거 메뉴 버튼 -->
+        <div class="absolute top-1/2 left-6 -translate-y-1/2 z-30">
+            <button id="leftMenuBtn" class="relative p-2 text-white hover:text-white/80 transition-all duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+
+            <!-- 좌측 드롭다운 메뉴 -->
+            <div id="leftMenu" class="absolute left-0 z-50 w-56 opacity-0 invisible transform -translate-y-2 transition-all duration-300 ease-in-out" style="top: calc(100% + 10px);">
+                <div class="bg-black/40 backdrop-blur-[10px] rounded-xl shadow-lg border border-white/10" style="box-shadow: 0 4px 20px rgba(0,0,0,0.2); padding: 12px 16px;">
+                    <!-- 메뉴 아이템들 -->
+                    <div class="space-y-1">
+                        <button class="w-full text-left px-3 py-2.5 rounded-lg text-white hover:bg-white/10 transition-all duration-200" style="font-family: 'Noto Sans KR', sans-serif;">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                                <span class="text-sm">New board</span>
+                            </div>
+                        </button>
+
+                        <button class="w-full text-left px-3 py-2.5 rounded-lg text-white hover:bg-white/10 transition-all duration-200" style="font-family: 'Noto Sans KR', sans-serif;">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                </svg>
+                                <span class="text-sm">내 소원 보기</span>
+                            </div>
+                        </button>
+
+                        <button class="w-full text-left px-3 py-2.5 rounded-lg text-white hover:bg-white/10 transition-all duration-200" style="font-family: 'Noto Sans KR', sans-serif;">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                <span class="text-sm">팔로워</span>
+                            </div>
+                        </button>
+
+                        <button class="w-full text-left px-3 py-2.5 rounded-lg text-white hover:bg-white/10 transition-all duration-200" style="font-family: 'Noto Sans KR', sans-serif;">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                <span class="text-sm">팔로잉</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 우측 중앙 필터 버튼 -->
+        <div class="absolute top-1/2 right-6 -translate-y-1/2 z-30">
+            <button id="rightMenuBtn" class="relative p-2 text-white hover:text-white/80 transition-all duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z"/>
+                </svg>
+            </button>
+
+            <!-- 우측 드롭다운 메뉴 -->
+            <div id="rightMenu" class="absolute right-0 z-50 w-56 opacity-0 invisible transform -translate-y-2 transition-all duration-300 ease-in-out" style="top: calc(100% + 10px);">
+                <div class="bg-black/40 backdrop-blur-[10px] rounded-xl shadow-lg border border-white/10" style="box-shadow: 0 4px 20px rgba(0,0,0,0.2); padding: 12px 16px;">
+                    <!-- 정렬 옵션들 -->
+                    <div class="space-y-1">
+                        <button class="w-full text-left px-3 py-2.5 rounded-lg text-white hover:bg-white/10 transition-all duration-200" style="font-family: 'Noto Sans KR', sans-serif;">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                </svg>
+                                <span class="text-sm">Order of Interest</span>
+                            </div>
+                        </button>
+
+                        <button class="w-full text-left px-3 py-2.5 rounded-lg text-white hover:bg-white/10 transition-all duration-200" style="font-family: 'Noto Sans KR', sans-serif;">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-sm">Newest First</span>
+                            </div>
+                        </button>
+
+                        <button class="w-full text-left px-3 py-2.5 rounded-lg text-white hover:bg-white/10 transition-all duration-200" style="font-family: 'Noto Sans KR', sans-serif;">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-sm">Oldest First</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 프로필 컨테이너 -->
+        <div class="relative z-10 min-h-screen flex items-center justify-center px-8 py-20">
+            <div class="w-full max-w-md text-center">
+                <!-- 프로필 이미지 -->
+                <div class="mb-16">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mb-10 overflow-hidden">
+                        <!-- 프로필 이미지 placeholder -->
+                        <div class="w-full h-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                            <span class="text-white text-3xl font-bold">김</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 사용자 정보 -->
+                    <h2 class="text-2xl font-bold text-white mb-4">김소원</h2>
+                    <p class="text-white/70 text-base">@kimsoowon</p>
+                </div>
+
+                <!-- 액션 버튼들 -->
+                <div class="flex justify-center gap-8 mb-20">
+                    <button class="px-8 py-3 bg-white/20 hover:bg-white/30 text-white font-medium rounded-full transition-all duration-300 backdrop-blur-sm text-sm">
+                        프로필 수정
+                    </button>
+                    <button class="px-8 py-3 border border-white/30 hover:border-white/50 text-white font-medium rounded-full transition-all duration-300 backdrop-blur-sm text-sm">
+                        설정
+                    </button>
+                </div>
+
+                <!-- 통계 영역 -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-12 mb-24">
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-white mb-3">0</div>
+                        <div class="text-white/60 text-xs">저장된 솟대</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-white mb-3">0</div>
+                        <div class="text-white/60 text-xs">솟대</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-white mb-3">0</div>
+                        <div class="text-white/60 text-xs">팔로잉</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-white mb-3">0</div>
+                        <div class="text-white/60 text-xs">팔로워</div>
+                    </div>
+                </div>
+
+
+                <!-- 솟대 카드 영역 -->
+                <div id="sodaeCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- 솟대 카드들이 여기에 동적으로 추가됩니다 -->
+                </div>
+
+                <!-- 콘텐츠 없음 메시지 (솟대가 없을 때만 표시) -->
+                <div id="emptyMessage" class="text-center hidden">
+                    <div class="text-white/50 text-sm">
+                        아직 세운 솟대가 없습니다.
+                    </div>
+                    <div class="mt-2">
+                        <a href="./home.html" class="text-white/70 hover:text-white text-sm underline">
+                            첫 솟대 세우러 가기
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 솟대 상세 모달 -->
+    <div id="sodaeDetailModal" class="fixed inset-0 z-50 hidden">
+        <!-- 오버레이 -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" id="detailModalOverlay"></div>
+        
+        <!-- 모달 컨텐츠 -->
+        <div class="relative flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/60 backdrop-blur-[15px] rounded-2xl shadow-2xl border border-white/20 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <!-- 헤더 -->
+                <div class="flex items-center justify-between p-6 border-b border-white/10">
+                    <h2 class="text-xl font-medium text-white yeongwol">솟대 상세</h2>
+                    <button id="closeDetailModal" class="text-white/60 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- 모달 본문 -->
+                <div class="p-6">
+                    <!-- 이미지 영역 -->
+                    <div id="detailImageContainer" class="mb-6">
+                        <img id="sodaeImagePreview" src="" alt="소원 이미지" class="w-full h-64 object-cover rounded-lg" style="display: none;" />
+                        <!-- 이미지가 없을 때 placeholder가 여기에 동적으로 삽입됩니다 -->
+                    </div>
+                    
+                    <!-- 제목과 메타 정보 -->
+                    <div class="mb-6">
+                        <h3 id="detailTitle" class="text-2xl font-medium text-white mb-3 yeongwol"></h3>
+                        <div class="flex items-center space-x-4 text-sm text-white/60">
+                            <span id="detailCategory" class="px-3 py-1 bg-slate-700/50 rounded-full"></span>
+                            <span id="detailDate"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- 소원 본문 -->
+                    <div class="mb-8">
+                        <h4 class="text-lg font-medium text-white mb-3">소원 내용</h4>
+                        <p id="detailContent" class="text-white/80 leading-relaxed whitespace-pre-wrap"></p>
+                    </div>
+                    
+                    <!-- 액션 버튼들 -->
+                    <div class="flex justify-end space-x-3">
+                        <button id="editSodaeBtn" class="px-4 py-2 text-white/70 hover:text-white transition-colors text-sm">
+                            수정하기
+                        </button>
+                        <button id="shareSodaeBtn" class="px-4 py-2 text-white/70 hover:text-white transition-colors text-sm">
+                            공유하기
+                        </button>
+                        <button id="deleteSodaeBtn" class="px-4 py-2 text-red-400 hover:text-red-300 transition-colors text-sm">
+                            삭제하기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+
+        // 기존 드롭다운 메뉴 관련 DOM 요소들
+        const leftMenuBtn = document.getElementById('leftMenuBtn');
+        const rightMenuBtn = document.getElementById('rightMenuBtn');
+        const leftMenu = document.getElementById('leftMenu');
+        const rightMenu = document.getElementById('rightMenu');
+
+        // 메뉴 상태 관리
+        let leftMenuOpen = false;
+        let rightMenuOpen = false;
+
+
+        // 좌측 메뉴 열기
+        function openLeftMenu() {
+            leftMenu.classList.remove('opacity-0', 'invisible', '-translate-y-2');
+            leftMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
+            leftMenuOpen = true;
+        }
+
+        // 좌측 메뉴 닫기
+        function closeLeftMenu() {
+            leftMenu.classList.add('opacity-0', 'invisible', '-translate-y-2');
+            leftMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+            leftMenuOpen = false;
+        }
+
+        // 우측 메뉴 열기
+        function openRightMenu() {
+            rightMenu.classList.remove('opacity-0', 'invisible', '-translate-y-2');
+            rightMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
+            rightMenuOpen = true;
+        }
+
+        // 우측 메뉴 닫기
+        function closeRightMenu() {
+            rightMenu.classList.add('opacity-0', 'invisible', '-translate-y-2');
+            rightMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+            rightMenuOpen = false;
+        }
+
+        // 모든 메뉴 닫기
+        function closeAllMenus() {
+            closeLeftMenu();
+            closeRightMenu();
+        }
+
+        // 이벤트 리스너 등록
+        leftMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (leftMenuOpen) {
+                closeLeftMenu();
+            } else {
+                closeRightMenu(); // 다른 메뉴가 열려있으면 닫기
+                openLeftMenu();
+            }
+        });
+
+        rightMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (rightMenuOpen) {
+                closeRightMenu();
+            } else {
+                closeLeftMenu(); // 다른 메뉴가 열려있으면 닫기
+                openRightMenu();
+            }
+        });
+
+        // 메뉴 외부 클릭 시 닫기
+        document.addEventListener('click', function(e) {
+            if (!leftMenu.contains(e.target) && !leftMenuBtn.contains(e.target)) {
+                closeLeftMenu();
+            }
+            if (!rightMenu.contains(e.target) && !rightMenuBtn.contains(e.target)) {
+                closeRightMenu();
+            }
+        });
+
+        // ESC 키로 메뉴 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAllMenus();
+            }
+        });
+
+        // 프로필 수정 버튼 클릭 이벤트
+        document.querySelector('button:nth-of-type(3)').addEventListener('click', function() {
+            alert('프로필 수정 기능은 준비 중입니다.');
+        });
+
+        // 설정 버튼 클릭 이벤트 (프로필 영역)
+        document.querySelector('button:nth-of-type(4)').addEventListener('click', function() {
+            alert('설정 기능은 준비 중입니다.');
+        });
+
+        // 솟대 카드 관련 변수들
+        const sodaeCardsContainer = document.getElementById('sodaeCardsContainer');
+        const emptyMessage = document.getElementById('emptyMessage');
+        const savedSodaesCount = document.querySelector('.grid .text-center:nth-child(1) .text-xl');
+        const totalSodaesCount = document.querySelector('.grid .text-center:nth-child(2) .text-xl');
+
+        // 상세 모달 관련 변수들
+        const sodaeDetailModal = document.getElementById('sodaeDetailModal');
+        const detailModalOverlay = document.getElementById('detailModalOverlay');
+        const closeDetailModal = document.getElementById('closeDetailModal');
+        const detailImageContainer = document.getElementById('detailImageContainer');
+        const detailTitle = document.getElementById('detailTitle');
+        const detailCategory = document.getElementById('detailCategory');
+        const detailDate = document.getElementById('detailDate');
+        const detailContent = document.getElementById('detailContent');
+        const editSodaeBtn = document.getElementById('editSodaeBtn');
+        const shareSodaeBtn = document.getElementById('shareSodaeBtn');
+        const deleteSodaeBtn = document.getElementById('deleteSodaeBtn');
+
+        // 현재 선택된 솟대 ID
+        let selectedSodaeId = null;
+        let currentSodaes = [];
+
+        // 카테고리 한글 변환 함수
+        function getCategoryKorean(category) {
+            const categoryMap = {
+                'love': '사랑',
+                'health': '건강',
+                'dream': '꿈',
+                'happiness': '행복',
+                'peace': '평화',
+                'success': '성공'
+            };
+            return categoryMap[category] || category;
+        }
+
+        // 날짜 포맷팅 함수
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) {
+                return '어제';
+            } else if (diffDays < 7) {
+                return `${diffDays}일 전`;
+            } else {
+                return date.toLocaleDateString('ko-KR', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            }
+        }
+
+        // 솟대 카드 생성 함수
+        function createSodaeCard(sodae) {
+            console.log('솟대 카드 생성:', sodae.name, '이미지 URL:', sodae.image);
+            return `
+                <div class="sodae-card bg-black/20 backdrop-blur-lg rounded-2xl border border-white/5 hover:bg-black/30 hover:scale-105 hover:shadow-2xl hover:shadow-white/10 transition-all duration-300 cursor-pointer aspect-square flex items-center justify-center overflow-hidden group relative" data-sodae-id="${sodae.id}">
+                    <!-- 이미지 영역 (전체 카드) -->
+                    <div class="w-full h-full flex items-center justify-center">
+                        <img src="./zkem.png" alt="솟대 아이콘" class="w-20 h-20 object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                    </div>
+                    
+                    <!-- Hover 시 나타나는 오버레이 -->
+                    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
+                        <h3 class="text-white font-bold text-sm mb-2 line-clamp-2 leading-tight">${sodae.name || '제목 없음'}</h3>
+                        <div class="text-white/70 text-xs">
+                            김민수
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 솟대 카드들 로드 및 표시
+        function loadSodaeCards() {
+            try {
+                currentSodaes = JSON.parse(localStorage.getItem('mySodaes') || '[]');
+                
+                if (currentSodaes.length === 0) {
+                    // 솟대가 없는 경우
+                    sodaeCardsContainer.innerHTML = '';
+                    emptyMessage.classList.remove('hidden');
+                    savedSodaesCount.textContent = '0';
+                    totalSodaesCount.textContent = '0';
+                } else {
+                    // 솟대가 있는 경우
+                    emptyMessage.classList.add('hidden');
+                    renderSodaeCards(currentSodaes);
+                    savedSodaesCount.textContent = currentSodaes.length;
+                    totalSodaesCount.textContent = currentSodaes.length;
+                }
+            } catch (error) {
+                console.error('솟대 카드 로드 실패:', error);
+                emptyMessage.classList.remove('hidden');
+            }
+        }
+
+        // 솟대 카드들 렌더링
+        function renderSodaeCards(sodaes) {
+            sodaeCardsContainer.innerHTML = sodaes.map(createSodaeCard).join('');
+            
+            // 카드 클릭 이벤트 추가
+            document.querySelectorAll('.sodae-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const sodaeId = parseInt(card.dataset.sodaeId);
+                    showSodaeDetail(sodaeId);
+                });
+            });
+        }
+
+        // 솟대 상세 모달 표시
+        function showSodaeDetail(sodaeId) {
+            const sodae = currentSodaes.find(s => s.id === sodaeId);
+            if (!sodae) return;
+
+            selectedSodaeId = sodaeId;
+            
+            // 이미지 설정
+            const sodaeImagePreview = document.getElementById('sodaeImagePreview');
+            console.log('상세 모달 이미지 설정:', sodae.name, '이미지 URL:', sodae.image);
+            
+            if (sodae.image) {
+                sodaeImagePreview.src = sodae.image;
+                sodaeImagePreview.style.display = 'block';
+                sodaeImagePreview.onload = function() {
+                    console.log('상세 모달 이미지 로드 성공:', this.src);
+                };
+                sodaeImagePreview.onerror = function() {
+                    console.log('상세 모달 이미지 로드 실패:', this.src);
+                    this.style.display = 'none';
+                    const placeholder = detailImageContainer.querySelector('.placeholder');
+                    if (placeholder) {
+                        placeholder.style.display = 'flex';
+                    }
+                };
+                // placeholder 숨기기
+                const placeholder = detailImageContainer.querySelector('.placeholder');
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                }
+            } else {
+                sodaeImagePreview.style.display = 'none';
+                // placeholder 표시
+                const placeholder = detailImageContainer.querySelector('.placeholder');
+                if (!placeholder) {
+                    detailImageContainer.innerHTML = `
+                        <img id="sodaeImagePreview" src="" alt="소원 이미지" class="w-full h-64 object-cover rounded-lg" style="display: none;" />
+                        <div class="placeholder w-full h-64 bg-gradient-to-br from-slate-600/50 to-slate-700/50 rounded-lg flex items-center justify-center">
+                            <img src="./zkem.png" alt="솟대 아이콘" class="w-16 h-16 object-contain">
+                        </div>
+                    `;
+                } else {
+                    placeholder.style.display = 'flex';
+                }
+            }
+
+            // 텍스트 정보 설정
+            detailTitle.textContent = sodae.name;
+            detailCategory.textContent = getCategoryKorean(sodae.category);
+            detailDate.textContent = formatDate(sodae.createdAt);
+            detailContent.textContent = sodae.content;
+
+            // 모달 표시
+            sodaeDetailModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 솟대 상세 모달 닫기
+        function closeSodaeDetail() {
+            sodaeDetailModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            selectedSodaeId = null;
+        }
+
+        // 솟대 삭제
+        function deleteSodae(sodaeId) {
+            if (confirm('정말로 이 솟대를 삭제하시겠습니까?')) {
+                try {
+                    const updatedSodaes = currentSodaes.filter(s => s.id !== sodaeId);
+                    localStorage.setItem('mySodaes', JSON.stringify(updatedSodaes));
+                    currentSodaes = updatedSodaes;
+                    loadSodaeCards();
+                    closeSodaeDetail();
+                } catch (error) {
+                    console.error('솟대 삭제 실패:', error);
+                    alert('삭제 중 오류가 발생했습니다.');
+                }
+            }
+        }
+
+        // 솟대 공유
+        function shareSodae(sodaeId) {
+            const sodae = currentSodaes.find(s => s.id === sodaeId);
+            if (!sodae) return;
+
+            const shareText = `솟대: ${sodae.name}\n카테고리: ${getCategoryKorean(sodae.category)}\n소원: ${sodae.content}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: '솟대 공유',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                // 클립보드에 복사
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('솟대 정보가 클립보드에 복사되었습니다.');
+                }).catch(() => {
+                    alert('공유 기능을 사용할 수 없습니다.');
+                });
+            }
+        }
+
+        // 페이지 로드 시 솟대 카드들 로드
+        document.addEventListener('DOMContentLoaded', loadSodaeCards);
+
+        // 필터 관련 변수
+        let currentSortType = 'newest'; // 'newest', 'oldest', 'interest'
+
+        // 정렬 함수들
+        function sortSodaes(sodaes, sortType) {
+            const sorted = [...sodaes];
+            
+            switch (sortType) {
+                case 'newest':
+                    return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                case 'oldest':
+                    return sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                case 'interest':
+                    // 관심도 순 (현재는 최신순으로 대체)
+                    return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                default:
+                    return sorted;
+            }
+        }
+
+        // 필터 적용
+        function applyFilter(sortType) {
+            currentSortType = sortType;
+            const sortedSodaes = sortSodaes(currentSodaes, sortType);
+            renderSodaeCards(sortedSodaes);
+        }
+
+        // 상세 모달 이벤트 리스너들
+        detailModalOverlay.addEventListener('click', closeSodaeDetail);
+        closeDetailModal.addEventListener('click', closeSodaeDetail);
+        
+        editSodaeBtn.addEventListener('click', () => {
+            if (selectedSodaeId) {
+                closeSodaeDetail();
+                // 수정 기능은 추후 구현
+                alert('수정 기능은 준비 중입니다.');
+            }
+        });
+        
+        shareSodaeBtn.addEventListener('click', () => {
+            if (selectedSodaeId) {
+                shareSodae(selectedSodaeId);
+            }
+        });
+        
+        deleteSodaeBtn.addEventListener('click', () => {
+            if (selectedSodaeId) {
+                deleteSodae(selectedSodaeId);
+            }
+        });
+
+        // 필터 버튼 이벤트 리스너들
+        const filterButtons = document.querySelectorAll('#rightMenu button');
+        filterButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const sortTypes = ['interest', 'newest', 'oldest'];
+                const sortType = sortTypes[index];
+                applyFilter(sortType);
+                closeRightMenu();
+            });
+        });
+
+        // ESC 키로 상세 모달 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (!sodaeDetailModal.classList.contains('hidden')) {
+                    closeSodaeDetail();
+                } else {
+                    closeAllMenus();
+                }
+            }
+        });
+
+        // localStorage 변경 감지 (다른 탭에서 솟대가 추가된 경우)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'mySodaes') {
+                loadSodaeCards();
+            }
+        });
+
+        // 오버레이 메뉴 기능 (home.html과 동일)
+        function toggleMenu() {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay) {
+                overlay.classList.toggle('hidden');
+                overlay.classList.toggle('show');
+            }
+        }
+
+        function closeMenu() {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('show');
+            }
+        }
+
+        // 메뉴 외부 클릭 시 닫기
+        document.addEventListener('click', function(e) {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay && overlay.classList.contains('show')) {
+                if (!e.target.closest('.menu-container') && !e.target.closest('#overlay-menu')) {
+                    closeMenu();
+                }
+            }
+        });
+
+        // ESC 키로 메뉴 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        });
+    </script>
+</body>
+</html>

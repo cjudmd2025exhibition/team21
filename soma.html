@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>소원 마당 - 소원의 산마루</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    
+    <style>
+      /* 로컬 폰트 정의 */
+      @font-face {
+        font-family: 'Yeongwol';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-display: swap;
+      }
+      
+      /* 화살표 애니메이션 */
+      @keyframes arrow-bounce {
+        0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+      
+      @keyframes arrow-fade {
+        0%, 100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      
+      .arrow-animation {
+        animation: arrow-bounce 2s ease-in-out infinite, arrow-fade 2s ease-in-out infinite;
+      }
+      
+      .arrow-animation:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      
+      .arrow-animation:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+    </style>
+  </head>
+
+  <body class="m-0 p-0 overflow-x-hidden">
+    <!-- 홈으로 돌아가기 버튼 -->
+    <button 
+      class="fixed top-6 left-6 z-50 text-white/80 hover:text-white text-2xl font-light transition-all duration-300 hover:scale-110"
+      onclick="window.location.href='./home.html'"
+      title="홈으로 돌아가기"
+    >
+      ←
+    </button>
+
+    <!-- Hero Section -->
+    <section 
+      class="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-fixed"
+      style="background-image: url('./soma.png');"
+    >
+      <!-- 어두운 오버레이 -->
+      <div class="absolute inset-0 bg-black/40"></div>
+      
+      <!-- 메인 콘텐츠 -->
+      <div class="relative z-10 text-center px-6">
+        <!-- 메인 타이틀 -->
+        <h1 
+          class="text-5xl sm:text-6xl lg:text-7xl tracking-tight drop-shadow-lg mb-6"
+          style="font-family: 'Yeongwol', serif; font-weight: 400; color: white;"
+        >
+          소원 마당
+        </h1>
+        
+        <!-- 부제목 -->
+        <p class="text-lg sm:text-xl text-white/70 mb-16 font-light">
+          소원의 산마루에 오신 것을 환영합니다
+        </p>
+        
+        <!-- 화살표 애니메이션 -->
+        <div class="flex flex-col items-center space-y-2 mb-8">
+          <div class="arrow-animation text-white text-2xl">↓</div>
+          <div class="arrow-animation text-white text-2xl">↓</div>
+          <div class="arrow-animation text-white text-2xl">↓</div>
+        </div>
+        
+        <!-- 버튼 -->
+        <button 
+          class="px-8 py-3 rounded-full border-2 border-white text-white text-sm font-medium hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-sm"
+          onclick="window.location.href='./soma2.html'"
+        >
+          소원 살펴보기
+        </button>
+      </div>
+    </section>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+      // 버튼 클릭 이벤트
+      document.querySelector('button').addEventListener('click', function() {
+        console.log('소원 살펴보기 버튼 클릭됨');
+        // 여기에 소원 살펴보기 페이지로 이동하는 로직 추가
+      });
+    </script>
+  </body>
+</html>
