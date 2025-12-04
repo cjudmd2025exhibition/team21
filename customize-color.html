@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>솟대 커스터마이징 - 색상 선택</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 폰트 정의 */
+        @font-face {
+            font-family: 'Yeongwol';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'KBIZ한마음명조';
+            src: url('./KBIZ한마음명조 M.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'happygoheung M';
+            src: url('./행복고흥M.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'gkswk';
+            src: url('./gkswk.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        /* Overlay menu styles (home.html과 동일) */
+        .overlay { 
+            position: fixed; 
+            inset: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            background: rgba(10,18,36,0.94); 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            transition: opacity .4s ease; 
+            z-index: 9999; 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .overlay.hidden { 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .overlay.show { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        .close-btn { 
+            position: absolute; 
+            top: 8px; 
+            right: 40px; 
+            font-size: 28px; 
+            color: #fff; 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            transition: transform .2s ease; 
+        }
+        @media (min-width: 768px) { 
+            .close-btn { 
+                right: 48px; 
+                top: 8px; 
+            } 
+        }
+        .close-btn:hover { 
+            transform: rotate(90deg); 
+        }
+        .menu-nav { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: flex-start; 
+            height: 100vh; 
+            padding-left: 1.5vw; 
+        }
+        .menu-nav ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            text-align: left; 
+        }
+        .menu-nav li { 
+            margin: 16px 0; 
+        }
+        .menu-nav a { 
+            text-decoration: none; 
+            font-family: 'happygoheung M', serif; 
+            font-size: 28px; 
+            font-weight: 600; 
+            letter-spacing: 4px; 
+            color: #f3f4f6; 
+            transition: opacity .2s ease, letter-spacing .3s ease; 
+            text-transform: uppercase; 
+        }
+        .menu-nav a:hover { 
+            opacity: .9; 
+            letter-spacing: 6px; 
+        }
+
+        /* 네비게이션 아이콘 버튼 스타일 */
+        .nav-icon-btn{
+            /* 동일한 어두운 테마 아이콘 버튼 스타일 */
+            height: 2.25rem; /* h-9 */
+            width: 2.25rem;  /* w-9 */
+            border-radius: 9999px;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.10);
+            display: flex; align-items: center; justify-content: center;
+            transition: .2s;
+        }
+        .nav-icon-btn:hover{
+            background: rgba(255,255,255,.10);
+            border-color: rgba(255,255,255,.20);
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        .color-option {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+        }
+        
+        .color-option.selected {
+            transform: scale(1.14);
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 3px solid #3b82f6;
+        }
+        
+        .nav-item:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* duplicate rules above consolidated and softened */
+    </style>
+</head>
+<body class="fixed inset-0 bg-cover bg-center bg-fixed" style="background-image: url('./gongak.png');">
+    <!-- 다크 오버레이 -->
+    <div class="absolute inset-0 bg-black/40"></div>
+    
+    <!-- 네비게이션 바 -->
+    <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-sm bg-gradient-to-b from-black/10 to-transparent">
+      <div class="w-full px-6 md:px-8 py-4 flex items-center justify-between">
+        <!-- 좌측: W.S.P 로고 -->
+        <div class="flex items-center gap-3">
+          <h1 
+            class="text-2xl font-normal text-white cursor-pointer"
+            onclick="window.location.href='./home.html'"
+          >
+            <span style="font-family: 'gkswk', serif;">願</span><span style="font-family: 'happygoheung M', serif;">:솟다</span>
+          </h1>
+        </div>
+        <!-- 우측: 메뉴 버튼 -->
+        <div class="relative menu-container">
+          <button 
+            id="menu-btn"
+            class="inline-flex items-center justify-center text-white transition-transform duration-200"
+            onclick="toggleMenu()"
+            aria-label="메뉴 열기"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <!-- 오버레이 메뉴 -->
+    <div id="overlay-menu" class="overlay hidden">
+      <button 
+        id="close-menu"
+        class="close-btn"
+        onclick="closeMenu()"
+        aria-label="메뉴 닫기"
+      >×</button>
+      <nav class="menu-nav">
+        <ul>
+          <li>
+            <a href="./home.html#sotdae-map" onclick="closeMenu()">솟대 지도</a>
+          </li>
+          <li>
+            <a href="./sotdae-workshop.html" onclick="closeMenu()">솟대공작소</a>
+          </li>
+          <li>
+            <a href="./calendar.html" onclick="closeMenu()">바람 일지</a>
+          </li>
+          <li>
+            <a href="./profile.html" onclick="closeMenu()">나의 솟대</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="relative z-10 pt-20 min-h-screen">
+        <div class="container mx-auto px-6 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start">
+                <!-- 좌측 네비게이션 -->
+                <div class="lg:col-span-3">
+                    <div class="bg-black/30 backdrop-blur-md rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.25)] min-h-[460px] p-6 md:p-8">
+                        <h2 class="text-white text-lg font-semibold mb-6">커스터마이징</h2>
+                        <nav class="space-y-2">
+                            <div class="nav-item px-4 py-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='sotdae-workshop.html'">
+                                <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                </svg>
+                                <span class="text-white/70 text-sm">제품</span>
+                            </div>
+                            <div class="nav-item active px-4 py-3 rounded-lg cursor-pointer flex items-center space-x-3">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"/>
+                                </svg>
+                                <span class="text-white text-sm font-medium">제품 컬러</span>
+                            </div>
+                            <div class="nav-item px-4 py-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='customize-initial.html'">
+                                <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                <span class="text-white/70 text-sm">이니셜</span>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- 중앙 색상 팔레트 -->
+                <div class="lg:col-span-5">
+                    <div class="bg-black/30 backdrop-blur-md rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.25)] min-h-[460px] p-6 md:p-8 flex flex-col">
+                        <h3 class="text-white text-lg md:text-xl font-semibold tracking-tight mb-4 md:mb-6">색상 선택</h3>
+                        <div class="grid grid-cols-4 sm:grid-cols-5 gap-4 md:gap-5 mb-6">
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-neutral-900 border-2 border-white/30 cursor-pointer" data-color="black" onclick="selectColor('black')"></div>
+                                <span class="text-white/60 text-xs">Black</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-amber-50 border-2 border-white/30 cursor-pointer" data-color="natural" onclick="selectColor('natural')"></div>
+                                <span class="text-white/60 text-xs">Natural</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-red-400 border-2 border-white/30 cursor-pointer" data-color="red" onclick="selectColor('red')"></div>
+                                <span class="text-white/60 text-xs">Red</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-orange-400 border-2 border-white/30 cursor-pointer" data-color="orange" onclick="selectColor('orange')"></div>
+                                <span class="text-white/60 text-xs">Orange</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-yellow-300 border-2 border-white/30 cursor-pointer" data-color="yellow" onclick="selectColor('yellow')"></div>
+                                <span class="text-white/60 text-xs">Yellow</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-green-400 border-2 border-white/30 cursor-pointer" data-color="green" onclick="selectColor('green')"></div>
+                                <span class="text-white/60 text-xs">Green</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-blue-400 border-2 border-white/30 cursor-pointer" data-color="blue" onclick="selectColor('blue')"></div>
+                                <span class="text-white/60 text-xs">Blue</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-indigo-700 border-2 border-white/30 cursor-pointer" data-color="navy" onclick="selectColor('navy')"></div>
+                                <span class="text-white/60 text-xs">Navy</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-yellow-900 border-2 border-white/30 cursor-pointer" data-color="brown" onclick="selectColor('brown')"></div>
+                                <span class="text-white/60 text-xs">Brown</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-neutral-50 border-2 border-white/30 cursor-pointer" data-color="white" onclick="selectColor('white')"></div>
+                                <span class="text-white/60 text-xs">White</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="color-option w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-400 border-2 border-white/30 cursor-pointer" data-color="gray" onclick="selectColor('gray')"></div>
+                                <span class="text-white/60 text-xs">Gray</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 우측 미리보기 -->
+                <div class="lg:col-span-4">
+                    <div class="bg-black/30 backdrop-blur-md rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.25)] min-h-[460px] p-6 md:p-8 flex flex-col">
+                        <div class="w-full">
+                            <h3 class="text-white text-lg md:text-xl font-semibold tracking-tight mb-4 md:mb-6">미리보기</h3>
+                            <div class="w-full max-w-[520px] aspect-[4/3] mx-auto flex items-center justify-center">
+                                <img id="bird-preview" src="./sotdae4.png" alt="솟대 새" class="pointer-events-none select-none drop-shadow-xl w-72 h-auto sm:w-80 lg:w-[26rem] xl:w-[30rem] object-contain" style="filter: hue-rotate(0deg) saturate(1) brightness(1);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 색상 매핑
+        const colorMap = {
+            'black': { hue: 0, saturate: 0, brightness: 0.2 },
+            'natural': { hue: 30, saturate: 0.3, brightness: 0.9 },
+            'red': { hue: 0, saturate: 1, brightness: 0.8 },
+            'orange': { hue: 30, saturate: 1, brightness: 0.8 },
+            'yellow': { hue: 60, saturate: 1, brightness: 0.9 },
+            'green': { hue: 120, saturate: 1, brightness: 0.7 },
+            'blue': { hue: 240, saturate: 1, brightness: 0.8 },
+            'navy': { hue: 240, saturate: 1, brightness: 0.4 },
+            'brown': { hue: 30, saturate: 0.8, brightness: 0.4 },
+            'white': { hue: 0, saturate: 0, brightness: 1 },
+            'gray': { hue: 0, saturate: 0, brightness: 0.5 }
+        };
+
+        // localStorage에서 커스터마이징 데이터 로드
+        function loadCustomization() {
+            const saved = localStorage.getItem('sotdaeCustomization');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.color) {
+                    selectColor(data.color, false);
+                }
+            }
+        }
+
+        // 색상 선택
+        function selectColor(color, save = true) {
+            // 모든 색상 옵션에서 selected 클래스 제거
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // 선택된 색상에 selected 클래스 추가
+            document.querySelector(`[data-color="${color}"]`).classList.add('selected');
+
+            // 새 이미지에 색상 적용
+            const birdPreview = document.getElementById('bird-preview');
+            const colorData = colorMap[color];
+            birdPreview.style.filter = `hue-rotate(${colorData.hue}deg) saturate(${colorData.saturate}) brightness(${colorData.brightness})`;
+
+            // localStorage에 저장
+            if (save) {
+                const customization = JSON.parse(localStorage.getItem('sotdaeCustomization') || '{}');
+                customization.color = color;
+                localStorage.setItem('sotdaeCustomization', JSON.stringify(customization));
+                console.log('색상 저장됨:', color, customization);
+            }
+        }
+
+        // 색상 초기화
+        function resetColor() {
+            selectColor('natural');
+        }
+
+        // 다음 단계로 이동
+        function nextStep() {
+            // 현재 이미지 URL을 localStorage에 저장
+            const birdPreview = document.getElementById('bird-preview');
+            const currentImageSrc = birdPreview.src;
+            
+            // 이미지 파일명 추출
+            let imageFileName = 'sotdae4.png'; // 기본값
+            // URL에서 파일명 추출
+            const urlMatch = currentImageSrc.match(/([^\/]+\.(png|jpg|jpeg|gif|webp))$/i);
+            if (urlMatch) {
+                imageFileName = urlMatch[1];
+            } else {
+                // 경로에서 파일명 추출 시도
+                const pathMatch = currentImageSrc.match(/[^\/]+\.(png|jpg|jpeg|gif|webp)$/i);
+                if (pathMatch) {
+                    imageFileName = pathMatch[0];
+                }
+            }
+            
+            const customization = JSON.parse(localStorage.getItem('sotdaeCustomization') || '{}');
+            customization.baseImage = './' + imageFileName;
+            localStorage.setItem('sotdaeCustomization', JSON.stringify(customization));
+            console.log('이미지 저장:', customization.baseImage);
+            
+            // URL 파라미터도 전달 (기존 방식 호환)
+            const urlParams = new URLSearchParams(window.location.search);
+            const imgParam = urlParams.get('img');
+            let nextUrl = 'customize-initial.html';
+            if (imgParam) {
+                nextUrl += '?img=' + encodeURIComponent(imgParam);
+            } else {
+                // URL 파라미터가 없으면 현재 이미지 파일명을 파라미터로 전달
+                nextUrl += '?img=' + encodeURIComponent(imageFileName);
+            }
+            
+            window.location.href = nextUrl;
+        }
+
+        // URL 파라미터에서 이미지 이름 가져오기
+        function getImageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const imgParam = urlParams.get('img');
+            if (imgParam) {
+                const birdPreview = document.getElementById('bird-preview');
+                const imagePath = './' + decodeURIComponent(imgParam);
+                birdPreview.src = imagePath;
+                console.log('URL 파라미터에서 이미지 로드:', imagePath);
+                
+                // localStorage에도 저장
+                const customization = JSON.parse(localStorage.getItem('sotdaeCustomization') || '{}');
+                customization.baseImage = imagePath;
+                localStorage.setItem('sotdaeCustomization', JSON.stringify(customization));
+                return true;
+            }
+            return false;
+        }
+
+        // localStorage에서 이미지 로드
+        function loadImageFromStorage() {
+            const saved = localStorage.getItem('sotdaeCustomization');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.baseImage) {
+                        const birdPreview = document.getElementById('bird-preview');
+                        birdPreview.src = data.baseImage;
+                        console.log('localStorage에서 이미지 로드:', data.baseImage);
+                        return true;
+                    }
+                } catch (e) {
+                    console.error('이미지 로드 실패:', e);
+                }
+            }
+            return false;
+        }
+
+        // 오버레이 메뉴 기능 (home.html과 동일)
+        function toggleMenu() {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay) {
+                overlay.classList.toggle('hidden');
+                overlay.classList.toggle('show');
+            }
+        }
+
+        function closeMenu() {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('show');
+            }
+        }
+
+        // 메뉴 외부 클릭 시 닫기
+        document.addEventListener('click', function(e) {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay && overlay.classList.contains('show')) {
+                if (!e.target.closest('.menu-container') && !e.target.closest('#overlay-menu')) {
+                    closeMenu();
+                }
+            }
+        });
+
+        // ESC 키로 메뉴 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        });
+
+        // 페이지 로드 시 저장된 데이터 복원 및 이미지 로드
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. 먼저 URL 파라미터에서 이미지 확인 (우선순위 높음)
+            const urlImageLoaded = getImageFromURL();
+            
+            // 2. URL 파라미터가 없으면 localStorage에서 이미지 로드
+            if (!urlImageLoaded) {
+                loadImageFromStorage();
+            }
+            
+            // 3. 색상 설정 로드
+            loadCustomization();
+        });
+    </script>
+</body>
+</html>

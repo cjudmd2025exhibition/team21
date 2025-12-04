@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>솟대 커스터마이징 - 이니셜 입력</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 폰트 정의 */
+        @font-face {
+            font-family: 'Yeongwol';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'KBIZ한마음명조';
+            src: url('./KBIZ한마음명조 M.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'happygoheung M';
+            src: url('./행복고흥M.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'gkswk';
+            src: url('./gkswk.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* 네비게이션 아이콘 버튼 스타일 */
+        .nav-icon-btn{
+            /* 동일한 어두운 테마 아이콘 버튼 스타일 */
+            height: 2.25rem; /* h-9 */
+            width: 2.25rem;  /* w-9 */
+            border-radius: 9999px;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.10);
+            display: flex; align-items: center; justify-content: center;
+            transition: .2s;
+        }
+        .nav-icon-btn:hover{
+            background: rgba(255,255,255,.10);
+            border-color: rgba(255,255,255,.20);
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 3px solid #3b82f6;
+        }
+        
+        .nav-item:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .option-button {
+            transition: all 0.3s ease;
+        }
+        
+        .option-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .option-button.selected {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: #3b82f6;
+        }
+        
+        .size-control {
+            transition: all 0.3s ease;
+        }
+        
+        .size-control:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .size-control:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        #initial-display {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+            z-index: 10;
+        }
+        /* Home와 동일한 풀스크린 오버레이 메뉴 스타일 */
+        .overlay { position: fixed; inset: 0; width: 100vw; height: 100vh; background: rgba(10,18,36,0.94); display: flex; justify-content: center; align-items: flex-start; transition: opacity .4s ease; z-index: 9999; opacity: 0; pointer-events: none; }
+        .overlay.hidden { opacity: 0; pointer-events: none; }
+        .overlay.show { opacity: 1; pointer-events: auto; }
+        .menu-nav { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; height: 100vh; padding-left: 1.5vw; }
+        .menu-nav ul { list-style: none; padding: 0; margin: 0; text-align: left; }
+        .menu-nav li { margin: 16px 0; }
+        .menu-nav a { text-decoration: none; font-family: 'happygoheung M', serif; font-size: 28px; font-weight: 600; letter-spacing: 4px; color: #f3f4f6; transition: opacity .2s ease, letter-spacing .3s ease; text-transform: uppercase; }
+        .menu-nav a:hover { opacity: .9; letter-spacing: 6px; }
+        .close-btn { position: absolute; top: 8px; right: 48px; font-size: 28px; color: #fff; background: none; border: none; cursor: pointer; transition: transform .2s ease; }
+        @media (max-width: 767px) { .close-btn { right: 40px; top: 8px; } }
+    </style>
+</head>
+<body class="fixed inset-0 bg-cover bg-center bg-fixed" style="background-image: url('./gongak.png');">
+    <!-- 다크 오버레이 -->
+    <div class="absolute inset-0 bg-black/40"></div>
+    
+    <!-- Home과 동일한 상단바 -->
+    <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-sm bg-gradient-to-b from-black/10 to-transparent">
+      <div class="w-full px-6 md:px-8 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <h1 class="text-2xl font-normal text-white cursor-pointer" onclick="window.location.href='./home.html'"><span style="font-family: 'gkswk', serif;">願</span><span style="font-family: 'happygoheung M', serif;">:솟다</span></h1>
+        </div>
+        <div class="relative menu-container">
+          <button id="menu-btn" class="inline-flex items-center justify-center text-white transition-transform duration-200" onclick="toggleMenu()" aria-label="메뉴 열기">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 풀스크린 오버레이 메뉴 (header 밖) -->
+    <div id="overlay-menu" class="overlay hidden">
+      <button id="close-menu" class="close-btn" onclick="closeMenu()" aria-label="메뉴 닫기">×</button>
+      <nav class="menu-nav">
+        <ul>
+          <li><a href="./home.html#sotdae-map" onclick="closeMenu()">솟대 지도</a></li>
+          <li><a href="./sotdae-workshop.html" onclick="closeMenu()">솟대공작소</a></li>
+          <li><a href="./calendar.html" onclick="closeMenu()">바람 일지</a></li>
+          <li><a href="./profile.html" onclick="closeMenu()">나의 솟대</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="relative z-10 pt-20 min-h-screen">
+        <div class="container mx-auto px-6 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start">
+                <!-- 좌측 네비게이션 -->
+                <div class="lg:col-span-3">
+                    <div class="bg-black/30 backdrop-blur-md rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.25)] min-h-[460px] p-6 md:p-8">
+                        <h2 class="text-white text-lg font-semibold mb-6">커스터마이징</h2>
+                        <nav class="space-y-2">
+                            <div class="nav-item px-4 py-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='sotdae-workshop.html'">
+                                <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                </svg>
+                                <span class="text-white/70 text-sm">제품</span>
+                            </div>
+                            <div class="nav-item px-4 py-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='customize-color.html'">
+                                <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"/>
+                                </svg>
+                                <span class="text-white/70 text-sm">제품 컬러</span>
+                            </div>
+                            <div class="nav-item active px-4 py-3 rounded-lg cursor-pointer flex items-center space-x-3">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                <span class="text-white text-sm font-medium">이니셜</span>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- 중앙 이니셜 설정 -->
+                <div class="lg:col-span-5">
+                    <div class="bg-black/30 backdrop-blur-md rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.25)] min-h-[460px] p-6 md:p-8 flex flex-col">
+                        <h3 class="text-white text-lg md:text-xl font-semibold tracking-tight mb-4 md:mb-6">이니셜 설정</h3>
+                        
+                        <!-- 이니셜 입력 -->
+                        <div class="mb-8">
+                            <label class="block text-white text-sm font-medium mb-3">이니셜 입력 (최대 3자)</label>
+                            <input type="text" id="initial-input" maxlength="3" placeholder="예: ABC" 
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-blue-500 focus:bg-white/20 transition-all">
+                        </div>
+
+                        <!-- 크기 조절 -->
+                        <div class="mb-8">
+                            <label class="block text-white text-sm font-medium mb-3">크기 조절</label>
+                            <div class="flex items-center space-x-4">
+                                <button id="size-decrease" class="size-control w-10 h-10 rounded-full bg-white/10 border border-white/30 flex items-center justify-center text-white hover:bg-white/20">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                                    </svg>
+                                </button>
+                                <span id="size-display" class="text-white text-lg font-medium min-w-[3rem] text-center">24px</span>
+                                <button id="size-increase" class="size-control w-10 h-10 rounded-full bg-white/10 border border-white/30 flex items-center justify-center text-white hover:bg-white/20">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 폰트 선택 -->
+                        <div class="mb-8">
+                            <label class="block text-white text-sm font-medium mb-3">폰트 선택</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <button class="option-button px-4 py-3 rounded-lg border border-white/30 text-white text-sm" data-font="serif" onclick="selectFont('serif')">
+                                    Serif
+                                </button>
+                                <button class="option-button px-4 py-3 rounded-lg border border-white/30 text-white text-sm" data-font="sans" onclick="selectFont('sans')">
+                                    Sans
+                                </button>
+                                <button class="option-button px-4 py-3 rounded-lg border border-white/30 text-white text-sm" data-font="script" onclick="selectFont('script')">
+                                    Script
+                                </button>
+                                <button class="option-button px-4 py-3 rounded-lg border border-white/30 text-white text-sm" data-font="mono" onclick="selectFont('mono')">
+                                    Mono
+                                </button>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+
+                <!-- 우측 미리보기 -->
+                <div class="lg:col-span-4">
+                    <div class="bg-black/30 backdrop-blur-md rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.25)] min-h-[460px] p-6 md:p-8 flex flex-col">
+                        <h3 class="text-white text-lg md:text-xl font-semibold tracking-tight mb-4 md:mb-6">미리보기</h3>
+                        <div class="w-full max-w-[520px] aspect-[4/3] mx-auto flex items-center justify-center">
+                            <div class="relative">
+                                <img id="bird-preview" src="./sotdae4.png" alt="솟대 새" class="pointer-events-none select-none drop-shadow-xl w-72 h-auto sm:w-80 lg:w-[26rem] xl:w-[30rem] object-contain">
+                                <div id="initial-display" style="font-size: 24px; font-family: serif;">ABC</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 하단 버튼 -->
+            <div class="flex items-center justify-end mt-10 md:mt-12">
+                <button onclick="addToCart()" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-sm md:text-base font-semibold border border-white/10 shadow-md shadow-blue-900/20 transition-all active:scale-[0.98]">
+                    장바구니에 담기
+                    <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 오버레이 메뉴 기능 (home.html과 동일)
+        function toggleMenu() {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay) {
+                overlay.classList.toggle('hidden');
+                overlay.classList.toggle('show');
+            }
+        }
+
+        function closeMenu() {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('show');
+            }
+        }
+
+        // 메뉴 외부 클릭 시 닫기
+        document.addEventListener('click', function(e) {
+            const overlay = document.getElementById('overlay-menu');
+            if (overlay && overlay.classList.contains('show')) {
+                if (!e.target.closest('.menu-container') && !e.target.closest('#overlay-menu')) {
+                    closeMenu();
+                }
+            }
+        });
+
+        // ESC 키로 메뉴 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        });
+
+        // 색상 매핑 (color 페이지와 동일)
+        const colorMap = {
+            'black': { hue: 0, saturate: 0, brightness: 0.2 },
+            'natural': { hue: 30, saturate: 0.3, brightness: 0.9 },
+            'red': { hue: 0, saturate: 1, brightness: 0.8 },
+            'orange': { hue: 30, saturate: 1, brightness: 0.8 },
+            'yellow': { hue: 60, saturate: 1, brightness: 0.9 },
+            'green': { hue: 120, saturate: 1, brightness: 0.7 },
+            'blue': { hue: 240, saturate: 1, brightness: 0.8 },
+            'navy': { hue: 240, saturate: 1, brightness: 0.4 },
+            'brown': { hue: 30, saturate: 0.8, brightness: 0.4 },
+            'white': { hue: 0, saturate: 0, brightness: 1 },
+            'gray': { hue: 0, saturate: 0, brightness: 0.5 }
+        };
+
+        
+
+        // 현재 설정값
+        let currentSettings = {
+            initial: 'ABC',
+            size: 24,
+            font: 'serif',
+            
+        };
+
+        // 폰트 매핑
+        const fontMap = {
+            'serif': 'serif',
+            'sans': 'sans-serif',
+            'script': 'cursive',
+            'mono': 'monospace'
+        };
+
+        // 색상 적용 함수
+        function applyColor(color) {
+            const birdPreview = document.getElementById('bird-preview');
+            const colorData = colorMap[color];
+            if (colorData) {
+                const filterValue = `hue-rotate(${colorData.hue}deg) saturate(${colorData.saturate}) brightness(${colorData.brightness})`;
+                birdPreview.style.filter = filterValue;
+            }
+        }
+
+        // localStorage에서 커스터마이징 데이터 로드
+        function loadCustomization() {
+            const saved = localStorage.getItem('sotdaeCustomization');
+            console.log('저장된 데이터:', saved);
+            if (saved) {
+                const data = JSON.parse(saved);
+                console.log('파싱된 데이터:', data);
+                
+                // 색상 적용
+                if (data.color) {
+                    console.log('색상 적용:', data.color);
+                    applyColor(data.color);
+                }
+                
+                // 이니셜 설정 복원
+                if (data.initial) {
+                    currentSettings.initial = data.initial;
+                    document.getElementById('initial-input').value = data.initial;
+                    updatePreview();
+                }
+                
+                // 크기 설정 복원
+                if (data.size) {
+                    currentSettings.size = data.size;
+                    document.getElementById('size-display').textContent = data.size + 'px';
+                    updatePreview();
+                }
+                
+                // 폰트 설정 복원
+                if (data.font) {
+                    currentSettings.font = data.font;
+                    document.querySelector(`[data-font="${data.font}"]`)?.classList.add('selected');
+                    updatePreview();
+                }
+                
+                // 위치 설정 복원
+                if (data.position) {
+                    currentSettings.position = data.position;
+                    document.querySelector(`[data-position="${data.position}"]`)?.classList.add('selected');
+                    updatePreview();
+                }
+            }
+        }
+
+        
+
+        // 저장된 기본 이미지 적용
+        function applyBaseImageFromStorage() {
+            const saved = localStorage.getItem('sotdaeCustomization');
+            if (!saved) return;
+            try {
+                const data = JSON.parse(saved);
+                if (data.baseImage) {
+                    const img = document.getElementById('bird-preview');
+                    img.src = data.baseImage;
+                    console.log('localStorage에서 이미지 로드:', data.baseImage);
+                }
+            } catch (e) {
+                console.error('이미지 로드 실패:', e);
+            }
+        }
+
+        // URL 파라미터에서 이미지 이름 가져오기
+        function getImageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const imgParam = urlParams.get('img');
+            if (imgParam) {
+                const birdPreview = document.getElementById('bird-preview');
+                birdPreview.src = './' + decodeURIComponent(imgParam);
+                console.log('URL 파라미터에서 이미지 로드:', imgParam);
+                
+                // localStorage에도 저장
+                const customization = JSON.parse(localStorage.getItem('sotdaeCustomization') || '{}');
+                customization.baseImage = './' + decodeURIComponent(imgParam);
+                localStorage.setItem('sotdaeCustomization', JSON.stringify(customization));
+                return true; // 이미지 로드 성공
+            }
+            return false; // URL 파라미터 없음
+        }
+
+        // localStorage에서 커스터마이징 데이터 로드
+        function loadCustomization() {
+            const saved = localStorage.getItem('sotdaeCustomization');
+            console.log('저장된 데이터:', saved);
+            if (saved) {
+                const data = JSON.parse(saved);
+                console.log('파싱된 데이터:', data);
+                
+                // 색상 적용
+                if (data.color) {
+                    console.log('색상 적용:', data.color);
+                    applyColor(data.color);
+                }
+                
+                // 이니셜 설정 복원
+                if (data.initial) {
+                    currentSettings.initial = data.initial;
+                    document.getElementById('initial-input').value = data.initial;
+                    updatePreview();
+                }
+                
+                // 크기 설정 복원
+                if (data.size) {
+                    currentSettings.size = data.size;
+                    document.getElementById('size-display').textContent = data.size + 'px';
+                    updatePreview();
+                }
+                
+                // 폰트 설정 복원
+                if (data.font) {
+                    currentSettings.font = data.font;
+                    document.querySelector(`[data-font="${data.font}"]`)?.classList.add('selected');
+                    updatePreview();
+                }
+                
+                // 위치 설정 복원
+                if (data.position) {
+                    currentSettings.position = data.position;
+                    document.querySelector(`[data-position="${data.position}"]`)?.classList.add('selected');
+                    updatePreview();
+                }
+            }
+        }
+
+        // 미리보기 업데이트
+        function updatePreview() {
+            const display = document.getElementById('initial-display');
+            display.textContent = currentSettings.initial;
+            display.style.fontSize = currentSettings.size + 'px';
+            display.style.fontFamily = fontMap[currentSettings.font];
+        }
+
+        // 이니셜 입력 이벤트
+        document.getElementById('initial-input').addEventListener('input', function(e) {
+            currentSettings.initial = e.target.value.toUpperCase();
+            updatePreview();
+        });
+
+        // 크기 조절 이벤트
+        document.getElementById('size-decrease').addEventListener('click', function() {
+            if (currentSettings.size > 12) {
+                currentSettings.size -= 2;
+                updateUI();
+            }
+        });
+
+        document.getElementById('size-increase').addEventListener('click', function() {
+            if (currentSettings.size < 48) {
+                currentSettings.size += 2;
+                updateUI();
+            }
+        });
+
+        // 폰트 선택
+        function selectFont(font) {
+            currentSettings.font = font;
+            document.querySelectorAll('[data-font]').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector(`[data-font="${font}"]`).classList.add('selected');
+            updatePreview();
+        }
+
+        
+
+        // 이전 단계로 이동
+        function prevStep() {
+            window.location.href = 'customize-color.html';
+        }
+
+        // 장바구니에 담기
+        function addToCart() {
+            const customization = JSON.parse(localStorage.getItem('sotdaeCustomization') || '{}');
+            customization.initial = currentSettings.initial;
+            customization.size = currentSettings.size;
+            customization.font = currentSettings.font;
+            customization.completed = true;
+            
+            // 커스터마이징 데이터 저장
+            localStorage.setItem('sotdaeCustomization', JSON.stringify(customization));
+            
+            // 장바구니에 커스터마이징된 제품 추가
+            const cartItem = {
+                id: 'customized-sotdae-' + Date.now(),
+                name: '커스터마이징 솟대',
+                price: 50000,
+                image: (customization && customization.baseImage) ? customization.baseImage : './sotdae4.png',
+                customization: customization,
+                quantity: 1,
+                selected: false
+            };
+            
+            let cartItems = JSON.parse(localStorage.getItem('sotdaeCart') || '[]');
+            cartItems.push(cartItem);
+            localStorage.setItem('sotdaeCart', JSON.stringify(cartItems));
+            
+            alert('장바구니에 담겼습니다!');
+            window.location.href = 'sotdae-workshop2.html';
+        }
+
+        // 커스터마이징 저장
+        function saveCustomization() {
+            const customization = JSON.parse(localStorage.getItem('sotdaeCustomization') || '{}');
+            customization.initial = currentSettings.initial;
+            customization.size = currentSettings.size;
+            customization.font = currentSettings.font;
+            customization.completed = true;
+            
+            localStorage.setItem('sotdaeCustomization', JSON.stringify(customization));
+            
+            alert('솟대 커스터마이징이 저장되었습니다!');
+            window.location.href = 'home.html';
+        }
+
+        // 페이지 로드 시 저장된 데이터 복원
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('페이지 로드됨');
+            
+            // 1. 먼저 URL 파라미터에서 이미지 확인 (우선순위 높음)
+            const urlImageLoaded = getImageFromURL();
+            
+            // 2. URL 파라미터가 없으면 localStorage에서 이미지 로드
+            if (!urlImageLoaded) {
+                applyBaseImageFromStorage();
+            }
+            
+            // 3. 커스터마이징 데이터 로드
+            loadCustomization();
+            
+            // 4. 추가 지연 후 색상 적용 (DOM이 완전히 로드된 후)
+            setTimeout(() => {
+                const saved = localStorage.getItem('sotdaeCustomization');
+                console.log('setTimeout에서 확인:', saved);
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data.color) {
+                        console.log('setTimeout에서 색상 적용:', data.color);
+                        applyColor(data.color);
+                    }
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
